@@ -16,7 +16,7 @@ With the process-local override, python -m pytest tests/unit/test_harness.py tes
 
 ## Application dependencies
 
-Core gameplay uses browser built-ins. A SQLite CDN distribution is selected, pinned and verified in its implementation task; no SQLite support is claimed yet.
+Core gameplay and JSON exchange use browser built-ins. SQLite exchange uses the optional sql.js pin and verified initialization described below; no worker or local companion file is required.
 
 ## CI actions
 

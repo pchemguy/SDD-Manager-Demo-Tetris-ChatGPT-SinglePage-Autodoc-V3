@@ -258,7 +258,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Check integrity/schema/metadata/types/keys/records against S7/S8, reject extra tables/views/triggers/columns, wrong versions and corrupt data; close statements/databases on all paths.
             Milestone exit: review all 7.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/7/7.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 7.2 — Both-format delivery
+    - [x] Milestone 7.2 — Both-format delivery
         - [x] T-038 — Integrate format choice and cross-format restore
             Verification: New file dispatch and missing format-choice scenarios failed RED; 125 units and cross-format/cancel browser checks now pass in 25.09s, and 20 existing JSON/failure browser regressions passed in the prior focused run; genuine SQLite to JSON and SQLite round trips preserve exact records settings and HTTP cookie/query values in all four combinations; successful restore renews cookie expiry so the valid-restore assertion now compares content and attributes; native Escape cancels accessible dialog without resuming play.
             Scope: tetris.html FileController/UI and browser checks; S9.
@@ -269,7 +269,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tests/unit/browser/fixtures and resource/failure checks.
             Depends on: T-038.
             Evidence: Dependency failure, corrupt databases, invalid timestamps, duplicate/missing keys, fractional/unsafe scores and concurrent input leave live data unchanged; check cleanup and all five widths in four browser-mode combinations.
-        - [ ] T-040 — Finalize complete single-file distribution and guides
+        - [x] T-040 — Finalize complete single-file distribution and guides
+            Verification: Final packaged 1.0.0 passed all 252 S1-S10 regression checks in 359.53s; regenerated final README package and independently checked four-file inventory hashes HTML/schema byte identity version agreement formatting guide links and clean diff; reviewed full 7.2 UI/file lifecycle and documentation against supported implementation with no unresolved finding; direct CDN CI and native-platform/restore-cancel verification limits are accurately documented.
             Scope: README.md, AGENTS.md, docs/FILE-FORMATS.md, docs/DEPENDENCIES.md, VERSION, package/release evidence.
             Depends on: T-039.
             Evidence: Full S1-S10 regression against actual generated HTML, names/checksums/version/schema agreement and installation instructions; no unverified platform/delivery claims.

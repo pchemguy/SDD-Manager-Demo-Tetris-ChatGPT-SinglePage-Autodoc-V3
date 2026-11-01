@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-037, phase 7, milestone 7.1 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-040, phase 7, milestone 7.2 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/7/7.1.md) records checks. All 24 decoder scenarios failed before implementation; 116 unit checks now pass, including independent SQLite input and cross-codec field preservation, 19 invalid schema/metadata/key/value classes, empty corrupt and trailing databases, statement/database cleanup on success failure and free error; too-many fixture initially collided with an existing ID and was corrected before acceptance; reviewed declarations metadata query-only fixed SQL lifecycle and shared validation with no unresolved finding.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/7/7.2.md) records checks. Final packaged 1.0.0 passed all 252 S1-S10 regression checks in 359.53s; regenerated final README package and independently checked four-file inventory hashes HTML/schema byte identity version agreement formatting guide links and clean diff; reviewed full 7.2 UI/file lifecycle and documentation against supported implementation with no unresolved finding; direct CDN CI and native-platform/restore-cancel verification limits are accurately documented.
 
 ## Branch and return
 

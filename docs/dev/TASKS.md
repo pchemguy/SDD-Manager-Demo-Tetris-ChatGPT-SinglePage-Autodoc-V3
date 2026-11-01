@@ -100,7 +100,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 3 — Penetrator
 
-- [ ] Phase 3 — Penetrator
+- [x] Phase 3 — Penetrator
     - [x] Milestone 3.1 — Penetrator landing and controls
         - [x] T-015 — Implement lowest feasible penetrating landing
             Verification: RED traversal/lowest-cavity test failed against regular collision; GREEN 39 unit checks passed; overlap traversal preserves all settled cells, landing selects lowest non-overlap cavity, invalid motions and colliding floor descent are rejected.
@@ -127,8 +127,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Earn/spend/lock loop updates one symbol per bonus; regular pieces/ghost/hold/preview never use white; both modes/browsers preserve prior play.
             Milestone exit: review all 3.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/3/3.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 3.3 — Phase review
-        - [ ] T-019 — Review test and report phase 3
+    - [x] Milestone 3.3 — Phase review
+        - [x] T-019 — Review test and report phase 3
+            Verification: Complete phase Engine/controller/presentation code review found no unresolved S3 finding; four initial delivery closures audited with no exceptions; packaged 0.3.0 full suite passed 97 tests in 110.75s; Prettier and independent artifact inventory/hash gates passed; milestones 3.1 and 3.2 closed/read back; exact-tip CI, explicit main integration and release remain coordinator gates.
             Depends on: T-018 and completion/verified closure of delivery milestones 3.1, 3.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.3.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/3/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.3.0 before any next-phase activation.

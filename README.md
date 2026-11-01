@@ -25,7 +25,7 @@ The same file works over HTTP(S). For a localhost example with Python already av
 | R | Start / restart |
 | Help toggle | Show/hide keyboard help |
 
-Locking waits one full gravity interval after becoming grounded. Grounded movement/rotation does not restart it; actual lift-off starts a fresh delay at the next contact. Pause freezes game time. Losing focus or hiding the page pauses play and requires explicit resume. The board stays anchored as panels toggle; narrow screens can scroll the scene.
+By default, locking waits one full gravity interval after becoming grounded. Grounded movement/rotation does not restart it; actual lift-off starts a fresh delay at the next contact. Pause freezes game time. Losing focus or hiding the page pauses play and requires explicit resume. The board stays anchored as panels toggle; narrow screens can scroll the scene.
 
 Clear rows for points and advance one level every ten lines. The queue uses shuffled seven-piece bags. SRS wall/floor kicks, one-piece hold and next preview are enabled. A ghost previews landing and hides if any projected cell is above the midline. Enter hard-drops to the same landing, with two points per row and the same full contact delay.
 

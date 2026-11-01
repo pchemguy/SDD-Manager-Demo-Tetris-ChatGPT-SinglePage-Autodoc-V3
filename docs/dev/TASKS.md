@@ -165,7 +165,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 5 — HTTP configuration
 
-- [ ] Phase 5 — HTTP configuration
+- [x] Phase 5 — HTTP configuration
     - [x] Milestone 5.1 — Protocol-specific configuration persistence
         - [x] T-024 — Resolve HTTP settings from URL cookies and defaults
             Verification: RED four protocol cases failed; GREEN 54 unit and 12 settings browser checks passed; per-key URL-cookie-default precedence, explicit default cookie writes, invalid/duplicate fallbacks and file adapter zero-capability access verified; existing HTTP startup assertion updated for intentionally introduced URL resolution.
@@ -184,8 +184,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Prove no file-mode cookie/config-URL access and default reloads; cover all six precedence/write paths, blocked cookies and history failure in both browsers.
             Milestone exit: review all 5.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/5/5.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 5.2 — Phase review
-        - [ ] T-027 — Review test and report phase 5
+    - [x] Milestone 5.2 — Phase review
+        - [x] T-027 — Review test and report phase 5
+            Verification: Phase-wide ProtocolAdapter SettingsPolicy store and controller review found no unresolved finding; three delivery closures audited without exceptions; 142 packaged tests passed in 219.78s; all six precedence matrices, refusal fixtures, file isolation and prior regressions covered; README default-lock wording clarified and package name/hash gate rerun; milestone 5.1 closed/read back; exact-tip CI integration and release remain coordinator gates.
             Depends on: T-026 and completion/verified closure of delivery milestones 5.1.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.5.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/5/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.5.0 before any next-phase activation.

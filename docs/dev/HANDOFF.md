@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-026, phase 5, milestone 5.1 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-027, phase 5, milestone 5.2 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/5/5.1.md) records checks. Full packaged 0.5.0 suite passed 142 tests in 219.78s; all six per-key precedence/default-write/omitted-cookie paths, malformed duplicates, HTTP changes and reloads, blocked cookie/history warnings and file zero-access/unchanged-URL behavior verified in both browsers; HTTPS attributes unit-inspected, not a live HTTPS hosting claim; milestone source review, formatting and independent package gates passed.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/5/PHASE-REPORT.md) records checks. Phase-wide ProtocolAdapter SettingsPolicy store and controller review found no unresolved finding; three delivery closures audited without exceptions; 142 packaged tests passed in 219.78s; all six precedence matrices, refusal fixtures, file isolation and prior regressions covered; README default-lock wording clarified and package name/hash gate rerun; milestone 5.1 closed/read back; exact-tip CI integration and release remain coordinator gates.
 
 ## Branch and return
 
@@ -16,4 +16,4 @@ Working branch: phase/5-http-configuration; integration parent: main; branch-off
 
 ## Pending effects
 
-Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.
+Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.

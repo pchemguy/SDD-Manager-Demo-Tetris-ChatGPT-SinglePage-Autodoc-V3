@@ -2,9 +2,11 @@
 
 ## Outcome and checkpoint
 
-The complete Single-page HTML Tetris target is implemented in tetris.html at version 1.0.0. The final packaged application passed 252 local checks in 359.53 seconds. This T-041 review checkpoint precedes exact-tip hosted CI, main integration and release publication; their actual outcomes belong to the coordinator's subsequent evidence update.
+The complete Single-page HTML Tetris target is delivered at version 1.0.0. All 41 implementation tasks, their hosted issues and all 20 preparation/implementation milestones are closed. All seven phases are explicitly integrated and released, with every shipped asset downloaded and hash-verified at publication.
 
-The user authorized full QC, T-001 through T-041 and seven phased releases. All implementation scope is covered; no required functionality is deferred. The first six phases have been integrated and released, with every asset downloaded and hash-verified. Phase 7 is ready for its publication gates.
+Final packaged validation passed 252 local checks in 359.53 seconds and 252 exact-phase-source hosted checks in 335.11 seconds. The explicit main merge passed 118 unit checks in 12.39 seconds and application/test/tool bytes matched the CI-tested phase. Release v1.0.0 is published at https://github.com/pchemguy/SDD-Manager-Demo-Tetris-ChatGPT-SinglePage-Autodoc-V3/releases/tag/v1.0.0. No implementation or release effect remains pending.
+
+The user-authorized full implementation boundary is complete. No required functionality is deferred.
 
 ## Delivery history
 
@@ -16,9 +18,9 @@ The user authorized full QC, T-001 through T-041 and seven phased releases. All 
 | 4 | Six session-only settings, without reload persistence | 0.4.0 | 120 hosted checks; [phase report](phases/4/PHASE-REPORT.md) |
 | 5 | Independent HTTP URL/cookie/default configuration | 0.5.0 | 142 hosted checks; [phase report](phases/5/PHASE-REPORT.md) |
 | 6 | Session top ten and strict JSON manual exchange | 0.6.0 | 193 hosted checks; [phase report](phases/6/PHASE-REPORT.md) |
-| 7 | Pinned SQLite codec and both-format manual exchange | 1.0.0 | 252 final-version local checks; [phase report](phases/7/PHASE-REPORT.md) |
+| 7 | Pinned SQLite codec and both-format manual exchange | 1.0.0 | 252 final-version local and hosted checks; [phase report](phases/7/PHASE-REPORT.md) |
 
-Each phase retains its own milestone and phase reviews, task-owned commits, hosted issues/milestones, explicit two-parent integration and immutable release history. The Phase 4 release preserves the required session-only intermediate before HTTP persistence was introduced. Phase 7's six preceding task closures were audited without exceptions before T-041; the coordinator audits all seven after this commit.
+Each phase retains its own milestone and phase reviews, task-owned commits, hosted issues/milestones, explicit two-parent integration and immutable release history. The Phase 4 release preserves the required session-only intermediate before HTTP persistence was introduced. Phase 7's seven initial task closures were audited before integration without exceptions or scoped forward repair commits.
 
 ## Contract coverage and review
 
@@ -43,7 +45,7 @@ The 22 invalid SQLite browser cases cover 19 schema/metadata/key/value classes p
 
 Final local command: package with python scripts/package.py --out dist, then pytest with TETRIS_TEST_ARTIFACT=dist/tetris.html using the isolated tools documented in [DEPENDENCIES](../../DEPENDENCIES.md). All 252 checks passed in 359.53s. Independent artifact checks verified exactly tetris.html, README.md, session.schema.json and SHA256SUMS, actual hashes and source/schema byte identity. Version metadata/header/VERSION agree at 1.0.0. Prettier and Git whitespace checks passed; current user-guide links resolve. Screenshots of the game and Save dialog were inspected for readability and clipping.
 
-[Hosted run 41336253654](https://github.com/pchemguy/SDD-Manager-Demo-Tetris-ChatGPT-SinglePage-Autodoc-V3/actions/runs/41336253654) on 4fc3457bb8a5333a0c20c4e4b3912b60172cb63c passed 235 checks in 320.71s, including direct CDN initialization and package gates without local fallback flags. This is direct dependency evidence, not a claim about the later exact phase tip. The final phase-tip CI result is a separate required publication gate.
+[Hosted run 41336253654](https://github.com/pchemguy/SDD-Manager-Demo-Tetris-ChatGPT-SinglePage-Autodoc-V3/actions/runs/41336253654) on 4fc3457bb8a5333a0c20c4e4b3912b60172cb63c passed 235 checks in 320.71s, including direct CDN initialization and package gates without local fallback flags. This is direct dependency evidence, not a claim about the later exact phase tip. The exact final phase-tip gate subsequently passed as recorded below.
 
 ## Resolved findings and limits
 
@@ -55,4 +57,17 @@ Native Windows and headed OS-window event delivery were not verified. Focus/visi
 
 ## Eligible TODOs
 
-None. No unresolved contract violation or deferred target feature remains. Exact-tip CI, integration and published release verification are pending coordinator gates at this checkpoint, not implementation TODOs.
+None. No unresolved contract violation or deferred target feature remains. Exact-tip CI, explicit main integration and published release verification are complete.
+
+## Verified final publication
+
+Final phase source: fa4c8b989cf888c18166af4bc6580018f7e7bc9c. [Exact-source hosted CI 41337725525](https://github.com/pchemguy/SDD-Manager-Demo-Tetris-ChatGPT-SinglePage-Autodoc-V3/actions/runs/41337725525) passed all 252 checks in 335.11s, including direct CDN loading and package gates. Explicit two-parent main merge: 2fae2a817866759e9ef532b5a4db58f4bbcac367. Release source: e1f168505a9555f0201d177522ba06f3d54be8f4. Annotated tag object: 6c7d7be6532cfcb0acfe87b8a5de68d09606e2c0. [Published release](https://github.com/pchemguy/SDD-Manager-Demo-Tetris-ChatGPT-SinglePage-Autodoc-V3/releases/tag/v1.0.0) ID 430783337 was read back with exact body/tag/asset inventory and verified as latest stable. Every asset was downloaded and its SHA-256 matched the packaged bytes:
+
+| Asset | Verified SHA-256 |
+| --- | --- |
+| README.md | d38b34ae1837183cab48ac8e785aa703f0209bfc8d8530cdada1f7874c12057b |
+| SHA256SUMS | ee9343d52c78ea84e170cbeef94708c41f458debaf5b6f6d927780a600fe2ba0 |
+| session.schema.json | fcd04037f209ba0c125fd567f0cc3f0841ab8d0f9f6b040de11b4d10a8458f84 |
+| tetris.html | 372526bc77c60c77b44eb364865bbc99b630d96d1d4b5a931da713e493518707 |
+
+Fresh hosted readback confirms all seven stable release tags: v0.1.0, v0.2.0, v0.3.0, v0.4.0, v0.5.0, v0.6.0, v1.0.0. Immutable per-release evidence remains in the corresponding phase reports. No tag was moved and no history was rewritten.

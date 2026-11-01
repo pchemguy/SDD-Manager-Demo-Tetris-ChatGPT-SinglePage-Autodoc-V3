@@ -11,7 +11,7 @@ def payload(value,name='snapshot.any'):
 
 def restore(p,value):
     p.locator('#restore-file').set_input_files(payload(value))
-    expect(p.locator('#save-session')).to_be_enabled()
+    expect(p.locator('#save-session')).to_be_enabled(timeout=35000)
     expect(p.locator('#message')).to_contain_text('Restored')
 
 
@@ -84,7 +84,7 @@ def test_settings_hides_file_buttons_and_download_urls_are_revoked(app_page):
     p.reload();p.locator('#toggle-settings').click()
     assert p.locator('#save-session').is_hidden() and p.locator('#restore-session').is_hidden()
     p.locator('#toggle-settings').click()
-    with p.expect_download(): p.locator('#save-session').click()
+    with p.expect_download(): p.locator('#save-session').click();p.locator('#save-json').click()
     p.wait_for_function('createdURLs.length===1&&revokedURLs.length===1')
     assert p.evaluate('createdURLs[0]===revokedURLs[0]')
     assert p.locator('a[download]').count()==0

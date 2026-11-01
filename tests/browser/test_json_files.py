@@ -14,7 +14,7 @@ def test_manual_json_download_restore_and_second_export(app_page, mode, tmp_path
     p.keyboard.press('ArrowDown')
     before_url=p.url
     with p.expect_download() as first:
-        p.locator('#save-session').click()
+        p.locator('#save-session').click();p.locator('#save-json').click()
     download=first.value
     assert download.suggested_filename=='tetris-session.json'
     path=tmp_path/'first.json';download.save_as(path)
@@ -43,6 +43,6 @@ def test_manual_json_download_restore_and_second_export(app_page, mode, tmp_path
         assert p.url==before_url
         assert p.context.cookies()==[]
     with p.expect_download() as second:
-        p.locator('#save-session').click()
+        p.locator('#save-session').click();p.locator('#save-json').click()
     path=tmp_path/'second.json';second.value.save_as(path)
     assert json.loads(path.read_bytes())==ranked_session()

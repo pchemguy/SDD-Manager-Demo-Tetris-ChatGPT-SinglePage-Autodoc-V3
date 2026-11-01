@@ -239,39 +239,46 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 7 — SQLite exchange
 
-- [ ] Phase 7 — SQLite exchange
-    - [ ] Milestone 7.1 — SQLite codec
-        - [ ] T-035 — Prove and pin a single-script CDN SQLite runtime
+- [x] Phase 7 — SQLite exchange
+    - [x] Milestone 7.1 — SQLite codec
+        - [x] T-035 — Prove and pin a single-script CDN SQLite runtime
+            Verification: Three loader RED cases failed before implementation; all 90 unit checks now pass; four Chromium/Firefox file/HTTP initialization cases pass using TLS-fetched hash-verified CDN bytes with browser SRI and no worker or companion requests; native CDN browser TLS failed on managed proxy trust and remains a direct-loading CI gate; actual runtime reports SQLite 3.49.1; timeout failure retry coalescing and script/timer cleanup verified.
             Scope: tetris.html DependencyLoader, docs/DEPENDENCIES.md and browser loading evidence; S8.
             Depends on: T-034.
             Evidence: Verify actual pinned URL/version/license/integrity and initialization under file/HTTP in Chromium/Firefox without worker/companion local asset; clear bounded failure keeps JSON/game usable.
-        - [ ] T-036 — Encode SQLite snapshots with version metadata
+        - [x] T-036 — Encode SQLite snapshots with version metadata
+            Verification: Two export cases failed RED before implementation; all 92 unit checks passed; final focused two checks passed after adding the ready API; independent Python SQLite validates genuine header exact tables user_version integrity runtime INTEGER and complete field preservation; prepared insert failure frees its statement and closes database while invalid candidate opens none.
             Scope: tetris.html SQLiteCodec and round-trip fixtures; S8.
             Depends on: T-035.
             Evidence: Write genuine SQLite header, user_version=1 and exact two tables via bound values; preserve every field/type and close all resources.
-        - [ ] T-037 — Validate SQLite imports before candidate creation
+        - [x] T-037 — Validate SQLite imports before candidate creation
+            Verification: All 24 decoder scenarios failed before implementation; 116 unit checks now pass, including independent SQLite input and cross-codec field preservation, 19 invalid schema/metadata/key/value classes, empty corrupt and trailing databases, statement/database cleanup on success failure and free error; too-many fixture initially collided with an existing ID and was corrected before acceptance; reviewed declarations metadata query-only fixed SQL lifecycle and shared validation with no unresolved finding.
             Scope: tetris.html SQLiteCodec/Validator and invalid database fixtures.
             Depends on: T-036.
             Evidence: Check integrity/schema/metadata/types/keys/records against S7/S8, reject extra tables/views/triggers/columns, wrong versions and corrupt data; close statements/databases on all paths.
             Milestone exit: review all 7.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/7/7.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 7.2 — Both-format delivery
-        - [ ] T-038 — Integrate format choice and cross-format restore
+    - [x] Milestone 7.2 — Both-format delivery
+        - [x] T-038 — Integrate format choice and cross-format restore
+            Verification: New file dispatch and missing format-choice scenarios failed RED; 125 units and cross-format/cancel browser checks now pass in 25.09s, and 20 existing JSON/failure browser regressions passed in the prior focused run; genuine SQLite to JSON and SQLite round trips preserve exact records settings and HTTP cookie/query values in all four combinations; successful restore renews cookie expiry so the valid-restore assertion now compares content and attributes; native Escape cancels accessible dialog without resuming play.
             Scope: tetris.html FileController/UI and browser checks; S9.
             Depends on: T-037.
             Evidence: Save offers JSON/SQLite, restore detects content independent of extension, cross-round trips preserve fields and both modes honor their persistence rules.
-        - [ ] T-039 — Verify codec failures cleanup and complete browser matrix
+        - [x] T-039 — Verify codec failures cleanup and complete browser matrix
+            Verification: Full packaged suite passed 252 checks in 339.46s with actual four-way browser and five-width coverage; 22 invalid SQLite classes and network/SRI failures preserve live and persistent state, JSON/game remain usable, file persistence spies stay zero and all resources clean up; actual Save dialog screenshot reviewed; direct CDN hosted CI run 41336253654 passed 235 checks in 320.71s and artifact gates without local fallbacks.
             Scope: tests/unit/browser/fixtures and resource/failure checks.
             Depends on: T-038.
             Evidence: Dependency failure, corrupt databases, invalid timestamps, duplicate/missing keys, fractional/unsafe scores and concurrent input leave live data unchanged; check cleanup and all five widths in four browser-mode combinations.
-        - [ ] T-040 — Finalize complete single-file distribution and guides
+        - [x] T-040 — Finalize complete single-file distribution and guides
+            Verification: Final packaged 1.0.0 passed all 252 S1-S10 regression checks in 359.53s; regenerated final README package and independently checked four-file inventory hashes HTML/schema byte identity version agreement formatting guide links and clean diff; reviewed full 7.2 UI/file lifecycle and documentation against supported implementation with no unresolved finding; direct CDN CI and native-platform/restore-cancel verification limits are accurately documented.
             Scope: README.md, AGENTS.md, docs/FILE-FORMATS.md, docs/DEPENDENCIES.md, VERSION, package/release evidence.
             Depends on: T-039.
             Evidence: Full S1-S10 regression against actual generated HTML, names/checksums/version/schema agreement and installation instructions; no unverified platform/delivery claims.
             Milestone exit: review all 7.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/7/7.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 7.3 — Phase review
-        - [ ] T-041 — Review test and report phase 7
+    - [x] Milestone 7.3 — Phase review
+        - [x] T-041 — Review test and report phase 7
+            Verification: Phase-wide S1-S10 review found no unresolved contract violation; final packaged 1.0.0 passed 252 checks in 359.53s and all four-asset name/hash/version/schema gates; direct CDN CI run 41336253654 passed earlier 235 checks in 320.71s; six preceding closures audited without exception and delivery milestones 7.1/7.2 closed read back; aggregate report records all phases resolved findings limits and no eligible TODO; exact-tip CI integration and release remain subsequent gates.
             Depends on: T-040 and completion/verified closure of delivery milestones 7.1, 7.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 1.0.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/7/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 1.0.0 before any next-phase activation.

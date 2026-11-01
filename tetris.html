@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="app-version" content="0.6.0" />
+    <meta name="app-version" content="1.0.0" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Tetris</title>
     <link rel="icon" href="data:," />
@@ -309,6 +309,17 @@
         line-height: 1.6;
         color: var(--muted);
       }
+      dialog {
+        color: var(--ink);
+        background: #182236;
+        border: 1px solid #64748b;
+        border-radius: 12px;
+        max-width: min(360px, 85vw);
+        padding: 24px;
+      }
+      dialog::backdrop {
+        background: #0009;
+      }
       .file-actions {
         display: flex;
         gap: 8px;
@@ -325,7 +336,7 @@
   <body>
     <header class="appbar">
       <div class="brand">TET<span>R</span>IS</div>
-      <div>0.6.0 / SINGLE FILE</div>
+      <div>1.0.0 / SINGLE FILE</div>
     </header>
     <main class="scene">
       <div class="left-panels">
@@ -434,6 +445,21 @@
             <button id="save-session" type="button">Save</button
             ><button id="restore-session" type="button">Restore</button>
           </div>
+          <dialog
+            id="save-format"
+            aria-labelledby="save-title"
+            aria-describedby="save-description"
+          >
+            <h2 id="save-title">Save session</h2>
+            <p id="save-description">
+              Choose one file format. SQLite loads an optional CDN library.
+            </p>
+            <div class="file-actions">
+              <button id="save-json" type="button" autofocus>JSON</button
+              ><button id="save-sqlite" type="button">SQLite</button
+              ><button id="cancel-save" type="button">Cancel</button>
+            </div>
+          </dialog>
           <input
             id="restore-file"
             type="file"
@@ -825,20 +851,313 @@
             return JSON.stringify(checked.value, null, 2) + "\n";
           },
         };
+        const SQLITE_DEPENDENCY = Object.freeze({
+          version: "1.13.0",
+          url: "https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-asm-memory-growth.js",
+          integrity:
+            "sha384-00ZgJXAcDlCvHMXdlbRKwEZqgJIwmYhL5sXMl8gVTMAX4kFr42gyz11YXIsk5U45",
+          license: "MIT",
+        });
+        function createDependencyLoader(host, timeoutMs = 30000) {
+          let pending = null;
+          const unavailable = (message) => ({
+            ok: false,
+            code: "dependencyUnavailable",
+            message:
+              message ||
+              "SQLite could not be loaded. JSON and the game remain available.",
+          });
+          return {
+            ensureSQLite() {
+              if (pending) return pending;
+              pending = new Promise((resolve) => {
+                let script = null,
+                  timer = null,
+                  settled = false;
+                function finish(outcome) {
+                  if (settled) return;
+                  settled = true;
+                  if (timer !== null) {
+                    try {
+                      host.clearTimeout(timer);
+                    } catch {}
+                  }
+                  if (script) {
+                    try {
+                      script.onload = null;
+                      script.onerror = null;
+                      script.remove();
+                    } catch {}
+                  }
+                  resolve(outcome);
+                }
+                try {
+                  script = host.createScript();
+                  script.src = SQLITE_DEPENDENCY.url;
+                  script.integrity = SQLITE_DEPENDENCY.integrity;
+                  script.crossOrigin = "anonymous";
+                  script.referrerPolicy = "no-referrer";
+                  script.async = true;
+                  script.onerror = () => finish(unavailable());
+                  script.onload = () => {
+                    if (settled) return;
+                    try {
+                      const initialize = host.getInitializer();
+                      if (typeof initialize !== "function") {
+                        finish(unavailable());
+                        return;
+                      }
+                      Promise.resolve(initialize())
+                        .then((runtime) => {
+                          finish(
+                            runtime && typeof runtime.Database === "function"
+                              ? { ok: true, value: runtime }
+                              : unavailable(),
+                          );
+                        })
+                        .catch(() => finish(unavailable()));
+                    } catch {
+                      finish(unavailable());
+                    }
+                  };
+                  timer = host.setTimeout(
+                    () =>
+                      finish(
+                        unavailable(
+                          "SQLite loading timed out. JSON and the game remain available.",
+                        ),
+                      ),
+                    timeoutMs,
+                  );
+                  host.appendScript(script);
+                } catch {
+                  finish(unavailable());
+                }
+              }).then((outcome) => {
+                if (!outcome.ok) pending = null;
+                return outcome;
+              });
+              return pending;
+            },
+          };
+        }
+        const SQLITE_SCHEMA = Object.freeze({
+          high_scores:
+            "CREATE TABLE high_scores (id TEXT PRIMARY KEY NOT NULL, score INTEGER NOT NULL CHECK(score >= 0), timestamp TEXT NOT NULL)",
+          settings:
+            "CREATE TABLE settings (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL)",
+        });
+        /** Temporary databases only; all SQL is application-owned and values are bound. */
+        function createSQLiteCodec(ensureRuntime) {
+          const failure = () => ({
+            ok: false,
+            code: "invalidSQLite",
+            message: "The SQLite session is invalid or could not be processed.",
+          });
+          async function withDatabase(bytes, action) {
+            let db = null,
+              outcome;
+            try {
+              const ready = await ensureRuntime();
+              if (!ready.ok) return ready;
+              db = bytes
+                ? new ready.value.Database(bytes)
+                : new ready.value.Database();
+              outcome = { ok: true, value: action(db) };
+            } catch {
+              outcome = failure();
+            } finally {
+              if (db) {
+                try {
+                  db.close();
+                } catch {
+                  outcome = failure();
+                }
+              }
+            }
+            return outcome;
+          }
+          function prepared(db, sql, action) {
+            const statement = db.prepare(sql);
+            try {
+              return action(statement);
+            } finally {
+              statement.free();
+            }
+          }
+          return {
+            async ready() {
+              try {
+                const outcome = await ensureRuntime();
+                return outcome.ok ? { ok: true, value: null } : outcome;
+              } catch {
+                return {
+                  ok: false,
+                  code: "dependencyUnavailable",
+                  message:
+                    "SQLite could not be loaded. JSON and the game remain available.",
+                };
+              }
+            },
+            async decode(bytes) {
+              if (
+                !(bytes instanceof Uint8Array) ||
+                bytes.length === 0 ||
+                bytes.length > MAX_FILE_BYTES
+              )
+                return failure();
+              const decoded = await withDatabase(bytes, (db) => {
+                db.run("PRAGMA query_only=ON");
+                function rows(sql) {
+                  return prepared(db, sql, (s) => {
+                    const found = [];
+                    while (s.step()) found.push(s.get());
+                    return found;
+                  });
+                }
+                const schema = rows(
+                  "SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY name",
+                );
+                const normalize = (sql) =>
+                  sql.replace(/\s+/g, "").toLowerCase();
+                if (schema.length !== 4) throw Error("schema");
+                for (const name of ["high_scores", "settings"]) {
+                  const table = schema.find(
+                    (r) => r[0] === "table" && r[1] === name && r[2] === name,
+                  );
+                  const index = schema.find(
+                    (r) =>
+                      r[0] === "index" &&
+                      r[1] === "sqlite_autoindex_" + name + "_1" &&
+                      r[2] === name &&
+                      r[3] === null,
+                  );
+                  if (
+                    !table ||
+                    !index ||
+                    typeof table[3] !== "string" ||
+                    normalize(table[3]) !== normalize(SQLITE_SCHEMA[name])
+                  )
+                    throw Error("declaration");
+                }
+                const expectedScores = [
+                  [0, "id", "TEXT", 1, null, 1, 0],
+                  [1, "score", "INTEGER", 1, null, 0, 0],
+                  [2, "timestamp", "TEXT", 1, null, 0, 0],
+                ];
+                const expectedSettings = [
+                  [0, "key", "TEXT", 1, null, 1, 0],
+                  [1, "value", "TEXT", 1, null, 0, 0],
+                ];
+                if (
+                  JSON.stringify(rows("PRAGMA table_xinfo(high_scores)")) !==
+                    JSON.stringify(expectedScores) ||
+                  JSON.stringify(rows("PRAGMA table_xinfo(settings)")) !==
+                    JSON.stringify(expectedSettings)
+                )
+                  throw Error("columns");
+                if (JSON.stringify(rows("PRAGMA user_version")) !== "[[1]]")
+                  throw Error("version");
+                const pageSize = rows("PRAGMA page_size")[0][0],
+                  pageCount = rows("PRAGMA page_count")[0][0];
+                if (
+                  pageSize * pageCount !== bytes.length ||
+                  JSON.stringify(rows("PRAGMA integrity_check(1)")) !==
+                    '[["ok"]]'
+                )
+                  throw Error("integrity");
+                const scores = rows(
+                  "SELECT id,score,timestamp,typeof(id),typeof(score),typeof(timestamp) FROM high_scores LIMIT 11",
+                );
+                const settings = rows(
+                  "SELECT key,value,typeof(key),typeof(value) FROM settings LIMIT 7",
+                );
+                if (
+                  scores.length > 10 ||
+                  settings.length !== 6 ||
+                  scores.some(
+                    (r) =>
+                      r[3] !== "text" || r[4] !== "integer" || r[5] !== "text",
+                  ) ||
+                  settings.some((r) => r[2] !== "text" || r[3] !== "text")
+                )
+                  throw Error("types");
+                const keys = new Set(settings.map((r) => r[0]));
+                if (keys.size !== 6 || !SETTING_KEYS.every((k) => keys.has(k)))
+                  throw Error("keys");
+                const candidate = {
+                  formatVersion: 1,
+                  results: scores.map((r) => ({
+                    id: r[0],
+                    score: r[1],
+                    timestamp: r[2],
+                  })),
+                  settings: Object.fromEntries(
+                    settings.map((r) => [r[0], r[1]]),
+                  ),
+                };
+                const valid = validateSession(candidate);
+                if (!valid.ok) throw Error("values");
+                return valid.value;
+              });
+              return decoded;
+            },
+            async encode(raw) {
+              const valid = validateSession(raw);
+              if (!valid.ok) return valid;
+              return withDatabase(null, (db) => {
+                db.run("PRAGMA user_version=1");
+                db.run(SQLITE_SCHEMA.high_scores);
+                db.run(SQLITE_SCHEMA.settings);
+                prepared(
+                  db,
+                  "INSERT INTO high_scores(id,score,timestamp) VALUES (?,?,?)",
+                  (s) => {
+                    for (const row of valid.value.results)
+                      s.run([row.id, row.score, row.timestamp]);
+                  },
+                );
+                prepared(
+                  db,
+                  "INSERT INTO settings(key,value) VALUES (?,?)",
+                  (s) => {
+                    for (const key of SETTING_KEYS)
+                      s.run([key, valid.value.settings[key]]);
+                  },
+                );
+                return db.export();
+              });
+            },
+          };
+        }
         const MAX_FILE_BYTES = 1024 * 1024;
         /** File decoding/encoding has no live store or protocol mutation capability. */
-        function createFileController(download) {
+        function createFileController(download, sqlite) {
           const failure = (code, message) => ({ ok: false, code, message });
           return {
             async save(format, value) {
-              if (format !== "json")
+              if (!["json", "sqlite"].includes(format))
                 return failure(
                   "unsupportedVersion",
                   "Choose a supported session format.",
                 );
+              const valid = validateSession(value);
+              if (!valid.ok) return valid;
               let bytes;
               try {
-                bytes = new TextEncoder().encode(JSONCodec.encode(value));
+                if (format === "sqlite") {
+                  if (!sqlite)
+                    return failure(
+                      "dependencyUnavailable",
+                      "SQLite is unavailable. JSON and the game remain available.",
+                    );
+                  const encoded = await sqlite.encode(valid.value);
+                  if (!encoded.ok) return encoded;
+                  bytes = encoded.value;
+                } else
+                  bytes = new TextEncoder().encode(
+                    JSONCodec.encode(valid.value),
+                  );
               } catch (error) {
                 return failure(
                   error.code || "invalidValue",
@@ -850,8 +1169,10 @@
               try {
                 await download(
                   bytes,
-                  "tetris-session.json",
-                  "application/json",
+                  "tetris-session." + format,
+                  format === "json"
+                    ? "application/json"
+                    : "application/vnd.sqlite3",
                 );
                 return { ok: true, value: null };
               } catch {
@@ -901,7 +1222,29 @@
                   "invalidValue",
                   "The selected file was not read completely.",
                 );
-              const decoded = JSONCodec.decodeBytes(new Uint8Array(buffer));
+              const bytes = new Uint8Array(buffer);
+              const signature = "SQLite format 3\0";
+              const isSQLite =
+                bytes.length >= 16 &&
+                Array.from(signature).every(
+                  (c, i) => bytes[i] === c.charCodeAt(0),
+                );
+              if (isSQLite && !sqlite)
+                return failure(
+                  "dependencyUnavailable",
+                  "SQLite is unavailable. JSON and the game remain available.",
+                );
+              let decoded;
+              try {
+                decoded = isSQLite
+                  ? await sqlite.decode(bytes)
+                  : JSONCodec.decodeBytes(bytes);
+              } catch {
+                return failure(
+                  "invalidSQLite",
+                  "The SQLite session could not be processed.",
+                );
+              }
               return decoded.ok ? validateSession(decoded.value) : decoded;
             },
           };
@@ -1578,7 +1921,15 @@
           boardCanvas = document.getElementById("board"),
           context = boardCanvas.getContext("2d");
         let fileOperation = null;
-        const files = createFileController(downloadBytes);
+        const dependencies = createDependencyLoader({
+          createScript: () => document.createElement("script"),
+          appendScript: (script) => document.head.append(script),
+          getInitializer: () => window.initSqlJs,
+          setTimeout: (callback, ms) => window.setTimeout(callback, ms),
+          clearTimeout: (timer) => window.clearTimeout(timer),
+        });
+        const sqlite = createSQLiteCodec(() => dependencies.ensureSQLite());
+        const files = createFileController(downloadBytes, sqlite);
         const palette = {
           I: "#44d4d0",
           J: "#5a83ed",
@@ -1965,22 +2316,50 @@
           document.getElementById("restore-file").value = "";
           syncFileControls();
         }
+        const saveDialog = document.getElementById("save-format");
         document
           .getElementById("save-session")
-          .addEventListener("click", async () => {
-            if (!beginFileOperation("save")) return;
+          .addEventListener("click", () => {
+            if (!beginFileOperation("chooseSave")) return;
             try {
-              const result = await files.save("json", store.exportSession());
-              setText(
-                "message",
-                result.ok
-                  ? "Saved JSON session. Use Pause/Start when ready."
-                  : "Cannot save: " + result.message,
-              );
-            } finally {
+              saveDialog.showModal();
+              document.getElementById("save-json").focus();
+            } catch {
+              setText("message", "Cannot open the format choice.");
               endFileOperation();
             }
           });
+        function cancelSave() {
+          if (fileOperation !== "chooseSave") return;
+          setText("message", "Save cancelled.");
+          endFileOperation();
+        }
+        saveDialog.addEventListener("close", cancelSave);
+        saveDialog.addEventListener("cancel", cancelSave);
+        document
+          .getElementById("cancel-save")
+          .addEventListener("click", () => saveDialog.close());
+        for (const format of ["json", "sqlite"])
+          document
+            .getElementById("save-" + format)
+            .addEventListener("click", async () => {
+              if (fileOperation !== "chooseSave") return;
+              fileOperation = "save";
+              saveDialog.close();
+              try {
+                const result = await files.save(format, store.exportSession());
+                setText(
+                  "message",
+                  result.ok
+                    ? "Saved " +
+                        format.toUpperCase() +
+                        " session. Use Pause/Start when ready."
+                    : "Cannot save: " + result.message,
+                );
+              } finally {
+                endFileOperation();
+              }
+            });
         const restoreInput = document.getElementById("restore-file");
         document
           .getElementById("restore-session")

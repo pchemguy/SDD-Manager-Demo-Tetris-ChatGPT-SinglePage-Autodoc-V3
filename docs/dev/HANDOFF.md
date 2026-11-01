@@ -1,27 +1,15 @@
 # Project handoff
 
-Checkpoint: T-014, phase 2, milestone 2.3 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: Phase 2 integrated and release 0.2.0 published, all assets downloaded/hash-verified.
 
 ## Scope and authority
 
-Full T-001 through T-041 implementation and seven phase releases authorized by Run QC and full implement on 2026-11-01. Continue after this boundary within that range when tracking/publication/dependencies are verified.
+Run QC and full implement authorizes all T-001 through T-041 and seven phase releases. Continue next eligible phase after hosted activation; final boundary is completed target/release.
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/2/PHASE-REPORT.md) records checks. Phase-wide Engine/Input/Renderer review and six-task atomic commit audit passed; 82 packaged tests passed in 85.03s; version 0.2.0, source formatting and independent artifact-name/hash gates passed; delivery milestones 2.1 and 2.2 closed with readback; hosted CI, explicit integration and release remain subsequent gates.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Phase report](reports/phases/2/PHASE-REPORT.md) records exact source, test/review and hosted release evidence.
 
-## Branch and return
+## Branch and next action
 
-Working branch: phase/2-modern-rules; integration parent: main; branch-off ancestor: 865d944ef3d4e322fbbd89afab9661bb8b03d057. Complete phases integrate explicitly; partial phases remain unmerged.
-
-## Pending effects
-
-Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.
-
-## Forward repair
-
-T-014 P2-F1 help omission repaired after four failing checks; all 12 modern packaged-browser cases passed in 17.79s. Original phase review issue/milestone reopened for this bounded repair. Publish repair, verify full final CI, reclose, then integrate/release.
-
-## Integration
-
-Phase 2 verified source 64bafcc0724654f39c05cce61a87f2f2eb8b398b is being explicitly integrated into main. The merged application/test/tool bytes match the phase candidate; release 0.2.0 publication remains pending. Full implementation authority continues through T-041.
+Working branch main; retained source branch phase/2-modern-rules from ancestor 64bafcc0724654f39c05cce61a87f2f2eb8b398b, integrated through e477144b84fb71573a7785ee587acaeab72e4bd2. Publish/read back this outcome, then create next eligible phase branch from main and verify its tracking before task work. No release effect remains pending. Native Windows/headed OS-window delivery remain outside verified scope.

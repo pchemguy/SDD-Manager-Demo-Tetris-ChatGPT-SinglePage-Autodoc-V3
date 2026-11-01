@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-006, phase 1, milestone 1.2 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-007, phase 1, milestone 1.3 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/1/1.2.md) records checks. Full suite against exact dist/tetris.html: 57 passed in 81.02s, including all browser-mode game-over/restart paths, five-width anchor checks, Canvas pixels, modeled visibility/focus pause and packaging failures; source/artifact bytes matched SHA-256 6564d1d578f36eb1b45cfd47ecfb9540935193e5c1caa784b3ec79851a1491a3; screenshot visually inspected with centered board and readable controls; reviewed keyboard/controller lifecycle and stable package/CI paths; actual hash is available in generated SHA256SUMS; native OS focus/Windows execution remain unverified.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/1/PHASE-REPORT.md) records checks. Review RED: 5 live-region/valid-meta cases failed; GREEN: rebuilt packaged HTML passed 62 tests in 85.19s and independent artifact-name/hash gate; Prettier check and source/fixture boundaries passed; initial task-commit audit passed with scoped forward repairs; actual current HTML SHA-256 6ef0474070fda9c0a7b634250659d252adaa666886ec3bd9fe235d63531e36e5; final CI, integration and hosted release readbacks remain subsequent gates.
 
 ## Branch and return
 
@@ -16,4 +16,4 @@ Working branch: phase/1-classic-baseline; integration parent: main; branch-off a
 
 ## Pending effects
 
-Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.
+Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.

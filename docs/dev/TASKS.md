@@ -6,7 +6,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 1 — Classic baseline
 
-- [ ] Phase 1 — Classic baseline
+- [x] Phase 1 — Classic baseline
     - [x] Milestone 1.1 — Classic playable loop
         - [x] T-001 — Provision isolated verification tools
             Verification: pytest readiness suite: 3 passed in 3.68s; isolated matching Chromium shell and Firefox file/HTTP input/Canvas/teardown verified; Firefox requires the documented process-local content-sandbox override on this host; extraction harness passed; no application acceptance claimed.
@@ -44,8 +44,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Run Chromium/Firefox file/HTTP matrix at five widths; double-click and localhost instructions match observed behavior; fixed random/basic rotation scope is explicit.
             Milestone exit: review all 1.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/1/1.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 1.3 — Phase review
-        - [ ] T-007 — Review test and report phase 1
+    - [x] Milestone 1.3 — Phase review
+        - [x] T-007 — Review test and report phase 1
+            Verification: Review RED: 5 live-region/valid-meta cases failed; GREEN: rebuilt packaged HTML passed 62 tests in 85.19s and independent artifact-name/hash gate; Prettier check and source/fixture boundaries passed; initial task-commit audit passed with scoped forward repairs; actual current HTML SHA-256 6ef0474070fda9c0a7b634250659d252adaa666886ec3bd9fe235d63531e36e5; final CI, integration and hosted release readbacks remain subsequent gates.
             Depends on: T-006 and completion/verified closure of delivery milestones 1.1, 1.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.1.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/1/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.1.0 before any next-phase activation.

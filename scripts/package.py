@@ -14,7 +14,7 @@ def package(source, destination):
     version = (source/'VERSION').read_text().strip()
     names = expected_names(version)
     html = (source/'tetris.html').read_text()
-    match = re.search(r'<meta name="app-version" content="([^"]+)">', html)
+    match = re.search(r'<meta name="app-version" content="([^"]+)"\s*/?>', html)
     if not match or match[1] != version:
         raise ValueError('HTML app-version and VERSION must agree')
     required = {'tetris.html':source/'tetris.html', 'README.md':source/'README.md'}

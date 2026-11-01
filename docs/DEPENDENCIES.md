@@ -29,3 +29,7 @@ Initial run 41313200837 selected Ubuntu 26.04 through ubuntu-latest; Playwright 
 ## Packaged classic baseline checks
 
 The generated dist/tetris.html was verified byte-identical to source and tested with TETRIS_TEST_ARTIFACT=dist/tetris.html. The complete local suite passed 57 cases in 81.02 seconds, including real UI game completion/restart in Chromium/Firefox under both file and HTTP, modeled visibility/focus pause, five viewport widths, package rejection cases and Canvas rendering. Chromium and Firefox screenshots were captured; the Chromium file-mode image was visually inspected for board centering, visible info/buttons, help readability and clipping. Native OS-window event delivery remains unverified. CI packages before browser tests and uses the same artifact selector.
+
+## Phase 1 final review
+
+Prettier 3.6.2 was installed in a dedicated external development-tool directory and used to format the sole HTML without adding a runtime dependency. Source formatting checks passed. Review fixed repeated unchanged aria-live status writes and accepted valid self-closing version metadata in packaging; all five focused reproductions failed before those fixes and passed afterward. The rebuilt artifact passed 62 pytest checks in 85.19 seconds and independent filename/hash validation. Direct PNG inspection confirmed cyan piece pixels at the expected coordinates in all four browser/mode screenshots; no rendering workaround was required.

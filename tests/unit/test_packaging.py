@@ -44,3 +44,10 @@ def test_version_mismatch_is_rejected_before_output(tmp_path):
     (src/'VERSION').write_text('0.2.0\n')
     assert command('package.py','--source',src,'--out',out).returncode != 0
     assert not out.exists()
+
+def test_selfclosing_valid_version_metadata(tmp_path):
+    src = source(tmp_path);out = tmp_path/'dist'
+    p = src/'tetris.html'
+    p.write_text(p.read_text().replace('content="0.1.0">','content="0.1.0" />'))
+    result = command('package.py','--source',src,'--out',out)
+    assert result.returncode == 0, result.stderr

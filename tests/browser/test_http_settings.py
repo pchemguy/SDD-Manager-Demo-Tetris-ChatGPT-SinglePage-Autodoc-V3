@@ -24,3 +24,22 @@ def test_all_setting_changes_and_reload_by_protocol(app_page, mode):
     else:
         assert set(params)=={'other'}
         assert cookies=={}
+
+
+def test_startup_explicit_defaults_omitted_cookies_and_duplicates(app_page, mode, server_url):
+    p=app_page
+    p.context.add_cookies([{'name':'tetris_'+key,'value':value,'url':server_url} for key,value in CHANGED.items()])
+    base=p.url
+    p.goto(base+'?ghost=hidden&ghost=visible&hardDrop=on&hold=on&next=invalid')
+    if mode=='http':
+        expected={**CHANGED,'hardDrop':'on','hold':'on'}
+        assert values(p)==expected
+        saved={c['name']:c['value'] for c in p.context.cookies()}
+        assert saved=={'tetris_'+key:value for key,value in expected.items()}
+        p.goto(base)
+        assert values(p)==expected
+        assert {c['name']:c['value'] for c in p.context.cookies()}==saved
+    else:
+        from test_settings_ui import DEFAULTS
+        assert values(p)==DEFAULTS
+        assert {c['name']:c['value'] for c in p.context.cookies()}=={'tetris_'+key:value for key,value in CHANGED.items()}

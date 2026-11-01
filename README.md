@@ -1,6 +1,6 @@
 # Single-page HTML Tetris
 
-Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.4.0 adds six session settings and selectable lock policies. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
+Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.5.0 adds per-setting HTTP(S) URL and cookie persistence. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
 
 ## Play
 
@@ -37,7 +37,7 @@ Each classic release includes tetris.html, README.md and SHA256SUMS. Check the d
 
 requirements-dev.txt pins pytest, Playwright and JSON Schema tooling. [Dependency/setup evidence](docs/DEPENDENCIES.md) explains dedicated installation/browser paths and this restricted Linux host's process-local Firefox recovery. Playing does not require developer tools.
 
-From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.4.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
+From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.5.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
 
 Headless Chromium and Playwright Firefox are checked through direct-file and localhost HTTP execution, including the five widths in SPEC. Native OS-window event delivery and native Windows execution are not established by these headless checks. See [TASKS](docs/dev/TASKS.md) and implementation reports for exact current evidence.
 
@@ -47,8 +47,23 @@ Hold a piece with C or Shift, once per falling piece. The hold and next displays
 
 Clear four lines at once for one penetrator bonus, up to three. P spends one to make the current piece white until it locks. It can pass through occupied cells, but its final landing must not overlap them. Ghost and hard drop select the lowest legal landing. Hold is disabled for an active penetrator; settled pieces return to their ordinary colors.
 
-## Session settings
+## Settings and persistence
 
 The Settings panel controls ghost visibility, hard drop, next preview, hard-drop locking, general locking and hold. Defaults use a dynamic ghost, enabled hard drop/preview/hold, a full gravity interval of contact delay and hard drop following the general policy. The alternative general policy locks on a failed downward attempt. Immediate hard-drop locking also locks a zero-distance drop. Changing policies preserves contact time. Input time is accounted before movement or a policy change, so time preceding contact cannot shorten its delay.
 
-Settings apply immediately and survive game restart and panel hiding. In this increment, reloading resets them to defaults in both file and HTTP(S) modes. No cookies or configuration URL parameters are accessed or changed. The Settings toggle preserves the board anchor and native controls keep keyboard focus. Persistence follows in the next increment.
+Settings apply immediately and survive game restart and panel hiding. The Settings toggle preserves the board anchor and native controls keep keyboard focus.
+
+In HTTP(S) mode each setting resolves independently: a valid single explicit URL parameter, then its saved cookie, then its default. Parameter names are ghost, hardDrop, next, hardDropLock, lock and hold; cookie names add the tetris_ prefix. Invalid or duplicate values fall through. Explicit URL values are saved into cookies even when equal to defaults; omitted URL keys retain saved values. Changing a setting updates its cookie and URL parameter without navigation, preserving unrelated parameters and the fragment. Cookies use a one-year lifetime, path=/ and SameSite=Lax, plus Secure on HTTPS. A persistence failure warns while keeping the setting active in memory.
+
+| URL key | Allowed values | Default |
+| --- | --- | --- |
+| ghost | hidden, dynamic, visible | dynamic |
+| hardDrop | off, on | on |
+| next | off, on | on |
+| hardDropLock | general, immediate | general |
+| lock | failed, interval | interval |
+| hold | off, on | on |
+
+For example, append ?ghost=visible&hardDrop=off to an HTTP(S) game URL. Omitted settings continue to use their saved cookies or defaults.
+
+In direct-file mode settings always start from defaults, remain in memory and reset on reload. The application does not read/write cookies or read/modify configuration query parameters in that mode. Leaderboard and manual file exchange follow in later increments.

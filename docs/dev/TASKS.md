@@ -166,7 +166,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 ## Phase 5 — HTTP configuration
 
 - [ ] Phase 5 — HTTP configuration
-    - [ ] Milestone 5.1 — Protocol-specific configuration persistence
+    - [x] Milestone 5.1 — Protocol-specific configuration persistence
         - [x] T-024 — Resolve HTTP settings from URL cookies and defaults
             Verification: RED four protocol cases failed; GREEN 54 unit and 12 settings browser checks passed; per-key URL-cookie-default precedence, explicit default cookie writes, invalid/duplicate fallbacks and file adapter zero-capability access verified; existing HTTP startup assertion updated for intentionally introduced URL resolution.
             Scope: tetris.html ProtocolAdapter/SettingsPolicy and precedence checks; S5.
@@ -177,7 +177,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html HTTP adapter and browser persistence checks; S5.
             Depends on: T-024.
             Evidence: Update selected cookies/query via replaceState, preserve unrelated fields/fragment, set HTTP/HTTPS attributes correctly and warn on refusal.
-        - [ ] T-026 — Verify file-mode isolation and reload behavior
+        - [x] T-026 — Verify file-mode isolation and reload behavior
+            Verification: Full packaged 0.5.0 suite passed 142 tests in 219.78s; all six per-key precedence/default-write/omitted-cookie paths, malformed duplicates, HTTP changes and reloads, blocked cookie/history warnings and file zero-access/unchanged-URL behavior verified in both browsers; HTTPS attributes unit-inspected, not a live HTTPS hosting claim; milestone source review, formatting and independent package gates passed.
             Scope: tests/unit/browser, README.md and protocol failure fixtures.
             Depends on: T-025.
             Evidence: Prove no file-mode cookie/config-URL access and default reloads; cover all six precedence/write paths, blocked cookies and history failure in both browsers.

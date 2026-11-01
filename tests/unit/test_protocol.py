@@ -33,3 +33,15 @@ def test_https_all_settings_secure_and_invalid_input_makes_no_writes():
 
 def test_cookie_refusal_and_history_failure_return_warnings_without_throwing():
     assert evaluate("""let url='http://game.test/',cookie='';const a=createProtocolAdapter('http:',{getURL:()=>url,getCookie:()=>'',setCookie:()=>{},replaceURL:v=>url=v});const first=a.persist({...DEFAULT_SETTINGS,ghost:'visible'},['ghost']);const b=createProtocolAdapter('http:',{getURL:()=>url,getCookie:()=>cookie,setCookie:v=>cookie=v.split(';')[0],replaceURL:()=>{throw Error('denied');}});const second=b.persist({...DEFAULT_SETTINGS,hold:'off'},['hold']);console.log(JSON.stringify([first.code,new URL(url).searchParams.get('ghost'),second.code,cookie]));""") == ['persistenceUnavailable','visible','persistenceUnavailable','tetris_hold=off']
+
+
+import pytest
+
+@pytest.mark.parametrize('key,default,alternate', [('ghost','dynamic','visible'),('hardDrop','on','off'),('next','on','off'),('hardDropLock','general','immediate'),('lock','interval','failed'),('hold','on','off')])
+def test_each_key_default_cookie_explicit_default_and_invalid_fallback(key,default,alternate):
+    import json
+    assert evaluate(HARNESS+f"""const key={json.dumps(key)},d={json.dumps(default)},a={json.dumps(alternate)};const base='http://game.test/?',cookie='tetris_'+key+'='+a;const cases=[harness(base,''),harness(base,cookie),harness(base+key+'='+d,cookie),harness(base+key+'=invalid',cookie),harness(base+key+'='+d+'&'+key+'='+a,cookie)];console.log(JSON.stringify(cases.map(h=>[h.adapter.readInitialSettings()[key],h.writes.length])));""") == [[default,0],[alternate,0],[default,1],[alternate,0],[alternate,0]]
+
+
+def test_unsupported_protocol_rejects_without_accessing_capabilities():
+    assert evaluate("""let calls=0;const a=createProtocolAdapter('data:',new Proxy({},{get(){calls++;throw Error('access');}}));console.log(JSON.stringify([a.mode,a.persist(DEFAULT_SETTINGS).code,a.drainWarnings()[0].code,calls]));""") == ['unsupported','unsupportedMode','unsupportedMode',0]

@@ -68,3 +68,7 @@ Input binds keyboard/native control events to controller operations and supplies
 ## Verification seams and invariants
 
 Use injected randomness/time/IDs for domain and validation scenarios; compare snapshots before and after invalid intents. Exercise codecs through their public encode/decode methods and validate equivalent candidates, including malformed data and cleanup failures. Spy capabilities prove file mode never accesses cookies or configuration URLs. Browser interaction checks use the actual packaged HTML and keyboard/control bindings rather than a separate application build. No production test backdoor or mutable global is required; a test loader may extract the named pure sections from the same HTML for isolated checks.
+
+## Canonical piece geometry
+
+Coordinates are x-right/y-down. Orientation-zero occupied coordinates inside a 4 by 4 container are I: (0,1),(1,1),(2,1),(3,1); J: (0,0),(0,1),(1,1),(2,1); L: (2,0),(0,1),(1,1),(2,1); O: (1,0),(2,0),(1,1),(2,1); S: (1,0),(2,0),(0,1),(1,1); T: (1,0),(0,1),(1,1),(2,1); Z: (0,0),(1,0),(1,1),(2,1). I rotates clockwise about (1.5,1.5); JLSTZ rotate about (1,1); O coordinates remain invariant. Generate orientations by repeated quarter-turns. Center occupied spawn width, aligning its minimum occupied y with zero. SPEC owns ordered rotation translation trials.

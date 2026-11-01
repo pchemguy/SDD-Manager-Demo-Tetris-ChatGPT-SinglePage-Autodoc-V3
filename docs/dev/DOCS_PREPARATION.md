@@ -49,3 +49,7 @@ Autodoc scoped preapproval following accepted PROJECT. docs/dev/ARCHITECTURE.md 
 ## DOCS-004 completion evidence
 
 Autodoc scoped preapproval following accepted PROJECT. docs/dev/DECOMPOSITION.md blob a7963a169dcd6ce90d1226798a1bb22ea423aaaa. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.
+
+## DOCS-005 completion evidence
+
+Autodoc scoped preapproval following accepted PROJECT. docs/dev/SPEC.md blob 24486c930bfa203c9ce446fbfc64bbcc146f00a1; docs/dev/contracts/session.schema.json blob 2a7dccbe2cd449e8c8f1ed3e3de2cac507cc87da; docs/dev/SPEC-REVIEW-REPORT.md blob f077452c75719b835db9a7cd69109d28acd25fca; docs/dev/DECOMPOSITION.md blob da2be9cf73895c42b26db661892c4bea52d64361. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

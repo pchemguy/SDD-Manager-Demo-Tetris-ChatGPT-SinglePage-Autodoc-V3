@@ -26,7 +26,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Milestone exit: review all 1.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/1/1.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
     - [ ] Milestone 1.2 — Verified single-file delivery
-        - [ ] T-004 — Connect keyboard help and centered layout
+        - [x] T-004 — Connect keyboard help and centered layout
+            Verification: RED: missing Help control assertion failed before changes; GREEN: full pytest suite 45 passed in 40.96s; five-width anchor checks, X/Z/Space rotation, one-shot repeat suppression, IME/editable-input isolation and modeled blur pause/no-auto-resume passed in Chromium/Firefox file/HTTP; corrected the old all-buttons selector to target the required bottom gameplay row; native OS focus delivery remains unverified.
             Scope: tetris.html Input/Renderer; S4 core mappings, focus/page pause, help toggle and S10 center anchor.
             Depends on: T-003.
             Evidence: Keyboard works from the game, editable control focus is respected, page hiding pauses; toggle leaves board anchor stable.

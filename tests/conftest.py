@@ -37,6 +37,7 @@ def app_page(browser_name, mode, server_url):
         context = browser.new_context(viewport={'width':1280,'height':800})
         page = context.new_page()
         page.set_default_timeout(5000)
+        page.add_init_script('Math.random=()=>0')
         page.goto((ROOT / 'tetris.html').as_uri() if mode == 'file' else server_url + '/tetris.html')
         try:
             yield page

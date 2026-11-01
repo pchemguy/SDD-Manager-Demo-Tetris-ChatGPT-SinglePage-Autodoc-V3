@@ -10,6 +10,8 @@ Preparation progress is recorded in [DOCS_TASKS](docs/dev/DOCS_TASKS.md), with d
 
 Open tetris.html directly in Chromium or Firefox, or serve the repository with an ordinary HTTP server and open tetris.html on localhost. No Node.js or application installation is needed to play.
 
-Click Start/Restart (or Pause/Start from Ready). Left/Right move, Down soft-drops and Up rotates. Pause/Start pauses/resumes; Start/Restart abandons the unfinished game and begins a fresh one. Locking waits one full gravity interval after contact; grounded movement does not restart the delay. Score, level and cleared lines appear beside the board.
+Click Start/Restart (or Pause/Start from Ready). Left/Right move, Down soft-drops, Up/X/Space rotate clockwise and Z rotates counterclockwise. Escape pauses/resumes and R starts/restarts. The Help toggle shows the available controls. Pause/Start pauses/resumes; Start/Restart abandons the unfinished game and begins a fresh one. Locking waits one full gravity interval after contact; grounded movement does not restart the delay. Score, level and cleared lines appear beside the board.
 
 Modern rules, settings, leaderboard and manual files are planned later increments, rather than available controls in this preview. Developer provisioning and observed browser limits are documented in [DEPENDENCIES](docs/DEPENDENCIES.md).
+
+Losing focus or hiding the page pauses running play; return with Pause/Start or Escape. Narrow screens can scroll the scene; optional panels do not shift the board anchor. Native OS-window delivery remains outside the headless verification scope; handler behavior is tested separately.

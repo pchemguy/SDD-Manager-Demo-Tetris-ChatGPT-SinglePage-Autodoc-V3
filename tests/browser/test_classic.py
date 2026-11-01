@@ -22,4 +22,4 @@ def test_start_input_pause_and_restart(app_page):
 def test_right_button_starts_ready_play(app_page):
     app_page.locator('#pause').click()
     assert app_page.locator('#phase').inner_text() == 'Playing'
-    assert app_page.locator('#info button').all_text_contents() == ['Start/Restart','Pause/Start']
+    assert app_page.locator('#info .bottom-controls button').all_text_contents() == ['Start/Restart','Pause/Start']

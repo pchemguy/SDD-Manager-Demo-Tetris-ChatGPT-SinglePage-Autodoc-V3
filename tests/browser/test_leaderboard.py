@@ -14,3 +14,16 @@ def test_leaderboard_panel_order_and_toggle(app_page):
         assert abs(p.locator('#board').evaluate('e=>e.getBoundingClientRect().left+scrollX')-before)<1
         p.locator('#toggle-leaderboard').click()
         assert p.locator('#leaderboard').is_visible()
+
+
+def test_abandoned_play_and_pause_do_not_create_results(app_page):
+    p=app_page
+    p.locator('#start').click()
+    p.keyboard.press('ArrowDown')
+    p.locator('#pause').click()
+    assert p.locator('#phase').inner_text()=='Paused'
+    assert p.locator('#high-scores li').count()==0
+    p.locator('#pause').click()
+    p.locator('#start').click()
+    assert p.locator('#score').inner_text()=='0'
+    assert p.locator('#high-scores li').count()==0

@@ -23,6 +23,8 @@ The same file works over HTTP(S). For a localhost example with Python already av
 | P | Activate an available penetrator bonus |
 | Escape | Pause / resume |
 | R | Start / restart |
+| Leaderboard toggle | Show/hide session results |
+| Settings toggle | Show/hide configuration |
 | Help toggle | Show/hide keyboard help |
 
 By default, locking waits one full gravity interval after becoming grounded. Grounded movement/rotation does not restart it; actual lift-off starts a fresh delay at the next contact. Pause freezes game time. Losing focus or hiding the page pauses play and requires explicit resume. The board stays anchored as panels toggle; narrow screens can scroll the scene.
@@ -67,3 +69,7 @@ In HTTP(S) mode each setting resolves independently: a valid single explicit URL
 For example, append ?ghost=visible&hardDrop=off to an HTTP(S) game URL. Omitted settings continue to use their saved cookies or defaults.
 
 In direct-file mode settings always start from defaults, remain in memory and reset on reload. The application does not read/write cookies or read/modify configuration query parameters in that mode. Leaderboard and manual file exchange follow in later increments.
+
+## Leaderboard
+
+Completed games enter the session top ten automatically, including zero scores. Results rank by descending score, then ascending UTC completion time and stable ID. The panel shows scores and readable completion times; each record retains its original UTC timestamp and UUID v4. Restart and pause keep history without adding an abandoned game. Reload clears the history; results are never stored in cookies or URL parameters.

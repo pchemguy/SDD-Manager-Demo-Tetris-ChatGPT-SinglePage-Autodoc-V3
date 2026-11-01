@@ -1,15 +1,19 @@
 # Project handoff
 
-Checkpoint: Phase 5 integrated and release 0.5.0 published, all assets downloaded/hash-verified.
+Checkpoint: T-030, phase 6, milestone 6.1 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
-Run QC and full implement authorizes all T-001 through T-041 and seven phase releases. Continue next eligible phase after hosted activation; final boundary is completed target/release.
+Full T-001 through T-041 implementation and seven phase releases authorized by Run QC and full implement on 2026-11-01. Continue after this boundary within that range when tracking/publication/dependencies are verified.
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Phase report](reports/phases/5/PHASE-REPORT.md) records exact source, test/review and hosted release evidence.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/6/6.1.md) records checks. Packaged leaderboard milestone passed 85 unit/lifecycle/layout checks in 76.22s; real completed games produced one UUID-v4 safe-score UTC-ms record, restart retained it and reload cleared it; active/paused/abandoned games did not insert, results absent from cookies/URL; reviewed validation ownership, ranking/deduplication and DOM update paths with no unresolved finding.
 
-## Branch and next action
+## Branch and return
 
-Working branch main; retained source branch phase/5-http-configuration from ancestor 1dcc02e956c84f29302ecf7b4eedf7ee9f485194, integrated through 4bd3304b118b266e42ac75a887f28c4b6ca4a94b. Publish/read back this outcome, then create next eligible phase branch from main and verify its tracking before task work. No release effect remains pending. Native Windows/headed OS-window delivery remain outside verified scope.
+Working branch: phase/6-results-json; integration parent: main; branch-off ancestor: 2868cb674f2bb155359f9b71bf31983689664e40. Complete phases integrate explicitly; partial phases remain unmerged.
+
+## Pending effects
+
+Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.

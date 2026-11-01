@@ -194,7 +194,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 ## Phase 6 — Results and JSON
 
 - [ ] Phase 6 — Results and JSON
-    - [ ] Milestone 6.1 — Session leaderboard
+    - [x] Milestone 6.1 — Session leaderboard
         - [x] T-028 — Record stable completed-game results once
             Verification: RED three result/store cases failed; GREEN 67 unit checks passed; stable UUID-v4 IDs, zero/safe scores and canonical calendar-valid UTC completion times preserved, detached results and duplicate suppression verified, engine completion recorded once while restart abandonment creates no event; phase tracking reconciled by fresh complete hosted inventory after stale helper readback.
             Scope: tetris.html SessionStore/controller and deterministic identity/time checks; S6.
@@ -205,7 +205,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html ranking/Renderer and leaderboard toggle.
             Depends on: T-028.
             Evidence: Eleven results truncate correctly; score/time/ID tie ordering is deterministic; panel order and board anchoring remain correct.
-        - [ ] T-030 — Verify leaderboard lifecycle and game interactions
+        - [x] T-030 — Verify leaderboard lifecycle and game interactions
+            Verification: Packaged leaderboard milestone passed 85 unit/lifecycle/layout checks in 76.22s; real completed games produced one UUID-v4 safe-score UTC-ms record, restart retained it and reload cleared it; active/paused/abandoned games did not insert, results absent from cookies/URL; reviewed validation ownership, ranking/deduplication and DOM update paths with no unresolved finding.
             Scope: tests/browser, README.md and result fixtures.
             Depends on: T-029.
             Evidence: Reload clears history, restart retains it, active play and pause do not insert scores, completed games update immediately in both modes.

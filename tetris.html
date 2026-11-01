@@ -447,9 +447,70 @@
             value: Object.fromEntries(SETTING_KEYS.map((k) => [k, value[k]])),
           };
         }
-        function createSessionStore() {
-          let settings = { ...DEFAULT_SETTINGS };
+        function validTimestamp(value) {
+          if (
+            typeof value !== "string" ||
+            !/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/.test(
+              value,
+            ) ||
+            value.startsWith("0000-")
+          )
+            return false;
+          const parsed = new Date(value);
+          return (
+            Number.isFinite(parsed.getTime()) && parsed.toISOString() === value
+          );
+        }
+        function validateResult(raw) {
+          if (
+            !raw ||
+            typeof raw !== "object" ||
+            Array.isArray(raw) ||
+            Object.keys(raw).length !== 3 ||
+            !["id", "score", "timestamp"].every((k) => Object.hasOwn(raw, k))
+          )
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message: "Each result needs exactly id, score and timestamp.",
+            };
+          if (
+            typeof raw.id !== "string" ||
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+              raw.id,
+            ) ||
+            !Number.isSafeInteger(raw.score) ||
+            raw.score < 0 ||
+            !validTimestamp(raw.timestamp)
+          )
+            return {
+              ok: false,
+              code: "invalidValue",
+              message:
+                "A result has an invalid ID, safe integer score or UTC timestamp.",
+            };
           return {
+            ok: true,
+            value: { id: raw.id, score: raw.score, timestamp: raw.timestamp },
+          };
+        }
+        function createSessionStore() {
+          let settings = { ...DEFAULT_SETTINGS },
+            results = [];
+          const completedIds = new Set();
+          return {
+            record(raw) {
+              const checked = validateResult(raw);
+              if (!checked.ok) return checked;
+              if (completedIds.has(checked.value.id))
+                return { ok: true, value: false };
+              completedIds.add(checked.value.id);
+              results.push(checked.value);
+              return { ok: true, value: true };
+            },
+            topResults() {
+              return structuredClone(results);
+            },
             getSettings() {
               return { ...settings };
             },
@@ -1138,6 +1199,16 @@
             ctx.fillRect(ox + x * 16, oy + y * 16, 14, 14);
         }
         function render() {
+          for (const event of engine.drainEvents()) {
+            if (event.type === "gameCompleted") {
+              const recorded = store.record({
+                id: event.gameId,
+                score: event.score,
+                timestamp: new Date().toISOString(),
+              });
+              if (!recorded.ok) setText("message", recorded.message);
+            }
+          }
           const settings = store.getSettings(),
             v = engine.view(settings);
           for (const key of SETTING_KEYS) {

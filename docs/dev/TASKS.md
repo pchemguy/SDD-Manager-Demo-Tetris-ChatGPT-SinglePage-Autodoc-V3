@@ -195,7 +195,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 6 — Results and JSON
     - [ ] Milestone 6.1 — Session leaderboard
-        - [ ] T-028 — Record stable completed-game results once
+        - [x] T-028 — Record stable completed-game results once
+            Verification: RED three result/store cases failed; GREEN 67 unit checks passed; stable UUID-v4 IDs, zero/safe scores and canonical calendar-valid UTC completion times preserved, detached results and duplicate suppression verified, engine completion recorded once while restart abandonment creates no event; phase tracking reconciled by fresh complete hosted inventory after stale helper readback.
             Scope: tetris.html SessionStore/controller and deterministic identity/time checks; S6.
             Depends on: T-027.
             Evidence: Game-over UUID/UTC records preserve safe scores including zero, duplicate events cannot insert twice and restart abandonment is excluded.

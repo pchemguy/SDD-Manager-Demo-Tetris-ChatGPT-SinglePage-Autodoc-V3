@@ -70,3 +70,11 @@ Onepass complete through TASKS, subject to this checkpoint publication and issue
 ## DOCS-008 completion evidence
 
 Autodoc scoped preapproval following accepted PROJECT. docs/dev/TASKS.md blob ba88dd685a3f904a8dc3dc73ed034dff1f70a794; docs/dev/TASKS-REVIEW-REPORT.md blob 527096e82bd3dc61986b8d22a8df29be0582a8e8; docs/dev/PLAN.md blob 064417669376be20feeb5538270e2493680d78aa; docs/dev/PLAN-REVIEW-REPORT.md blob f72dd59032e0ab22834b309b48c1380cad9d9ef7; docs/dev/HANDOFF.md blob 8b2386de65d0679ccc5cbb2528599ae4b9db39e9; AGENTS.md blob b1efc246fc1682e209b17a00b1d966035b4e7402. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.
+
+## Full implementation authorization
+
+On 2026-11-01 the human instructed Run QC and full implement. This advances DOCS-009 and preparation integration, and selects T-001 through T-041 across all seven phases, including required tracking, verification, integration and authorized phase releases. Routine covered checkpoints need no additional permission. Stop only on the full-range outcome or a concrete unresolved blocker.
+
+## DOCS-009 completion evidence
+
+Autodoc scoped preapproval following accepted PROJECT. docs/dev/DOCS-QC-REPORT.md blob d4afd97597d0c15557b5144da2b51551836e1784; docs/dev/SPEC.md blob d74c84f53b3b062730bc640e75a8b360f9c7cb8c; docs/dev/ARCHITECTURE.md blob 68bc7d669b04600f9a8d7213d267bec7e043a1f3; docs/dev/SPEC-REVIEW-REPORT.md blob c43164fd26d7a9857bcc12902eeaa63c3ea19be6; docs/dev/PLAN-REVIEW-REPORT.md blob c6819ce2748a9c01d2dd8c42e2e3e1b5a8d5e955; docs/dev/TASKS-REVIEW-REPORT.md blob 0c58b996c95283535e1243e54131e5c3ec465978; docs/dev/HANDOFF.md blob 072f95e9a1cb18e06ec56ab802122a340f0b89db. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

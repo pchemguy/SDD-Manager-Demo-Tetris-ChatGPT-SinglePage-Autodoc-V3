@@ -46,3 +46,7 @@ Additional reviewed identity:
 PLAN-F1: Initial phase-review IDs used a letter suffix (<phase>.R), whereas the pinned projection parser accepts numeric dotted milestone IDs only. The planning owner corrected the seven review IDs to 1.3, 2.3, 3.3, 4.2, 5.2, 6.3 and 7.3 before hosted activation. Scope, ordering, delivery milestones and phase exits are unchanged. Inspected projection-input.mjs parseOwner grammar and rechecked the derived hierarchy with that actual parser. Original review/count observations remain above. Finding resolved; combined PLAN/layout readiness retained.
 
 - Revised PLAN blob: 064417669376be20feeb5538270e2493680d78aa
+
+## Revision 3 — Package readiness recheck
+
+QC-F1 clarified focus return after game/panel button activation in ARCHITECTURE/SPEC, avoiding native-button focus trapping gameplay input. Settings controls retain focus. Rechecked design/behavior consistency; phase/task scopes and dependencies are unchanged and already cover keyboard/focus integration. Formal Draft 2020-12 schema validation is now available: metaschema and one valid/nine invalid representative documents passed their expected checks. Prior tooling limitation is resolved for preparation; production validation/browser behavior still require implementation. No current conformance blocker remains.

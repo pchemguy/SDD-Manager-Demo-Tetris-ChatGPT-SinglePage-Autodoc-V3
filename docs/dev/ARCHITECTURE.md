@@ -32,7 +32,7 @@ Core gameplay and JSON use browser built-ins. SQLite is an optional, lazily load
 
 The controller uses a monotonic clock and explicit elapsed-time progression; pause and hidden-page suspension freeze game time. The domain owns grounded elapsed time and prevents grounded movement from resetting it. It computes one landing operation for ghost and hard drop, including penetrators. White belongs exclusively to penetrator piece rendering.
 
-Use a centered board anchor with left and right panel groups. Optional-panel visibility cannot recenter the entire unequal-width group and shift the board. Narrow viewports permit scrolling and retain board/info access. Native controls retain focus and keyboard usability; gameplay shortcuts are suppressed in editable controls and during file interaction.
+Use a centered board anchor with left and right panel groups. Optional-panel visibility cannot recenter the entire unequal-width group and shift the board. Narrow viewports permit scrolling and retain board/info access. Native settings controls retain focus and keyboard usability; game/panel actions return focus to the keyboard-focusable board as specified in SPEC; gameplay shortcuts are suppressed in editable controls and during file interaction.
 
 ## Design tradeoffs and verification seams
 

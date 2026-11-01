@@ -1,8 +1,8 @@
 # Project handoff
 
-Checkpoint: autodoc/onepass DOCS-008 stop. Recover later effects from DOCS_PREPARATION, Git and hosted readback; this containing commit identifies the snapshot.
+Checkpoint: DOCS-009 package QC and authorized full implementation handoff. Recover later effects from DOCS_PREPARATION, Git and hosted readback; this containing commit identifies the snapshot.
 
-Outcome: complete project design, specification, seven-phase delivery plan, layout and 41-task hierarchy prepared. Per-document conformance is Ready; whole-package QC and implementation have not run.
+Outcome: complete project design, specification, seven-phase delivery plan, layout and 41-task hierarchy prepared. Per-document conformance is Ready; whole-package QC passed; implementation has not started.
 
 ## Workflow and sources
 
@@ -13,7 +13,7 @@ Outcome: complete project design, specification, seven-phase delivery plan, layo
 ## Scope and human decisions
 
 - User requested the complete single-page HTML target in autodoc mode and accepted PROJECT plus its proposed gameplay decisions with k on 2026-11-01.
-- ARCHITECTURE through TASKS checkpoints are preapproved. Exact stop: after DOCS-008 publication and issue closure, before DOCS-009 package QC, preparation integration or implementation.
+- ARCHITECTURE through TASKS checkpoints are preapproved. The later Run QC and full implement instruction advances package QC/integration and authorizes T-001 through T-041 and all seven phase releases.
 - Tracking enabled for preparation/implementation by AGENTS.md; concise Standard reporting and publication/readback after each owned commit remain required.
 
 ## Branches and return
@@ -25,5 +25,5 @@ Outcome: complete project design, specification, seven-phase delivery plan, layo
 ## Pending work and next action
 
 - Confirm this DOCS-008 checkpoint publication and issue 8 closure. Issues 1-7 were verified closed; issue 9 and sdd-docs-main milestone remain open.
-- Wait for direction to advance to whole-package QC. A successful later DOCS-009 precedes its issue closure, explicit verified/published main merge and preparation milestone closure.
-- No product task issues/phase labels/milestones are activated. No implementation range is selected, release created or game/browser acceptance claimed.
+- Publish this passing DOCS-009 checkpoint, close/read back issue 9, then explicitly merge/verify/publish preparation and close its milestone before Phase 1 activation.
+- No product task issues/phase labels/milestones are activated. The full implementation range is selected; no release or game/browser acceptance is claimed yet.

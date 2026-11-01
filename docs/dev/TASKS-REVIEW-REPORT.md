@@ -45,3 +45,7 @@ Executed structural checks: project-wide unique/monotonic IDs, backward task dep
 ## Findings and corrections
 
 TASKS-F1: Task derivation exposed PLAN letter-suffixed review IDs that the canonical parser rejects. The planning owner corrected those IDs and appended PLAN review Revision 2 before task-list acceptance. The actual parser accepted the corrected hierarchy for all seven phases. Scope and phase/milestone outcomes were preserved. Resolved; no remaining blocker.
+
+## Revision 1 — Package readiness recheck
+
+QC-F1 clarified focus return after game/panel button activation in ARCHITECTURE/SPEC, avoiding native-button focus trapping gameplay input. Settings controls retain focus. Rechecked design/behavior consistency; phase/task scopes and dependencies are unchanged and already cover keyboard/focus integration. Formal Draft 2020-12 schema validation is now available: metaschema and one valid/nine invalid representative documents passed their expected checks. Prior tooling limitation is resolved for preparation; production validation/browser behavior still require implementation. No current conformance blocker remains.

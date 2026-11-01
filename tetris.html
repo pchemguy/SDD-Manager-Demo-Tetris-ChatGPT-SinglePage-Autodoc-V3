@@ -556,6 +556,254 @@
             )
             .slice(0, 10);
         }
+        function hasExactKeys(value, keys) {
+          return (
+            value !== null &&
+            typeof value === "object" &&
+            !Array.isArray(value) &&
+            Object.keys(value).length === keys.length &&
+            keys.every((k) => Object.hasOwn(value, k))
+          );
+        }
+        function validateSession(raw) {
+          if (!hasExactKeys(raw, ["formatVersion", "results", "settings"]))
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message:
+                "A session needs exactly formatVersion, results and settings.",
+            };
+          if (!Number.isSafeInteger(raw.formatVersion))
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message: "The format version must be an integer.",
+            };
+          if (raw.formatVersion !== 1)
+            return {
+              ok: false,
+              code: "unsupportedVersion",
+              message: "This session format version is not supported.",
+            };
+          if (
+            !Array.isArray(raw.results) ||
+            raw.results.length > 10 ||
+            !hasExactKeys(raw.settings, SETTING_KEYS)
+          )
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message:
+                "A session needs at most ten results and all six settings.",
+            };
+          const settings = validateSettings(raw.settings);
+          if (!settings.ok) return settings;
+          const results = [],
+            ids = new Set();
+          for (const rawResult of raw.results) {
+            const checked = validateResult(rawResult);
+            if (!checked.ok) return checked;
+            if (ids.has(checked.value.id))
+              return {
+                ok: false,
+                code: "invalidValue",
+                message: "Result IDs must be unique.",
+              };
+            ids.add(checked.value.id);
+            results.push(checked.value);
+          }
+          return {
+            ok: true,
+            value: {
+              formatVersion: 1,
+              results: rankResults(results),
+              settings: settings.value,
+            },
+          };
+        }
+        /** Duplicate-aware JSON grammar and exact safe-integer numeric decoding. */
+        function parseJSONStrict(text) {
+          let index = 0,
+            nodes = 0;
+          function fail(
+            message = "Invalid JSON syntax.",
+            code = "invalidJSON",
+          ) {
+            const error = new Error(message + " Near character " + index + ".");
+            error.code = code;
+            throw error;
+          }
+          function whitespace() {
+            while (index < text.length && " \t\r\n".includes(text[index]))
+              index++;
+          }
+          function string() {
+            const start = index;
+            if (text[index++] !== '"') fail();
+            while (index < text.length) {
+              const c = text[index++];
+              if (c === '"') {
+                try {
+                  return JSON.parse(text.slice(start, index));
+                } catch {
+                  fail();
+                }
+              }
+              if (c === "\\") {
+                if (index >= text.length) fail();
+                index++;
+              } else if (c.charCodeAt(0) < 32) fail();
+            }
+            fail("Unterminated JSON string.");
+          }
+          function number() {
+            const match = text
+              .slice(index)
+              .match(
+                /^(-?)(0|[1-9][0-9]*)(?:\.([0-9]+))?(?:[eE]([+-]?[0-9]+))?/,
+              );
+            if (!match) fail();
+            index += match[0].length;
+            const fraction = match[3] || "",
+              digits = (match[2] + fraction).replace(/^0+/, "");
+            if (!digits) return 0;
+            const exponent = Number(match[4] || 0),
+              scale = exponent - fraction.length;
+            const invalid = () =>
+              fail(
+                "Numeric values must be exact safe integers.",
+                "invalidValue",
+              );
+            if (
+              !Number.isFinite(exponent) ||
+              Math.abs(exponent) > match[0].length + 16
+            )
+              invalid();
+            let integer;
+            if (scale < 0) {
+              const split = digits.length + scale;
+              if (split <= 0 || !/^0*$/.test(digits.slice(split))) invalid();
+              integer = digits.slice(0, split);
+            } else {
+              if (digits.length + scale > 16) invalid();
+              integer = digits + "0".repeat(scale);
+            }
+            if (integer.length > 16) invalid();
+            const value = Number(integer) * (match[1] ? -1 : 1);
+            if (!Number.isSafeInteger(value)) invalid();
+            return value;
+          }
+          function value(depth = 0) {
+            if (depth > 64 || ++nodes > 10000)
+              fail("JSON nesting or item limit exceeded.");
+            whitespace();
+            const c = text[index];
+            if (c === '"') return string();
+            if (c === "{") {
+              index++;
+              whitespace();
+              const out = Object.create(null),
+                keys = new Set();
+              if (text[index] === "}") {
+                index++;
+                return out;
+              }
+              while (true) {
+                if (text[index] !== '"')
+                  fail("Expected an object member name.");
+                const key = string();
+                if (keys.has(key)) fail("Duplicate JSON object member.");
+                keys.add(key);
+                whitespace();
+                if (text[index++] !== ":") fail();
+                out[key] = value(depth + 1);
+                whitespace();
+                if (text[index] === "}") {
+                  index++;
+                  return out;
+                }
+                if (text[index++] !== ",") fail();
+                whitespace();
+              }
+            }
+            if (c === "[") {
+              index++;
+              whitespace();
+              const out = [];
+              if (text[index] === "]") {
+                index++;
+                return out;
+              }
+              while (true) {
+                out.push(value(depth + 1));
+                whitespace();
+                if (text[index] === "]") {
+                  index++;
+                  return out;
+                }
+                if (text[index++] !== ",") fail();
+              }
+            }
+            for (const [literal, result] of [
+              ["true", true],
+              ["false", false],
+              ["null", null],
+            ]) {
+              if (text.startsWith(literal, index)) {
+                index += literal.length;
+                return result;
+              }
+            }
+            return number();
+          }
+          const result = value();
+          whitespace();
+          if (index !== text.length) fail("Trailing JSON content.");
+          return result;
+        }
+        const JSONCodec = {
+          decode(text) {
+            if (typeof text !== "string")
+              return {
+                ok: false,
+                code: "invalidJSON",
+                message: "JSON input must be text.",
+              };
+            try {
+              return { ok: true, value: parseJSONStrict(text) };
+            } catch (error) {
+              return {
+                ok: false,
+                code: error.code || "invalidJSON",
+                message: error.code ? error.message : "Invalid JSON content.",
+              };
+            }
+          },
+          decodeBytes(bytes) {
+            let text;
+            try {
+              text = new TextDecoder("utf-8", {
+                fatal: true,
+                ignoreBOM: true,
+              }).decode(bytes);
+            } catch {
+              return {
+                ok: false,
+                code: "invalidEncoding",
+                message: "The JSON file must contain valid UTF-8.",
+              };
+            }
+            return this.decode(text);
+          },
+          encode(value) {
+            const checked = validateSession(value);
+            if (!checked.ok)
+              throw Object.assign(new Error(checked.message), {
+                code: checked.code,
+              });
+            return JSON.stringify(checked.value, null, 2) + "\n";
+          },
+        };
         function createSessionStore() {
           let settings = { ...DEFAULT_SETTINGS },
             results = [];

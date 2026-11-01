@@ -213,7 +213,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Milestone exit: review all 6.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/6/6.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
     - [ ] Milestone 6.2 — JSON file exchange
-        - [ ] T-031 — Implement complete duplicate-aware JSON validation
+        - [x] T-031 — Implement complete duplicate-aware JSON validation
+            Verification: RED all 11 codec/validator cases failed; GREEN 80 unit checks passed; canonical schema plus independent calendar oracle agreed, duplicate members at any depth/escaped names and IDs rejected, exact integer parsing prevents rounding/underflow acceptance, UTF-8/depth/version failures clear and round trips preserve every field; documented JSON example executed successfully.
             Scope: tetris.html Validator/JSONCodec, normative schema checks, fixtures and docs/FILE-FORMATS.md; S7.
             Depends on: T-030.
             Evidence: Validate schema equivalence and semantic dates/UUIDs/safe integers; reject duplicate object members/IDs, unknown versions, extra/missing settings and malformed UTF-8 before mutation.

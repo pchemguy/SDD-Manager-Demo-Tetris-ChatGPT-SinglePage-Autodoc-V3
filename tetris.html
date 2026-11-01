@@ -237,6 +237,21 @@
         padding: 2px 4px;
         border-radius: 3px;
       }
+      .previews {
+        display: flex;
+        gap: 16px;
+        margin-top: 16px;
+        font-size: 12px;
+        color: #8c9db5;
+      }
+      .previews canvas {
+        display: block;
+        width: 80px;
+        height: 56px;
+        border: 0;
+        box-shadow: none;
+        margin-top: 4px;
+      }
     </style>
   </head>
   <body>
@@ -260,6 +275,26 @@
             </div>
             <div>
               <span class="eyebrow">Lines</span><output id="lines">0</output>
+            </div>
+          </div>
+          <div class="previews">
+            <div>
+              Hold <output id="held-kind">—</output
+              ><canvas
+                id="held"
+                width="80"
+                height="56"
+                aria-label="Held piece"
+              ></canvas>
+            </div>
+            <div>
+              Next <output id="next-kind">—</output
+              ><canvas
+                id="next"
+                width="80"
+                height="56"
+                aria-label="Next piece"
+              ></canvas>
             </div>
           </div>
           <p class="phase" id="phase" aria-live="polite">Ready</p>
@@ -298,7 +333,10 @@
             clockwise<br /><kbd>Z</kbd> Rotate counterclockwise<br /><kbd
               >Esc</kbd
             >
-            Pause / resume<br /><kbd>R</kbd> Start / restart
+            Pause / resume<br /><kbd>C</kbd> <kbd>Shift</kbd> Hold<br /><kbd
+              >R</kbd
+            >
+            Start / restart
           </p>
           <p>
             Locking waits one full gravity interval after contact. Move off
@@ -612,6 +650,16 @@
           }
           function act(action, settings = DEFAULT_SETTINGS) {
             if (s.phase !== "running" || !s.active) return false;
+            if (action === "hold") {
+              if (settings.hold === "off" || s.holdUsed || s.active.penetrator)
+                return false;
+              const kind = s.active.kind,
+                replacement = s.held;
+              s.held = kind;
+              spawn(replacement || nextKind());
+              s.holdUsed = true;
+              return true;
+            }
             if (action === "left") return move(-1, 0);
             if (action === "right") return move(1, 0);
             if (action === "softDrop") {
@@ -751,6 +799,25 @@
           if (element.textContent !== String(value))
             element.textContent = String(value);
         }
+        function paintPreview(id, kind) {
+          const c = document.getElementById(id),
+            ctx = c.getContext("2d");
+          ctx.clearRect(0, 0, c.width, c.height);
+          setText(id === "held" ? "held-kind" : "next-kind", kind || "—");
+          if (!kind) return;
+          const cells = SHAPES[kind],
+            xs = cells.map((p) => p[0]),
+            ys = cells.map((p) => p[1]);
+          const ox =
+            (80 - (Math.max(...xs) - Math.min(...xs) + 1) * 16) / 2 -
+            Math.min(...xs) * 16;
+          const oy =
+            (56 - (Math.max(...ys) - Math.min(...ys) + 1) * 16) / 2 -
+            Math.min(...ys) * 16;
+          ctx.fillStyle = palette[kind];
+          for (const [x, y] of cells)
+            ctx.fillRect(ox + x * 16, oy + y * 16, 14, 14);
+        }
         function render() {
           const v = engine.view();
           setText("score", v.score);
@@ -765,6 +832,8 @@
               over: "Game over",
             }[v.phase],
           );
+          paintPreview("held", v.held);
+          paintPreview("next", v.queue[0]);
           boardCanvas.dataset.phase = v.phase;
           context.fillStyle = "#0d1726";
           context.fillRect(0, 0, 300, 600);
@@ -835,6 +904,9 @@
         document.addEventListener("keydown", (event) => {
           if (
             event.isComposing ||
+            event.ctrlKey ||
+            event.metaKey ||
+            event.altKey ||
             event.target.closest("input,select,textarea,button")
           )
             return;
@@ -848,6 +920,8 @@
             x: "rotateCW",
             " ": "rotateCW",
             z: "rotateCCW",
+            c: "hold",
+            Shift: "hold",
           }[key];
           if (!action && key !== "Escape" && key !== "r") return;
           event.preventDefault();

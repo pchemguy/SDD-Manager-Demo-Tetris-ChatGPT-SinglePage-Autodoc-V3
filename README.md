@@ -39,3 +39,5 @@ From the repository root, run python -m pytest with that isolated environment. R
 Headless Chromium and Playwright Firefox are checked through direct-file and localhost HTTP execution, including the five widths in SPEC. Native OS-window event delivery and native Windows execution are not established by these headless checks. See [TASKS](docs/dev/TASKS.md) and implementation reports for exact current evidence.
 
 Development uses [SDD Manager](SDD-MANAGER.md). See the [AI-assisted development disclosure](AI_DISCLOSURE.md). The [project brief](docs/dev/PROJECT.md), [specification](docs/dev/SPEC.md) and [handoff](docs/dev/HANDOFF.md) describe the complete intended scope and current checkpoint.
+
+Hold a piece with C or Shift, once per falling piece. The hold and next displays show orientation-zero pieces; the queue draws from shuffled seven-piece bags. Rotations use SRS wall/floor kicks.

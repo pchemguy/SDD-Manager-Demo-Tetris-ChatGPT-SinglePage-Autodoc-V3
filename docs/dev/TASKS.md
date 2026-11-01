@@ -54,7 +54,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 ## Phase 2 — Modern rules
 
 - [ ] Phase 2 — Modern rules
-    - [ ] Milestone 2.1 — Modern piece state
+    - [x] Milestone 2.1 — Modern piece state
         - [x] T-008 — Add seven-bag queue generation
             Verification: RED bag/preview case failed against independent draws; GREEN all 25 unit checks passed, including three full bags and preview transitions.
             Scope: tetris.html Engine queue and deterministic unit checks; S2.
@@ -65,7 +65,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html shape/kick definitions and Engine rotation; DECOMPOSITION geometry and SPEC S2 tables.
             Depends on: T-008.
             Evidence: Check every transition table, I/JLSTZ distinction, O invariance, wall/floor success and fully blocked no-op.
-        - [ ] T-010 — Integrate hold and next preview
+        - [x] T-010 — Integrate hold and next preview
+            Verification: RED both hold cases failed; GREEN 30 unit checks passed; reviewed bag consumption, SRS trials, hold reset and blocked spawn; hold/next canvases use canonical shapes and palette, native modifier shortcuts pass through.
             Scope: tetris.html Engine/Renderer/Input and modern-state checks.
             Depends on: T-009.
             Evidence: One hold per falling piece, reset on lock, orientation-zero replacement, blocked swap game over and accurate next kind.

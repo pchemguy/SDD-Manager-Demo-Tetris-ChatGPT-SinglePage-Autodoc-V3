@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-013, phase 2, milestone 2.2 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-014, phase 2, milestone 2.3 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/2/2.2.md) records checks. Packaged 0.2.0 HTML passed all 82 tests in 85.03s under Chromium and Firefox in file and HTTP modes; hold/preview/drop/contact, ghost raster, modifier isolation, pause and classic regressions passed; milestone code review found no blocker; artifact names and hashes passed.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/2/PHASE-REPORT.md) records checks. Phase-wide Engine/Input/Renderer review and six-task atomic commit audit passed; 82 packaged tests passed in 85.03s; version 0.2.0, source formatting and independent artifact-name/hash gates passed; delivery milestones 2.1 and 2.2 closed with readback; hosted CI, explicit integration and release remain subsequent gates.
 
 ## Branch and return
 
@@ -16,4 +16,4 @@ Working branch: phase/2-modern-rules; integration parent: main; branch-off ances
 
 ## Pending effects
 
-Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.
+Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.

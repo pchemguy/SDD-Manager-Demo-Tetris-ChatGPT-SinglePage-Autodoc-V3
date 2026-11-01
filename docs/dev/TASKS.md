@@ -53,7 +53,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 2 — Modern rules
 
-- [ ] Phase 2 — Modern rules
+- [x] Phase 2 — Modern rules
     - [x] Milestone 2.1 — Modern piece state
         - [x] T-008 — Add seven-bag queue generation
             Verification: RED bag/preview case failed against independent draws; GREEN all 25 unit checks passed, including three full bags and preview transitions.
@@ -90,8 +90,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Run hold/bag/kick/drop/ghost regressions in actual packaged file/HTTP HTML under both browsers; verify pause, focus and existing baseline.
             Milestone exit: review all 2.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/2/2.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 2.3 — Phase review
-        - [ ] T-014 — Review test and report phase 2
+    - [x] Milestone 2.3 — Phase review
+        - [x] T-014 — Review test and report phase 2
+            Verification: Phase-wide Engine/Input/Renderer review and six-task atomic commit audit passed; 82 packaged tests passed in 85.03s; version 0.2.0, source formatting and independent artifact-name/hash gates passed; delivery milestones 2.1 and 2.2 closed with readback; hosted CI, explicit integration and release remain subsequent gates.
             Depends on: T-013 and completion/verified closure of delivery milestones 2.1, 2.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.2.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/2/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.2.0 before any next-phase activation.

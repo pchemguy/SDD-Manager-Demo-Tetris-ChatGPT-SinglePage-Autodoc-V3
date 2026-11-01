@@ -44,3 +44,16 @@ The decoder rejects malformed UTF-8, a byte-order mark, duplicate JSON member na
 Manual files are limited to 1 MiB. Validation completes before replacing results or settings and before any cookie/URL update. An invalid file leaves those values unchanged and displays a clear error; pausing play for file interaction is allowed. A valid restore replaces the session leaderboard and all settings, preserving IDs, scores and UTC timestamps. It does not restore or reset the active board. HTTP(S) mirrors restored settings into cookies and URL parameters; direct-file mode changes memory only.
 
 JSON downloads use tetris-session.json. Application source and release checksums are separate from session data. The SQLite format is added in its own delivery increment.
+
+## SQLite version 1
+
+SQLite exports are genuine databases with PRAGMA user_version=1, exactly these application declarations, and their automatically generated primary-key indexes:
+
+```sql
+CREATE TABLE high_scores (id TEXT PRIMARY KEY NOT NULL, score INTEGER NOT NULL CHECK(score >= 0), timestamp TEXT NOT NULL);
+CREATE TABLE settings (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL);
+```
+
+The importer accepts whitespace/case variations in these declarations; other declarations are rejected even if they appear similar. It also checks actual column metadata, primary keys, required fields, database page length and integrity. It rejects extra tables, columns, indexes, views and triggers. No SQL supplied by a file is executed; all queries are fixed application statements. Every insert uses bound parameters. Six uniquely keyed settings rows are required. Runtime value types must be TEXT for IDs/timestamps/settings and INTEGER for safe non-negative scores. The same UUID, calendar, enum, duplicate and ten-result rules apply as JSON.
+
+Each operation uses one temporary in-memory database. Prepared statements are freed and the database is closed on success or failure; cleanup failure rejects the operation. Nothing is committed to the active session by either codec.

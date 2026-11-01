@@ -1,15 +1,19 @@
 # Project handoff
 
-Checkpoint: Phase 6 integrated and release 0.6.0 published, all assets downloaded/hash-verified.
+Checkpoint: T-037, phase 7, milestone 7.1 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
-Run QC and full implement authorizes all T-001 through T-041 and seven phase releases. Continue next eligible phase after hosted activation; final boundary is completed target/release.
+Full T-001 through T-041 implementation and seven phase releases authorized by Run QC and full implement on 2026-11-01. Continue after this boundary within that range when tracking/publication/dependencies are verified.
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Phase report](reports/phases/6/PHASE-REPORT.md) records exact source, test/review and hosted release evidence.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/7/7.1.md) records checks. All 24 decoder scenarios failed before implementation; 116 unit checks now pass, including independent SQLite input and cross-codec field preservation, 19 invalid schema/metadata/key/value classes, empty corrupt and trailing databases, statement/database cleanup on success failure and free error; too-many fixture initially collided with an existing ID and was corrected before acceptance; reviewed declarations metadata query-only fixed SQL lifecycle and shared validation with no unresolved finding.
 
-## Branch and next action
+## Branch and return
 
-Working branch main; retained source branch phase/6-results-json from ancestor 2868cb674f2bb155359f9b71bf31983689664e40, integrated through 47d9470ff9a4d71fbb3bff7064ea3b8e73a245dc. Publish/read back this outcome, then create next eligible phase branch from main and verify its tracking before task work. No release effect remains pending. Native Windows/headed OS-window delivery remain outside verified scope.
+Working branch: phase/7-sqlite-exchange; integration parent: main; branch-off ancestor: e9a70bb43467d4053adffae96c8d1bffb2b012fc. Complete phases integrate explicitly; partial phases remain unmerged.
+
+## Pending effects
+
+Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.

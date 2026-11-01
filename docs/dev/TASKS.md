@@ -240,7 +240,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 ## Phase 7 — SQLite exchange
 
 - [ ] Phase 7 — SQLite exchange
-    - [ ] Milestone 7.1 — SQLite codec
+    - [x] Milestone 7.1 — SQLite codec
         - [x] T-035 — Prove and pin a single-script CDN SQLite runtime
             Verification: Three loader RED cases failed before implementation; all 90 unit checks now pass; four Chromium/Firefox file/HTTP initialization cases pass using TLS-fetched hash-verified CDN bytes with browser SRI and no worker or companion requests; native CDN browser TLS failed on managed proxy trust and remains a direct-loading CI gate; actual runtime reports SQLite 3.49.1; timeout failure retry coalescing and script/timer cleanup verified.
             Scope: tetris.html DependencyLoader, docs/DEPENDENCIES.md and browser loading evidence; S8.
@@ -251,7 +251,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html SQLiteCodec and round-trip fixtures; S8.
             Depends on: T-035.
             Evidence: Write genuine SQLite header, user_version=1 and exact two tables via bound values; preserve every field/type and close all resources.
-        - [ ] T-037 — Validate SQLite imports before candidate creation
+        - [x] T-037 — Validate SQLite imports before candidate creation
+            Verification: All 24 decoder scenarios failed before implementation; 116 unit checks now pass, including independent SQLite input and cross-codec field preservation, 19 invalid schema/metadata/key/value classes, empty corrupt and trailing databases, statement/database cleanup on success failure and free error; too-many fixture initially collided with an existing ID and was corrected before acceptance; reviewed declarations metadata query-only fixed SQL lifecycle and shared validation with no unresolved finding.
             Scope: tetris.html SQLiteCodec/Validator and invalid database fixtures.
             Depends on: T-036.
             Evidence: Check integrity/schema/metadata/types/keys/records against S7/S8, reject extra tables/views/triggers/columns, wrong versions and corrupt data; close statements/databases on all paths.

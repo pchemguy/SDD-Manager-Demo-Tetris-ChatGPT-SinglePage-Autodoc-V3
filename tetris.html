@@ -973,6 +973,109 @@
                 };
               }
             },
+            async decode(bytes) {
+              if (
+                !(bytes instanceof Uint8Array) ||
+                bytes.length === 0 ||
+                bytes.length > MAX_FILE_BYTES
+              )
+                return failure();
+              const decoded = await withDatabase(bytes, (db) => {
+                db.run("PRAGMA query_only=ON");
+                function rows(sql) {
+                  return prepared(db, sql, (s) => {
+                    const found = [];
+                    while (s.step()) found.push(s.get());
+                    return found;
+                  });
+                }
+                const schema = rows(
+                  "SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY name",
+                );
+                const normalize = (sql) =>
+                  sql.replace(/\s+/g, "").toLowerCase();
+                if (schema.length !== 4) throw Error("schema");
+                for (const name of ["high_scores", "settings"]) {
+                  const table = schema.find(
+                    (r) => r[0] === "table" && r[1] === name && r[2] === name,
+                  );
+                  const index = schema.find(
+                    (r) =>
+                      r[0] === "index" &&
+                      r[1] === "sqlite_autoindex_" + name + "_1" &&
+                      r[2] === name &&
+                      r[3] === null,
+                  );
+                  if (
+                    !table ||
+                    !index ||
+                    typeof table[3] !== "string" ||
+                    normalize(table[3]) !== normalize(SQLITE_SCHEMA[name])
+                  )
+                    throw Error("declaration");
+                }
+                const expectedScores = [
+                  [0, "id", "TEXT", 1, null, 1, 0],
+                  [1, "score", "INTEGER", 1, null, 0, 0],
+                  [2, "timestamp", "TEXT", 1, null, 0, 0],
+                ];
+                const expectedSettings = [
+                  [0, "key", "TEXT", 1, null, 1, 0],
+                  [1, "value", "TEXT", 1, null, 0, 0],
+                ];
+                if (
+                  JSON.stringify(rows("PRAGMA table_xinfo(high_scores)")) !==
+                    JSON.stringify(expectedScores) ||
+                  JSON.stringify(rows("PRAGMA table_xinfo(settings)")) !==
+                    JSON.stringify(expectedSettings)
+                )
+                  throw Error("columns");
+                if (JSON.stringify(rows("PRAGMA user_version")) !== "[[1]]")
+                  throw Error("version");
+                const pageSize = rows("PRAGMA page_size")[0][0],
+                  pageCount = rows("PRAGMA page_count")[0][0];
+                if (
+                  pageSize * pageCount !== bytes.length ||
+                  JSON.stringify(rows("PRAGMA integrity_check(1)")) !==
+                    '[["ok"]]'
+                )
+                  throw Error("integrity");
+                const scores = rows(
+                  "SELECT id,score,timestamp,typeof(id),typeof(score),typeof(timestamp) FROM high_scores LIMIT 11",
+                );
+                const settings = rows(
+                  "SELECT key,value,typeof(key),typeof(value) FROM settings LIMIT 7",
+                );
+                if (
+                  scores.length > 10 ||
+                  settings.length !== 6 ||
+                  scores.some(
+                    (r) =>
+                      r[3] !== "text" || r[4] !== "integer" || r[5] !== "text",
+                  ) ||
+                  settings.some((r) => r[2] !== "text" || r[3] !== "text")
+                )
+                  throw Error("types");
+                const keys = new Set(settings.map((r) => r[0]));
+                if (keys.size !== 6 || !SETTING_KEYS.every((k) => keys.has(k)))
+                  throw Error("keys");
+                const candidate = {
+                  formatVersion: 1,
+                  results: scores.map((r) => ({
+                    id: r[0],
+                    score: r[1],
+                    timestamp: r[2],
+                  })),
+                  settings: Object.fromEntries(
+                    settings.map((r) => [r[0], r[1]]),
+                  ),
+                };
+                const valid = validateSession(candidate);
+                if (!valid.ok) throw Error("values");
+                return valid.value;
+              });
+              return decoded;
+            },
             async encode(raw) {
               const valid = validateSession(raw);
               if (!valid.ok) return valid;

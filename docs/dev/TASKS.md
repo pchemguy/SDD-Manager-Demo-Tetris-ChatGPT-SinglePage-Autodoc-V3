@@ -137,7 +137,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 4 — Session settings
 
-- [ ] Phase 4 — Session settings
+- [x] Phase 4 — Session settings
     - [x] Milestone 4.1 — Six-setting session configuration
         - [x] T-020 — Centralize exact setting validation and defaults
             Verification: RED both canonical settings/store cases failed; GREEN 46 unit checks passed; all supported values validate exactly, missing extra coerced values reject and invalid patches leave detached session settings unchanged.
@@ -156,8 +156,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: All six changes are immediate, restart retains and reload resets; zero cookie/query/localStorage/IndexedDB persistence; hiding settings hides its contents.
             Milestone exit: review all 4.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/4/4.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 4.2 — Phase review
-        - [ ] T-023 — Review test and report phase 4
+    - [x] Milestone 4.2 — Phase review
+        - [x] T-023 — Review test and report phase 4
+            Verification: Phase-wide settings Engine controller and presentation review found no unresolved finding; three delivery closures audited with no exceptions; 120 packaged tests passed in 204.85s, exact action timing and session-only persistence isolation included; visual inspection, Prettier and independent artifact-name/hash gates passed; milestone 4.1 closed/read back; exact-tip CI integration and release remain coordinator gates.
             Depends on: T-022 and completion/verified closure of delivery milestones 4.1.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.4.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/4/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.4.0 before any next-phase activation.

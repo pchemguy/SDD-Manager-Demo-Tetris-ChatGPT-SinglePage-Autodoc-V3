@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-022, phase 4, milestone 4.1 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-023, phase 4, milestone 4.2 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/4/4.1.md) records checks. RED all 16 new browser cases failed, including pre-input time incorrectly shortening hard-drop contact; GREEN full packaged 0.4.0 suite passed 120 tests in 204.85s, all six settings, session reloads, native focus, no persistence access, five-width anchor checks and exact controller action timing; milestone source review and independent format/name/hash gates passed.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/4/PHASE-REPORT.md) records checks. Phase-wide settings Engine controller and presentation review found no unresolved finding; three delivery closures audited with no exceptions; 120 packaged tests passed in 204.85s, exact action timing and session-only persistence isolation included; visual inspection, Prettier and independent artifact-name/hash gates passed; milestone 4.1 closed/read back; exact-tip CI integration and release remain coordinator gates.
 
 ## Branch and return
 
@@ -16,4 +16,4 @@ Working branch: phase/4-session-settings; integration parent: main; branch-off a
 
 ## Pending effects
 
-Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.
+Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.

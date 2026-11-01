@@ -6,4 +6,4 @@ def test_exact_setting_keys_and_values_without_coercion():
 
 
 def test_session_patch_is_atomic_and_returned_settings_are_detached():
-    assert evaluate("""const s=createSessionStore();s.changeSettings({ghost:'visible'});const a=s.changeSettings({ghost:'hidden',hold:'bad'});const copy=s.getSettings();copy.hold='off';const b=s.changeSettings(null);console.log(JSON.stringify([a.ok,b.ok,s.getSettings()]));""") == [False,False,{'ghost':'visible','hardDrop':'on','next':'on','hardDropLock':'general','lock':'interval','hold':'on'}]
+    assert evaluate("""const s=createSessionStore();const accepted=s.changeSettings({ghost:'visible'});accepted.value.ghost='hidden';const a=s.changeSettings({ghost:'hidden',hold:'bad'});const copy=s.getSettings();copy.hold='off';const b=s.changeSettings(null);console.log(JSON.stringify([a.ok,b.ok,s.getSettings()]));""") == [False,False,{'ghost':'visible','hardDrop':'on','next':'on','hardDropLock':'general','lock':'interval','hold':'on'}]

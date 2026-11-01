@@ -200,7 +200,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html SessionStore/controller and deterministic identity/time checks; S6.
             Depends on: T-027.
             Evidence: Game-over UUID/UTC records preserve safe scores including zero, duplicate events cannot insert twice and restart abandonment is excluded.
-        - [ ] T-029 — Rank and display the session top ten
+        - [x] T-029 — Rank and display the session top ten
+            Verification: RED both ranking cases and all four panel cases failed; GREEN 93 focused unit/leaderboard/layout/live-region checks passed in 44.07s; top-ten truncation and score-time-ID ties verified, board anchor stable at five widths; source review also found a settings Outcome alias, one regression failed then all 69 unit checks passed after detaching the stored settings.
             Scope: tetris.html ranking/Renderer and leaderboard toggle.
             Depends on: T-028.
             Evidence: Eleven results truncate correctly; score/time/ID tie ordering is deterministic; panel order and board anchoring remain correct.

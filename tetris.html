@@ -276,6 +276,39 @@
         line-height: 1.6;
         color: var(--muted);
       }
+      .leaderboard {
+        width: 190px;
+        max-height: 600px;
+      }
+      .leaderboard p {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .leaderboard ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 470px;
+        overflow-y: auto;
+      }
+      .leaderboard li {
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        gap: 4px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--edge);
+        font-size: 12px;
+      }
+      .leaderboard .rank {
+        color: var(--muted);
+      }
+      .leaderboard time {
+        display: block;
+        font-size: 10px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
     </style>
   </head>
   <body>
@@ -285,6 +318,16 @@
     </header>
     <main class="scene">
       <div class="left-panels">
+        <section
+          id="leaderboard"
+          class="panel leaderboard"
+          aria-label="Leaderboard"
+        >
+          <h2>Leaderboard</h2>
+          <p class="eyebrow">Session top 10</p>
+          <p id="leaderboard-empty">Complete a game to set a score.</p>
+          <ol id="high-scores" aria-live="polite"></ol>
+        </section>
         <section
           class="panel info"
           id="info"
@@ -326,6 +369,14 @@
           </p>
           <p class="phase" id="phase" aria-live="polite">Ready</p>
           <div class="toggles">
+            <button
+              id="toggle-leaderboard"
+              type="button"
+              aria-controls="leaderboard"
+              aria-expanded="true"
+            >
+              Leaderboard
+            </button>
             <button
               id="toggle-settings"
               type="button"
@@ -494,6 +545,17 @@
             value: { id: raw.id, score: raw.score, timestamp: raw.timestamp },
           };
         }
+        function rankResults(results) {
+          const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+          return structuredClone(results)
+            .sort(
+              (a, b) =>
+                b.score - a.score ||
+                compare(a.timestamp, b.timestamp) ||
+                compare(a.id, b.id),
+            )
+            .slice(0, 10);
+        }
         function createSessionStore() {
           let settings = { ...DEFAULT_SETTINGS },
             results = [];
@@ -505,7 +567,7 @@
               if (completedIds.has(checked.value.id))
                 return { ok: true, value: false };
               completedIds.add(checked.value.id);
-              results.push(checked.value);
+              results = rankResults([...results, checked.value]);
               return { ok: true, value: true };
             },
             topResults() {
@@ -522,7 +584,7 @@
                   message: "Invalid settings change.",
                 };
               const result = validateSettings({ ...settings, ...patch });
-              if (result.ok) settings = result.value;
+              if (result.ok) settings = { ...result.value };
               return result;
             },
           };
@@ -1198,6 +1260,32 @@
           for (const [x, y] of cells)
             ctx.fillRect(ox + x * 16, oy + y * 16, 14, 14);
         }
+        let displayedResults = "";
+        function paintLeaderboard(results) {
+          const signature = JSON.stringify(results);
+          if (signature === displayedResults) return;
+          displayedResults = signature;
+          document.getElementById("leaderboard-empty").hidden =
+            results.length > 0;
+          const rows = results.map((result, index) => {
+            const row = document.createElement("li"),
+              rank = document.createElement("span"),
+              detail = document.createElement("div"),
+              score = document.createElement("strong"),
+              time = document.createElement("time");
+            row.dataset.id = result.id;
+            rank.className = "rank";
+            rank.textContent = String(index + 1);
+            score.textContent = String(result.score);
+            time.dateTime = result.timestamp;
+            time.title = result.timestamp;
+            time.textContent = new Date(result.timestamp).toLocaleString();
+            detail.append(score, time);
+            row.append(rank, detail);
+            return row;
+          });
+          document.getElementById("high-scores").replaceChildren(...rows);
+        }
         function render() {
           for (const event of engine.drainEvents()) {
             if (event.type === "gameCompleted") {
@@ -1209,6 +1297,7 @@
               if (!recorded.ok) setText("message", recorded.message);
             }
           }
+          paintLeaderboard(store.topResults());
           const settings = store.getSettings(),
             v = engine.view(settings);
           for (const key of SETTING_KEYS) {
@@ -1230,9 +1319,10 @@
             }[v.phase],
           );
           setText("bonuses", "⚡".repeat(v.bonuses));
-          document
-            .getElementById("bonuses")
-            .setAttribute("aria-label", v.bonuses + " penetrator bonuses");
+          const bonus = document.getElementById("bonuses"),
+            bonusLabel = v.bonuses + " penetrator bonuses";
+          if (bonus.getAttribute("aria-label") !== bonusLabel)
+            bonus.setAttribute("aria-label", bonusLabel);
           paintPreview("held", v.held);
           paintPreview("next", settings.next === "on" ? v.queue[0] : null);
           boardCanvas.dataset.phase = v.phase;
@@ -1421,7 +1511,7 @@
         document.addEventListener("visibilitychange", () => {
           if (document.hidden) pauseForFocusLoss();
         });
-        for (const name of ["settings", "help"]) {
+        for (const name of ["leaderboard", "settings", "help"]) {
           document
             .getElementById("toggle-" + name)
             .addEventListener("click", () => {

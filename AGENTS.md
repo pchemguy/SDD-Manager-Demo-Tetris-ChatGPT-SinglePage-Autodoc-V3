@@ -49,3 +49,11 @@ Follow `sdd-manage`'s preparation and phase-activation workflows for required tr
 ## Project guidance
 
 Maintain project-specific navigation and validated setup/check commands here as they become established. Do not invent commands, paths, requirements or completion claims.
+
+## Current project navigation
+
+The target is one deployable tetris.html; application code and test tooling have not been implemented yet. Read [PROJECT](docs/dev/PROJECT.md), [ARCHITECTURE](docs/dev/ARCHITECTURE.md), [DECOMPOSITION](docs/dev/DECOMPOSITION.md), [SPEC](docs/dev/SPEC.md), [PLAN](docs/dev/PLAN.md) and [layout](docs/dev/layout.md). The canonical JSON contract is [session.schema.json](docs/dev/contracts/session.schema.json).
+
+Preparation status and decisions belong to [DOCS_TASKS](docs/dev/DOCS_TASKS.md) and [DOCS_PREPARATION](docs/dev/DOCS_PREPARATION.md). No product setup/test command is validated yet. Intended pytest, Node and Playwright tooling is development-only; playing must require only the HTML and any explicitly documented CDN capability.
+
+The executable hierarchy is [TASKS](docs/dev/TASKS.md); all product work is unchecked. Per-document review reports sit beside SPEC/PLAN/TASKS. Consult HANDOFF and DOCS_PREPARATION for the current preparation stop before starting implementation.

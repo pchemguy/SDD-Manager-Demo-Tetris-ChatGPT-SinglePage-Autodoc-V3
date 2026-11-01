@@ -92,6 +92,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
     - [x] Milestone 2.3 — Phase review
         - [x] T-014 — Review test and report phase 2
+            Forward repair: P2-F1 missing Enter help text corrected after four RED browser cases; all 12 modern packaged-browser cases GREEN in 17.79s. Original closure retained; final hosted CI and reclosure pending.
             Verification: Phase-wide Engine/Input/Renderer review and six-task atomic commit audit passed; 82 packaged tests passed in 85.03s; version 0.2.0, source formatting and independent artifact-name/hash gates passed; delivery milestones 2.1 and 2.2 closed with readback; hosted CI, explicit integration and release remain subsequent gates.
             Depends on: T-013 and completion/verified closure of delivery milestones 2.1, 2.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.2.0 artifact/name/hash/version evidence and unresolved findings.

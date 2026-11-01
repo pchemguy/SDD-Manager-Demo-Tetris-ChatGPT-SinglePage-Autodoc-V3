@@ -17,3 +17,7 @@ Working branch: phase/2-modern-rules; integration parent: main; branch-off ances
 ## Pending effects
 
 Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.
+
+## Forward repair
+
+T-014 P2-F1 help omission repaired after four failing checks; all 12 modern packaged-browser cases passed in 17.79s. Original phase review issue/milestone reopened for this bounded repair. Publish repair, verify full final CI, reclose, then integrate/release.

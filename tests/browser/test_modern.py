@@ -41,3 +41,9 @@ def test_ghost_outline_and_native_modifier_isolation(app_page):
     p.keyboard.press('Escape')
     p.keyboard.press('Enter')
     assert p.locator('#score').inner_text() == '0'
+
+
+def test_help_lists_hard_drop_key(app_page):
+    app_page.locator('#toggle-help').click()
+    assert 'Enter' in app_page.locator('#help').inner_text()
+    assert 'Hard drop' in app_page.locator('#help').inner_text()

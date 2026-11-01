@@ -23,3 +23,9 @@ Inspected the complete Engine and Input/Renderer paths at the T-013 source, incl
 ## Commit and package audit
 
 Six initial task closures audited: T-008 through T-013 each has exactly one owning checkbox and matching leading task subject. No exception or history rewrite. Source packaged without byte changes; independent inventory/hash check passed. Local packaged suite: 82 passed in 85.03s; both browser/protocol combinations, five layout widths and prior regressions included. Native Windows/headed OS-window delivery are not claimed.
+
+## Final visual-review correction
+
+P2-F1: visual inspection found the working Enter action omitted from help. Four new browser help assertions failed in both protocols/browsers. The help text is corrected and a scoped forward completion repair retains the original task closure and history. The phase review issue/milestone were reopened while repairing; final rechecks and reclosure follow. Earlier CI 41318510462 passed the 82-test candidate, but final candidate CI must be checked separately.
+
+P2-F1 recheck: all 12 modern packaged-browser checks passed in 17.79s, including the four previously failing help checks. No runtime logic changed. Final CI remains the full-suite gate.

@@ -466,6 +466,110 @@
             },
           };
         }
+        /** Protocol-specific settings boundary; file mode has no persistence capabilities. */
+        function createProtocolAdapter(protocol, capabilities) {
+          const mode =
+            protocol === "file:"
+              ? "file"
+              : ["http:", "https:"].includes(protocol)
+                ? "http"
+                : "unsupported";
+          let warnings = [];
+          const unavailable = () => ({
+            ok: false,
+            code: "persistenceUnavailable",
+            message:
+              "Settings are active, but persistent configuration is unavailable.",
+          });
+          function drainWarnings() {
+            const out = warnings;
+            warnings = [];
+            return out;
+          }
+          if (mode !== "http") {
+            if (mode === "unsupported")
+              warnings.push({
+                ok: false,
+                code: "unsupportedMode",
+                message: "Open this game as a local file or over HTTP(S).",
+              });
+            return {
+              mode,
+              readInitialSettings: () => ({ ...DEFAULT_SETTINGS }),
+              persist: () =>
+                mode === "file"
+                  ? { ok: true, value: null }
+                  : {
+                      ok: false,
+                      code: "unsupportedMode",
+                      message: "Unsupported execution mode.",
+                    },
+              drainWarnings,
+            };
+          }
+          function cookieValues(text) {
+            const out = Object.fromEntries(SETTING_KEYS.map((k) => [k, []]));
+            for (const part of String(text).split(";")) {
+              const item = part.trimStart(),
+                eq = item.indexOf("=");
+              if (eq < 0 || !item.startsWith("tetris_")) continue;
+              const key = item.slice(7, eq);
+              if (!Object.hasOwn(SETTING_VALUES, key)) continue;
+              try {
+                out[key].push(decodeURIComponent(item.slice(eq + 1)));
+              } catch {
+                out[key].push(null);
+              }
+            }
+            return out;
+          }
+          function writeCookie(key, value, errors = warnings) {
+            try {
+              capabilities.setCookie(
+                "tetris_" +
+                  key +
+                  "=" +
+                  encodeURIComponent(value) +
+                  "; Path=/; SameSite=Lax; Max-Age=31536000" +
+                  (protocol === "https:" ? "; Secure" : ""),
+              );
+              const saved = cookieValues(capabilities.getCookie())[key];
+              if (saved.length !== 1 || saved[0] !== value)
+                throw Error("Cookie was not retained");
+              return true;
+            } catch {
+              errors.push(unavailable());
+              return false;
+            }
+          }
+          function readInitialSettings() {
+            let params = new URLSearchParams(),
+              cookies = Object.fromEntries(SETTING_KEYS.map((k) => [k, []]));
+            try {
+              params = new URL(capabilities.getURL()).searchParams;
+            } catch {
+              warnings.push(unavailable());
+            }
+            try {
+              cookies = cookieValues(capabilities.getCookie());
+            } catch {
+              warnings.push(unavailable());
+            }
+            const result = { ...DEFAULT_SETTINGS };
+            for (const key of SETTING_KEYS) {
+              const query = params.getAll(key),
+                saved = cookies[key];
+              const explicit =
+                query.length === 1 && settingAllowed(key, query[0]);
+              if (explicit) result[key] = query[0];
+              else if (saved.length === 1 && settingAllowed(key, saved[0]))
+                result[key] = saved[0];
+              if (explicit) writeCookie(key, result[key]);
+            }
+            return result;
+          }
+          return { mode, readInitialSettings, drainWarnings };
+        }
         const KINDS = ["I", "J", "L", "O", "S", "T", "Z"];
         const SHAPES = {
           I: [
@@ -925,12 +1029,19 @@
           T: "#b38ae5",
           Z: "#eb7181",
         };
-        const mode =
-          location.protocol === "file:"
-            ? "file"
-            : ["http:", "https:"].includes(location.protocol)
-              ? "http"
-              : "unsupported";
+        const adapter = createProtocolAdapter(location.protocol, {
+          getURL: () => location.href,
+          getCookie: () => document.cookie,
+          setCookie: (value) => {
+            document.cookie = value;
+          },
+          replaceURL: (value) => history.replaceState(null, "", value),
+        });
+        const mode = adapter.mode;
+        store.changeSettings(adapter.readInitialSettings());
+        const startupWarnings = adapter.drainWarnings();
+        if (startupWarnings.length)
+          setText("message", startupWarnings[0].message);
         document.getElementById("mode").textContent =
           mode === "file"
             ? "LOCAL FILE / SESSION"

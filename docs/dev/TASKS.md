@@ -167,7 +167,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 5 — HTTP configuration
     - [ ] Milestone 5.1 — Protocol-specific configuration persistence
-        - [ ] T-024 — Resolve HTTP settings from URL cookies and defaults
+        - [x] T-024 — Resolve HTTP settings from URL cookies and defaults
+            Verification: RED four protocol cases failed; GREEN 54 unit and 12 settings browser checks passed; per-key URL-cookie-default precedence, explicit default cookie writes, invalid/duplicate fallbacks and file adapter zero-capability access verified; existing HTTP startup assertion updated for intentionally introduced URL resolution.
             Scope: tetris.html ProtocolAdapter/SettingsPolicy and precedence checks; S5.
             Depends on: T-023.
             Evidence: Resolve each key independently, save explicit defaults, retain cookies for omitted parameters and safely fall through malformed/duplicate values.

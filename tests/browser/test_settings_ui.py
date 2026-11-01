@@ -59,12 +59,16 @@ def test_settings_ghost_lock_controls_and_panel_anchor(app_page):
     assert p.locator('#next-kind').inner_text()=='T'
 
 
-def test_session_increment_does_not_access_persistence(app_page):
+def test_protocol_isolation_and_blocked_persistence(app_page, mode):
     p=app_page
     p.add_init_script("""window.persistenceTouches=0;Object.defineProperty(document,'cookie',{get(){window.persistenceTouches++;throw Error('cookie access');},set(){window.persistenceTouches++;throw Error('cookie access');}});history.replaceState=()=>{window.persistenceTouches++;throw Error('history access');};""")
     p.goto(p.url+'?ghost=hidden#keep')
     assert p.locator('#setting-ghost').count()==1
-    assert p.locator('#setting-ghost').input_value()=='dynamic'
+    assert p.locator('#setting-ghost').input_value()==('dynamic' if mode=='file' else 'hidden')
     p.locator('#setting-ghost').select_option('visible')
-    assert p.evaluate('persistenceTouches')==0
+    if mode=='file':
+        assert p.evaluate('persistenceTouches')==0
+    else:
+        assert p.evaluate('persistenceTouches')>0
+        assert 'persistent configuration is unavailable' in p.locator('#message').inner_text()
     assert p.url.endswith('?ghost=hidden#keep')

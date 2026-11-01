@@ -55,7 +55,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 2 — Modern rules
     - [ ] Milestone 2.1 — Modern piece state
-        - [ ] T-008 — Add seven-bag queue generation
+        - [x] T-008 — Add seven-bag queue generation
+            Verification: RED bag/preview case failed against independent draws; GREEN all 25 unit checks passed, including three full bags and preview transitions.
             Scope: tetris.html Engine queue and deterministic unit checks; S2.
             Depends on: T-007.
             Evidence: Every complete bag has all seven kinds, bags concatenate correctly and seeded tests cover boundaries without biasing gameplay queue.

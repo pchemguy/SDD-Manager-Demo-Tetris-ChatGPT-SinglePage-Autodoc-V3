@@ -385,8 +385,10 @@
         }
         function createEngine(random = Math.random) {
           let s,
+            bag,
             events = [];
           function reset() {
+            bag = [];
             s = {
               phase: "ready",
               gameId: null,
@@ -424,7 +426,17 @@
             }
           }
           function nextKind() {
-            return KINDS[Math.min(6, Math.floor(random() * 7))];
+            while (s.queue.length < 2) {
+              if (!bag.length) {
+                bag = KINDS.slice();
+                for (let i = bag.length - 1; i > 0; i--) {
+                  const j = Math.floor(random() * (i + 1));
+                  [bag[i], bag[j]] = [bag[j], bag[i]];
+                }
+              }
+              s.queue.push(bag.pop());
+            }
+            return s.queue.shift();
           }
           function spawn(kind = nextKind()) {
             const coords = SHAPES[kind],

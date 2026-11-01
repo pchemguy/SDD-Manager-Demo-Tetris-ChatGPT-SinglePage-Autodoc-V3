@@ -4,7 +4,7 @@
 
 - Mode: autodoc/onepass, selected by the project request on 2026-11-01.
 - Scope: the complete single-page Tetris target, including both execution modes, modern rules, penetrator, session-only settings, HTTP(S) configuration persistence, leaderboard and JSON/SQLite Save/Restore.
-- Approval basis: PROJECT approval remains active; ARCHITECTURE through TASKS checkpoints are preapproved by autodoc. Material unresolved gameplay choices remain proposals until resolved.
+- Approval basis: PROJECT and its gameplay decisions accepted by the human with k on 2026-11-01; ARCHITECTURE through TASKS checkpoints are preapproved by autodoc.
 - Stop: after published DOCS-008 and its verified issue closure, before DOCS-009 whole-package QC, integration or implementation.
 - Tracking: enabled for documentation and implementation by root AGENTS.md. Publication is required after every owned commit.
 - Reporting: Standard, using concise status reports; Minimal and Explicit profiles are available.
@@ -36,4 +36,8 @@ One documentation pass describes the entire requested product. Implementation mu
 
 ## Pending transitions
 
-Initialization commit d6f8f19eb3027529cb8b916013f674cf0dcfaf89 was published with exact ref readback; issue 1 is verified closed as completed with evidence. Publish/read back the PROJECT proposal, then await human acceptance of the brief and its proposed gameplay decisions. DOCS-002 remains unchecked and issue 2 open. The remaining documentation issues and milestone stay open; no architecture, package QC or implementation is authorized before the applicable boundaries.
+Initialization commit d6f8f19eb3027529cb8b916013f674cf0dcfaf89 was published with exact ref readback; issue 1 is verified closed as completed with evidence. Publish/read back the PROJECT proposal, PROJECT acceptance has been received; record it atomically with DOCS-002 completion and close issue 2 after publication. The remaining documentation issues and milestone stay open; no architecture, package QC or implementation is authorized before the applicable boundaries.
+
+## DOCS-002 completion evidence
+
+Human accepted the published PROJECT and its proposed decisions with k on 2026-11-01. docs/dev/PROJECT.md blob 4ffb6cdf71bdabd7640603aeb243a156fa7db258. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

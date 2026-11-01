@@ -53,39 +53,47 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 2 — Modern rules
 
-- [ ] Phase 2 — Modern rules
-    - [ ] Milestone 2.1 — Modern piece state
-        - [ ] T-008 — Add seven-bag queue generation
+- [x] Phase 2 — Modern rules
+    - [x] Milestone 2.1 — Modern piece state
+        - [x] T-008 — Add seven-bag queue generation
+            Verification: RED bag/preview case failed against independent draws; GREEN all 25 unit checks passed, including three full bags and preview transitions.
             Scope: tetris.html Engine queue and deterministic unit checks; S2.
             Depends on: T-007.
             Evidence: Every complete bag has all seven kinds, bags concatenate correctly and seeded tests cover boundaries without biasing gameplay queue.
-        - [ ] T-009 — Implement canonical SRS rotations and kicks
+        - [x] T-009 — Implement canonical SRS rotations and kicks
+            Verification: RED two SRS cases failed; GREEN 28 unit checks passed, exact eight I and JLSTZ tables, wall and floor kicks, blocked rotation and grounded timer preservation.
             Scope: tetris.html shape/kick definitions and Engine rotation; DECOMPOSITION geometry and SPEC S2 tables.
             Depends on: T-008.
             Evidence: Check every transition table, I/JLSTZ distinction, O invariance, wall/floor success and fully blocked no-op.
-        - [ ] T-010 — Integrate hold and next preview
+        - [x] T-010 — Integrate hold and next preview
+            Verification: RED both hold cases failed; GREEN 30 unit checks passed; reviewed bag consumption, SRS trials, hold reset and blocked spawn; hold/next canvases use canonical shapes and palette, native modifier shortcuts pass through.
             Scope: tetris.html Engine/Renderer/Input and modern-state checks.
             Depends on: T-009.
             Evidence: One hold per falling piece, reset on lock, orientation-zero replacement, blocked swap game over and accurate next kind.
             Milestone exit: review all 2.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/2/2.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 2.2 — Shared landing and drop controls
-        - [ ] T-011 — Add shared landing and conditional ghost
+    - [x] Milestone 2.2 — Shared landing and drop controls
+        - [x] T-011 — Add shared landing and conditional ghost
+            Verification: RED three ghost cases failed; GREEN 33 unit checks passed; shared regular landing stops at first obstruction, ghost is read-only, whole straddling ghost hides and fully lower-half projection shows.
             Scope: tetris.html Engine.landing/view and Renderer; S2.
             Depends on: T-010.
             Evidence: Regular landing stops at first obstacle; hide straddling/upper-half ghost and show fully lower-half ghost without state changes.
-        - [ ] T-012 — Connect hard drop to existing lock timing
+        - [x] T-012 — Connect hard drop to existing lock timing
+            Verification: RED two hard-drop cases failed; GREEN 36 unit checks passed; Enter uses shared ghost landing, two points per row, full contact interval after partial gravity tick and no repeat reset or score.
             Scope: tetris.html Engine/Input and timing checks; S2/S4.
             Depends on: T-011.
             Evidence: Enter reaches ghost destination, awards distance score, starts a full contact interval and preserves existing grounded elapsed time on repeat.
-        - [ ] T-013 — Verify modern rule interactions in both modes
+        - [x] T-013 — Verify modern rule interactions in both modes
+            Verification: Packaged 0.2.0 HTML passed all 82 tests in 85.03s under Chromium and Firefox in file and HTTP modes; hold/preview/drop/contact, ghost raster, modifier isolation, pause and classic regressions passed; milestone code review found no blocker; artifact names and hashes passed.
             Scope: tests/browser, README.md and help content.
             Depends on: T-012.
             Evidence: Run hold/bag/kick/drop/ghost regressions in actual packaged file/HTTP HTML under both browsers; verify pause, focus and existing baseline.
             Milestone exit: review all 2.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/2/2.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 2.3 — Phase review
-        - [ ] T-014 — Review test and report phase 2
+    - [x] Milestone 2.3 — Phase review
+        - [x] T-014 — Review test and report phase 2
+            Forward repair: P2-F1 missing Enter help text corrected after four RED browser cases; all 12 modern packaged-browser cases GREEN in 17.79s. Original closure retained; final hosted CI and reclosure pending.
+            Verification: Phase-wide Engine/Input/Renderer review and six-task atomic commit audit passed; 82 packaged tests passed in 85.03s; version 0.2.0, source formatting and independent artifact-name/hash gates passed; delivery milestones 2.1 and 2.2 closed with readback; hosted CI, explicit integration and release remain subsequent gates.
             Depends on: T-013 and completion/verified closure of delivery milestones 2.1, 2.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.2.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/2/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.2.0 before any next-phase activation.

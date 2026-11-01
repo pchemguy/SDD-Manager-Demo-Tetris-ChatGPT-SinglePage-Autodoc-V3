@@ -32,6 +32,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Depends on: T-003.
             Evidence: Keyboard works from the game, editable control focus is respected, page hiding pauses; toggle leaves board anchor stable.
         - [x] T-005 — Establish versioned release preparation tooling
+            Completion reassessment pending: remote CI run 41313200837 failed before tests because ubuntu-latest selected unsupported Ubuntu 26.04; pinning the runner to Playwright-supported Ubuntu 24.04 and awaiting new CI evidence before dependent task work.
             Verification: RED: 4 packaging/name/hash/version checks failed against inert commands; GREEN: 23 unit tests passed in 1.54s; actual 0.1.0 package and independent inventory/hash gate passed; exact HTML copied with stable version-free asset names; CI uses documented official actions and identical checks, but remote CI result is not yet claimed.
             Scope: VERSION, scripts/package.py, scripts/check_artifact_names.py, CI and packaging checks.
             Depends on: T-004.

@@ -21,3 +21,7 @@ Core gameplay uses browser built-ins. A SQLite CDN distribution is selected, pin
 ## CI actions
 
 The workflow uses actions/checkout, actions/setup-python and actions/setup-node at v7, matching examples read from their official repository READMEs during implementation. CI selects Python 3.12, Node 24 and the pinned requirements; its browser path is job-specific. These are development dependencies, not application runtime imports.
+
+## CI host recovery
+
+Initial run 41313200837 selected Ubuntu 26.04 through ubuntu-latest; Playwright browser dependency provisioning rejected that unsupported host before tests or package gates ran. CI is pinned to ubuntu-24.04, matching the pinned runner's supported browser distribution. This is a host-selection correction; the runner version and browser coverage remain unchanged. The correction's CI result must be read back before closing reassessment.

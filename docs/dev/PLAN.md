@@ -18,7 +18,7 @@ Versions below identify capability releases; the saved-file format version remai
 | Phase 6 — Results and JSON / 0.6.0 | S6 leaderboard; S7 JSON/schema; S9 JSON Save/Restore; all five panels and toggles | SQLite format option | 6.1 Session leaderboard; 6.2 JSON file exchange |
 | Phase 7 — SQLite exchange / 1.0.0 | S8 SQLite; S9 both-format choice/detection; full S1-S10 acceptance | None within agreed target | 7.1 SQLite codec; 7.2 Both-format delivery |
 
-Every phase also ends with its own Milestone <phase>.R — Phase review, containing exactly one phase code-review/testing/report task. IDs/names in this table are canonical for TASKS and hosted projection.
+Each phase ends with exactly one Phase review milestone: 1.3, 2.3, 3.3, 4.2, 5.2, 6.3 and 7.3 respectively. Each contains exactly one phase code-review/testing/report task. These numeric identities and the delivery milestone names in the table are canonical for TASKS and hosted projection.
 
 ## Milestone outcomes and exits
 

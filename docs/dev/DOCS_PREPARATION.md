@@ -17,9 +17,10 @@ One documentation pass describes the entire requested product. Implementation mu
 
 | Task | Current evidence / decision basis |
 | --- | --- |
-| DOCS-001 | Initialization checks below; completion commit includes task checkbox and HANDOFF. Publication and issue closure require subsequent readback. |
-| DOCS-002 | Onepass PROJECT proposal blob 4ffb6cdf71bdabd7640603aeb243a156fa7db258; human acceptance pending. Proposed approach and material gameplay decisions are recorded in [PROJECT](PROJECT.md), especially its decision table. Reviewed against the supplied target for principal-scope coverage, mode restrictions, UI placement, release obligations and explicit proposal status; no architecture or detailed contracts authored. Root README links included. |
-| DOCS-003 through DOCS-008 | Not authored; scoped autodoc preapproval applies after PROJECT acceptance and prerequisite checks. |
+| DOCS-001 | Initialization d6f8f19eb3027529cb8b916013f674cf0dcfaf89 published; issue 1 verified closed. |
+| DOCS-002 | Onepass PROJECT proposal blob 4ffb6cdf71bdabd7640603aeb243a156fa7db258; human accepted this exact proposal with k on 2026-11-01; acceptance commit 24711ba47b27b5d92123e91ecb0e1e60768b86cd published and issue 2 closed. Approach and material gameplay decisions are recorded in [PROJECT](PROJECT.md), especially its decision table. Reviewed against the supplied target for principal-scope coverage, mode restrictions, UI placement, release obligations and explicit proposal status; no architecture or detailed contracts authored. Root README links included. |
+| DOCS-003 through DOCS-007 | Completed, individually published and corresponding issues verified closed; exact-state evidence below. |
+| DOCS-008 | TASKS and adjacent conformance report completed under scoped preapproval; publication and issue 8 closure pending at this commit. |
 | DOCS-009 | Not selected; remains pending beyond the autodoc stop. |
 
 ## Initialization
@@ -36,7 +37,7 @@ One documentation pass describes the entire requested product. Implementation mu
 
 ## Pending transitions
 
-Initialization commit d6f8f19eb3027529cb8b916013f674cf0dcfaf89 was published with exact ref readback; issue 1 is verified closed as completed with evidence. Publish/read back the PROJECT proposal, PROJECT acceptance has been received; record it atomically with DOCS-002 completion and close issue 2 after publication. The remaining documentation issues and milestone stay open; no architecture, package QC or implementation is authorized before the applicable boundaries.
+DOCS-001 through DOCS-007 publications and issue closures are verified. Publish/read back DOCS-008, then close/read back issue 8. Stop after that readback: DOCS-009 and issue 9 remain open, the preparation milestone remains open, and design-docs/main remains unmerged. No implementation objects have been activated. Next eligible human instruction can select package QC; implementation still requires the subsequent preparation-integration/range gates.
 
 ## DOCS-002 completion evidence
 
@@ -61,3 +62,11 @@ Autodoc scoped preapproval following accepted PROJECT. docs/dev/PLAN.md blob 19b
 ## DOCS-007 completion evidence
 
 Autodoc scoped preapproval following accepted PROJECT. docs/dev/layout.md blob 77dbdbac7ef07a7912e1a8408219a6c04064031d; docs/dev/PLAN-REVIEW-REPORT.md blob a54bf5a6bb506164e7f222e5f1e502f2ff5c19c5; AGENTS.md blob a1360b67327bdc429ca1eb1e7f2765f65b276839. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.
+
+## Autodoc pass result
+
+Onepass complete through TASKS, subject to this checkpoint publication and issue 8 readback. Scope: the full accepted single-page target; seven releases and 41 unchecked product tasks. Adjacent SPEC, PLAN/layout and TASKS conformance reports are Ready for their scoped dependent stages. Formal schema JSON/constraints were inspected; executable metaschema validation remains an implementation check because its optional tooling is not provisioned. Whole-package QC was not run. Ordinary refinements made explicit SRS geometry/kicks and corrected numeric review milestone identities without changing accepted gameplay scope; their owning review reports retain findings/rechecks.
+
+## DOCS-008 completion evidence
+
+Autodoc scoped preapproval following accepted PROJECT. docs/dev/TASKS.md blob ba88dd685a3f904a8dc3dc73ed034dff1f70a794; docs/dev/TASKS-REVIEW-REPORT.md blob 527096e82bd3dc61986b8d22a8df29be0582a8e8; docs/dev/PLAN.md blob 064417669376be20feeb5538270e2493680d78aa; docs/dev/PLAN-REVIEW-REPORT.md blob f72dd59032e0ab22834b309b48c1380cad9d9ef7; docs/dev/HANDOFF.md blob 8b2386de65d0679ccc5cbb2528599ae4b9db39e9; AGENTS.md blob b1efc246fc1682e209b17a00b1d966035b4e7402. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

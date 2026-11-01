@@ -40,3 +40,9 @@ The layout owner assigned every domain/controller/presentation/session/codec/ada
 Additional reviewed identity:
 
 - layout.md: 77dbdbac7ef07a7912e1a8408219a6c04064031d
+
+## Revision 2 — Hosted milestone identity check
+
+PLAN-F1: Initial phase-review IDs used a letter suffix (<phase>.R), whereas the pinned projection parser accepts numeric dotted milestone IDs only. The planning owner corrected the seven review IDs to 1.3, 2.3, 3.3, 4.2, 5.2, 6.3 and 7.3 before hosted activation. Scope, ordering, delivery milestones and phase exits are unchanged. Inspected projection-input.mjs parseOwner grammar and rechecked the derived hierarchy with that actual parser. Original review/count observations remain above. Finding resolved; combined PLAN/layout readiness retained.
+
+- Revised PLAN blob: 064417669376be20feeb5538270e2493680d78aa

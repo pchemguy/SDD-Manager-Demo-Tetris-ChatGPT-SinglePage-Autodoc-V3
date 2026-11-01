@@ -1,6 +1,6 @@
 # Single-page HTML Tetris
 
-Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.2.0 adds modern rules. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
+Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.3.0 adds penetrator mode to the modern rules. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
 
 ## Play
 
@@ -20,6 +20,7 @@ The same file works over HTTP(S). For a localhost example with Python already av
 | Z | Rotate counterclockwise |
 | C / Shift | Hold, once per falling piece |
 | Enter | Hard drop |
+| P | Activate an available penetrator bonus |
 | Escape | Pause / resume |
 | R | Start / restart |
 | Help toggle | Show/hide keyboard help |
@@ -36,10 +37,12 @@ Each classic release includes tetris.html, README.md and SHA256SUMS. Check the d
 
 requirements-dev.txt pins pytest, Playwright and JSON Schema tooling. [Dependency/setup evidence](docs/DEPENDENCIES.md) explains dedicated installation/browser paths and this restricted Linux host's process-local Firefox recovery. Playing does not require developer tools.
 
-From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.2.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
+From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.3.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
 
 Headless Chromium and Playwright Firefox are checked through direct-file and localhost HTTP execution, including the five widths in SPEC. Native OS-window event delivery and native Windows execution are not established by these headless checks. See [TASKS](docs/dev/TASKS.md) and implementation reports for exact current evidence.
 
 Development uses [SDD Manager](SDD-MANAGER.md). See the [AI-assisted development disclosure](AI_DISCLOSURE.md). The [project brief](docs/dev/PROJECT.md), [specification](docs/dev/SPEC.md) and [handoff](docs/dev/HANDOFF.md) describe the complete intended scope and current checkpoint.
 
 Hold a piece with C or Shift, once per falling piece. The hold and next displays show orientation-zero pieces; the queue draws from shuffled seven-piece bags. Rotations use SRS wall/floor kicks.
+
+Clear four lines at once for one penetrator bonus, up to three. P spends one to make the current piece white until it locks. It can pass through occupied cells, but its final landing must not overlap them. Ghost and hard drop select the lowest legal landing. Hold is disabled for an active penetrator; settled pieces return to their ordinary colors.

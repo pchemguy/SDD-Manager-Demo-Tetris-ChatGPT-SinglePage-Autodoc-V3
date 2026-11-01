@@ -114,13 +114,14 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: P spends once, repeated activation is a no-op, active hold is disabled, grounded activation preserves or releases timing correctly and final lock never overlaps.
             Milestone exit: review all 3.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/3/3.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 3.2 — Bonus and presentation integration
+    - [x] Milestone 3.2 — Bonus and presentation integration
         - [x] T-017 — Award and cap penetrator bonuses
             Verification: RED four-clear bonus sequence failed; GREEN 43 unit checks passed; four-line clears award one through cap three, activation spends one and restart resets; existing single two and three line clear checks still pass.
             Scope: tetris.html Engine scoring/bonus events and deterministic four-clear fixtures.
             Depends on: T-016.
             Evidence: Four-line clears award one, cap at three, activation spends one and restart resets; ordinary clears do not award.
-        - [ ] T-018 — Render white penetrators and bonus indicator
+        - [x] T-018 — Render white penetrators and bonus indicator
+            Verification: RED missing indicator then white-cell shading cases failed in all four browser/protocol combinations; GREEN full packaged 0.3.0 suite passed 97 tests in 110.75s; real keyboard four-line clear earned bonus, P spent it, active and ghost pixels were white, hold blocked and lock restored ordinary color; milestone code review and package/format gates passed.
             Scope: tetris.html Renderer/help, browser checks and README.md.
             Depends on: T-017.
             Evidence: Earn/spend/lock loop updates one symbol per bonus; regular pieces/ghost/hold/preview never use white; both modes/browsers preserve prior play.

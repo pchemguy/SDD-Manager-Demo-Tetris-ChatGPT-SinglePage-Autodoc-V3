@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="app-version" content="0.2.0" />
+    <meta name="app-version" content="0.3.0" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Tetris</title>
     <link rel="icon" href="data:," />
@@ -257,7 +257,7 @@
   <body>
     <header class="appbar">
       <div class="brand">TET<span>R</span>IS</div>
-      <div>0.2.0 / SINGLE FILE</div>
+      <div>0.3.0 / SINGLE FILE</div>
     </header>
     <main class="scene">
       <div class="left-panels">
@@ -297,6 +297,9 @@
               ></canvas>
             </div>
           </div>
+          <p class="bonus-count">
+            Penetrator bonuses <output id="bonuses" aria-live="polite"></output>
+          </p>
           <p class="phase" id="phase" aria-live="polite">Ready</p>
           <div class="toggles">
             <button
@@ -336,8 +339,13 @@
             Pause / resume<br /><kbd>C</kbd> <kbd>Shift</kbd> Hold<br /><kbd
               >Enter</kbd
             >
-            Hard drop<br /><kbd>R</kbd>
+            Hard drop<br /><kbd>P</kbd> Penetrator<br /><kbd>R</kbd>
             Start / restart
+          </p>
+          <p>
+            Clear four lines to earn a penetrator bonus (up to three). P spends
+            one: pass through occupied cells to the lowest legal landing. Hold
+            is unavailable until it locks.
           </p>
           <p>
             Locking waits one full gravity interval after contact. Move off
@@ -839,8 +847,10 @@
         function paintCell(x, y, color) {
           context.fillStyle = color;
           context.fillRect(x * 30 + 1, y * 30 + 1, 28, 28);
-          context.fillStyle = "#0002";
-          context.fillRect(x * 30 + 1, y * 30 + 25, 28, 4);
+          if (color !== "#ffffff") {
+            context.fillStyle = "#0002";
+            context.fillRect(x * 30 + 1, y * 30 + 25, 28, 4);
+          }
         }
         function setText(id, value) {
           const element = document.getElementById(id);
@@ -880,6 +890,10 @@
               over: "Game over",
             }[v.phase],
           );
+          setText("bonuses", "⚡".repeat(v.bonuses));
+          document
+            .getElementById("bonuses")
+            .setAttribute("aria-label", v.bonuses + " penetrator bonuses");
           paintPreview("held", v.held);
           paintPreview("next", v.queue[0]);
           boardCanvas.dataset.phase = v.phase;
@@ -904,13 +918,21 @@
               if (kind) paintCell(x, y, palette[kind]);
             }),
           );
-          context.strokeStyle = v.active ? palette[v.active.kind] : "#8c9db5";
+          context.strokeStyle = v.active
+            ? v.active.penetrator
+              ? "#ffffff"
+              : palette[v.active.kind]
+            : "#8c9db5";
           context.lineWidth = 2;
           for (const [x, y] of v.ghostCells)
             context.strokeRect(x * 30 + 4, y * 30 + 4, 22, 22);
           if (v.active)
             for (const [x, y] of v.activeCells)
-              paintCell(x, y, palette[v.active.kind]);
+              paintCell(
+                x,
+                y,
+                v.active.penetrator ? "#ffffff" : palette[v.active.kind],
+              );
           if (v.phase !== "running") {
             context.fillStyle = "#080e19c9";
             context.fillRect(0, 0, 300, 600);

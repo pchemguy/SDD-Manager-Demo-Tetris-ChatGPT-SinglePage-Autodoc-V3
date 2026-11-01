@@ -45,3 +45,7 @@ Human accepted the published PROJECT and its proposed decisions with k on 2026-1
 ## DOCS-003 completion evidence
 
 Autodoc scoped preapproval following accepted PROJECT. docs/dev/ARCHITECTURE.md blob 3403140c4fcde421ba0d90784fd017c8df4e674f. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.
+
+## DOCS-004 completion evidence
+
+Autodoc scoped preapproval following accepted PROJECT. docs/dev/DECOMPOSITION.md blob a7963a169dcd6ce90d1226798a1bb22ea423aaaa. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

@@ -752,6 +752,7 @@
               addScore(2 * (destination.y - s.active.y));
               s.active = destination;
               syncGround();
+              if (settings.hardDropLock === "immediate") lock();
               return true;
             }
             if (action === "hold") {
@@ -769,6 +770,10 @@
             if (action === "softDrop") {
               const moved = move(0, 1);
               if (moved) addScore(1);
+              else if (settings.lock === "failed") {
+                lock();
+                return true;
+              }
               return moved;
             }
             if (action === "rotateCW" || action === "rotateCCW") {
@@ -796,11 +801,17 @@
           }
           function advance(ms, settings = DEFAULT_SETTINGS) {
             if (s.phase !== "running" || !Number.isFinite(ms) || ms < 0) return;
+            if (
+              settings.lock === "interval" &&
+              s.groundedElapsedMs !== null &&
+              s.groundedElapsedMs >= s.groundIntervalMs
+            )
+              lock();
             let remaining = ms;
             while (remaining > 0 && s.phase === "running") {
               const g = gravityInterval(s.level);
               let step = Math.min(remaining, g - s.gravityElapsedMs);
-              if (s.groundedElapsedMs !== null)
+              if (settings.lock === "interval" && s.groundedElapsedMs !== null)
                 step = Math.min(
                   step,
                   Math.max(0, s.groundIntervalMs - s.groundedElapsedMs),
@@ -809,6 +820,7 @@
               if (s.groundedElapsedMs !== null) s.groundedElapsedMs += step;
               remaining -= step;
               if (
+                settings.lock === "interval" &&
                 s.groundedElapsedMs !== null &&
                 s.groundedElapsedMs >= s.groundIntervalMs
               ) {
@@ -817,7 +829,7 @@
               }
               if (s.gravityElapsedMs >= g) {
                 s.gravityElapsedMs -= g;
-                move(0, 1);
+                if (!move(0, 1) && settings.lock === "failed") lock();
               }
             }
           }

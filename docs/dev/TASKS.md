@@ -144,7 +144,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html SettingsPolicy and SessionStore plus checks; S4 and DECOMPOSITION enums.
             Depends on: T-019.
             Evidence: All six keys validate exactly with canonical defaults and invalid values leave state unchanged; eliminate competing hard-coded defaults.
-        - [ ] T-021 — Implement selectable locking and live policy changes
+        - [x] T-021 — Implement selectable locking and live policy changes
+            Verification: RED three alternate-policy cases failed; GREEN 50 unit checks passed; failed soft/gravity attempts lock, hard drop follows general policy unless immediate selected, zero-distance immediate drop locks and policy toggles preserve contact elapsed including zero-update expiry.
             Scope: tetris.html Engine/controller settings integration and deterministic timing tests; S2/S4.
             Depends on: T-020.
             Evidence: Failed-downward and immediate hard-drop policies work; switching policies preserves contact elapsed time and cannot reset a grounded interval.

@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-010, phase 2, milestone 2.1 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-013, phase 2, milestone 2.2 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/2/2.1.md) records checks. RED both hold cases failed; GREEN 30 unit checks passed; reviewed bag consumption, SRS trials, hold reset and blocked spawn; hold/next canvases use canonical shapes and palette, native modifier shortcuts pass through.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/2/2.2.md) records checks. Packaged 0.2.0 HTML passed all 82 tests in 85.03s under Chromium and Firefox in file and HTTP modes; hold/preview/drop/contact, ghost raster, modifier isolation, pause and classic regressions passed; milestone code review found no blocker; artifact names and hashes passed.
 
 ## Branch and return
 

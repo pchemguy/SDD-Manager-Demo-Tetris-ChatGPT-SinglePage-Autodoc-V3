@@ -72,7 +72,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: One hold per falling piece, reset on lock, orientation-zero replacement, blocked swap game over and accurate next kind.
             Milestone exit: review all 2.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/2/2.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 2.2 — Shared landing and drop controls
+    - [x] Milestone 2.2 — Shared landing and drop controls
         - [x] T-011 — Add shared landing and conditional ghost
             Verification: RED three ghost cases failed; GREEN 33 unit checks passed; shared regular landing stops at first obstruction, ghost is read-only, whole straddling ghost hides and fully lower-half projection shows.
             Scope: tetris.html Engine.landing/view and Renderer; S2.
@@ -83,7 +83,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html Engine/Input and timing checks; S2/S4.
             Depends on: T-011.
             Evidence: Enter reaches ghost destination, awards distance score, starts a full contact interval and preserves existing grounded elapsed time on repeat.
-        - [ ] T-013 — Verify modern rule interactions in both modes
+        - [x] T-013 — Verify modern rule interactions in both modes
+            Verification: Packaged 0.2.0 HTML passed all 82 tests in 85.03s under Chromium and Firefox in file and HTTP modes; hold/preview/drop/contact, ghost raster, modifier isolation, pause and classic regressions passed; milestone code review found no blocker; artifact names and hashes passed.
             Scope: tests/browser, README.md and help content.
             Depends on: T-012.
             Evidence: Run hold/bag/kick/drop/ghost regressions in actual packaged file/HTTP HTML under both browsers; verify pause, focus and existing baseline.

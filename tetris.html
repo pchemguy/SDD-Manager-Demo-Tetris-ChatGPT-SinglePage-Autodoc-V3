@@ -369,6 +369,61 @@
           lock: "interval",
           hold: "on",
         });
+        const SETTING_VALUES = Object.freeze({
+          ghost: Object.freeze(["hidden", "dynamic", "visible"]),
+          hardDrop: Object.freeze(["off", "on"]),
+          next: Object.freeze(["off", "on"]),
+          hardDropLock: Object.freeze(["general", "immediate"]),
+          lock: Object.freeze(["failed", "interval"]),
+          hold: Object.freeze(["off", "on"]),
+        });
+        const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS);
+        function settingAllowed(key, value) {
+          return (
+            Object.hasOwn(SETTING_VALUES, key) &&
+            SETTING_VALUES[key].includes(value)
+          );
+        }
+        function validateSettings(value) {
+          if (
+            !value ||
+            typeof value !== "object" ||
+            Array.isArray(value) ||
+            Object.keys(value).length !== SETTING_KEYS.length ||
+            !SETTING_KEYS.every(
+              (k) => Object.hasOwn(value, k) && settingAllowed(k, value[k]),
+            )
+          )
+            return {
+              ok: false,
+              code: "invalidValue",
+              message:
+                "Settings must contain all six supported keys and selected values.",
+            };
+          return {
+            ok: true,
+            value: Object.fromEntries(SETTING_KEYS.map((k) => [k, value[k]])),
+          };
+        }
+        function createSessionStore() {
+          let settings = { ...DEFAULT_SETTINGS };
+          return {
+            getSettings() {
+              return { ...settings };
+            },
+            changeSettings(patch) {
+              if (!patch || typeof patch !== "object" || Array.isArray(patch))
+                return {
+                  ok: false,
+                  code: "invalidValue",
+                  message: "Invalid settings change.",
+                };
+              const result = validateSettings({ ...settings, ...patch });
+              if (result.ok) settings = result.value;
+              return result;
+            },
+          };
+        }
         const KINDS = ["I", "J", "L", "O", "S", "T", "Z"];
         const SHAPES = {
           I: [

@@ -139,7 +139,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 4 — Session settings
     - [ ] Milestone 4.1 — Six-setting session configuration
-        - [ ] T-020 — Centralize exact setting validation and defaults
+        - [x] T-020 — Centralize exact setting validation and defaults
+            Verification: RED both canonical settings/store cases failed; GREEN 46 unit checks passed; all supported values validate exactly, missing extra coerced values reject and invalid patches leave detached session settings unchanged.
             Scope: tetris.html SettingsPolicy and SessionStore plus checks; S4 and DECOMPOSITION enums.
             Depends on: T-019.
             Evidence: All six keys validate exactly with canonical defaults and invalid values leave state unchanged; eliminate competing hard-coded defaults.

@@ -172,7 +172,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html ProtocolAdapter/SettingsPolicy and precedence checks; S5.
             Depends on: T-023.
             Evidence: Resolve each key independently, save explicit defaults, retain cookies for omitted parameters and safely fall through malformed/duplicate values.
-        - [ ] T-025 — Persist changes without navigation
+        - [x] T-025 — Persist changes without navigation
+            Verification: RED three persistence unit cases and both HTTP browser cases failed; GREEN 57 unit and 16 settings browser checks passed; per-key cookies and replaceState preserve unrelated URL fields/fragment, HTTPS Secure and HTTP attributes checked, invalid settings cause no writes and refusal/history errors preserve effective settings with warnings.
             Scope: tetris.html HTTP adapter and browser persistence checks; S5.
             Depends on: T-024.
             Evidence: Update selected cookies/query via replaceState, preserve unrelated fields/fragment, set HTTP/HTTPS attributes correctly and warn on refusal.

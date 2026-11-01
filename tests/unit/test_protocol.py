@@ -21,3 +21,15 @@ def test_malformed_duplicate_cookies_and_percent_values():
 
 def test_file_adapter_never_touches_persistence_capabilities():
     assert evaluate("""let touches=0;const caps=new Proxy({},{get(){touches++;throw Error('forbidden capability');}});const a=createProtocolAdapter('file:',caps);console.log(JSON.stringify([a.mode,a.readInitialSettings(),a.persist(DEFAULT_SETTINGS).ok,touches]));""") == ['file',{'ghost':'dynamic','hardDrop':'on','next':'on','hardDropLock':'general','lock':'interval','hold':'on'},True,0]
+
+
+def test_change_persists_only_selected_key_and_preserves_unrelated_url():
+    assert evaluate(HARNESS+"""const h=harness('http://game.test/play?other=a&other=b&ghost=hidden&ghost=visible#keep','tetris_hold=off','http:');const out=h.adapter.persist({...DEFAULT_SETTINGS,ghost:'visible'},['ghost']);const u=new URL(h.url());console.log(JSON.stringify([out.ok,u.searchParams.getAll('other'),u.searchParams.getAll('ghost'),u.hash,h.writes]));""") == [True,['a','b'],['visible'],'#keep',['tetris_ghost=visible; Path=/; SameSite=Lax; Max-Age=31536000']]
+
+
+def test_https_all_settings_secure_and_invalid_input_makes_no_writes():
+    assert evaluate(HARNESS+"""const h=harness('https://game.test/#keep','');const out=h.adapter.persist(DEFAULT_SETTINGS);const count=h.writes.length;const bad=h.adapter.persist({...DEFAULT_SETTINGS,hold:'bad'});console.log(JSON.stringify([out.ok,count,h.writes.every(x=>x.endsWith('; Secure')),bad.ok,h.writes.length,new URL(h.url()).searchParams.size]));""") == [True,6,True,False,6,6]
+
+
+def test_cookie_refusal_and_history_failure_return_warnings_without_throwing():
+    assert evaluate("""let url='http://game.test/',cookie='';const a=createProtocolAdapter('http:',{getURL:()=>url,getCookie:()=>'',setCookie:()=>{},replaceURL:v=>url=v});const first=a.persist({...DEFAULT_SETTINGS,ghost:'visible'},['ghost']);const b=createProtocolAdapter('http:',{getURL:()=>url,getCookie:()=>cookie,setCookie:v=>cookie=v.split(';')[0],replaceURL:()=>{throw Error('denied');}});const second=b.persist({...DEFAULT_SETTINGS,hold:'off'},['hold']);console.log(JSON.stringify([first.code,new URL(url).searchParams.get('ghost'),second.code,cookie]));""") == ['persistenceUnavailable','visible','persistenceUnavailable','tetris_hold=off']

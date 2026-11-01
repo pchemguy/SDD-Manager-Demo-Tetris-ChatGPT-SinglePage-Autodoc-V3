@@ -367,7 +367,7 @@
         >
           <h2>Settings</h2>
           <div id="setting-fields"></div>
-          <p>Changes last until this page reloads.</p>
+          <p id="settings-note">Changes last until this page reloads.</p>
         </section>
         <section id="help" class="panel help" hidden>
           <h2>Controls / help</h2>
@@ -568,7 +568,41 @@
             }
             return result;
           }
-          return { mode, readInitialSettings, drainWarnings };
+          function persist(settings, keys = SETTING_KEYS) {
+            const validated = validateSettings(settings);
+            if (!validated.ok) return validated;
+            if (
+              !Array.isArray(keys) ||
+              new Set(keys).size !== keys.length ||
+              !keys.every((k) => SETTING_KEYS.includes(k))
+            )
+              return {
+                ok: false,
+                code: "invalidValue",
+                message: "Invalid setting keys.",
+              };
+            if (!keys.length) return { ok: true, value: null };
+            const errors = [];
+            let url = null;
+            try {
+              url = new URL(capabilities.getURL());
+              for (const key of keys)
+                url.searchParams.set(key, validated.value[key]);
+            } catch {
+              errors.push(unavailable());
+            }
+            for (const key of keys)
+              writeCookie(key, validated.value[key], errors);
+            if (url) {
+              try {
+                capabilities.replaceURL(url.href);
+              } catch {
+                errors.push(unavailable());
+              }
+            }
+            return errors.length ? errors[0] : { ok: true, value: null };
+          }
+          return { mode, readInitialSettings, persist, drainWarnings };
         }
         const KINDS = ["I", "J", "L", "O", "S", "T", "Z"];
         const SHAPES = {
@@ -1039,6 +1073,12 @@
         });
         const mode = adapter.mode;
         store.changeSettings(adapter.readInitialSettings());
+        setText(
+          "settings-note",
+          mode === "http"
+            ? "Changes are saved for your next visit."
+            : "Changes last until this page reloads.",
+        );
         const startupWarnings = adapter.drainWarnings();
         if (startupWarnings.length)
           setText("message", startupWarnings[0].message);
@@ -1231,7 +1271,11 @@
             advanceToNow();
             const result = store.changeSettings({ [key]: select.value });
             if (!result.ok) setText("message", result.message);
-            else engine.advance(0, result.value);
+            else {
+              engine.advance(0, result.value);
+              const saved = adapter.persist(result.value, [key]);
+              setText("message", saved.ok ? "" : saved.message);
+            }
             render();
           });
           label.append(title, select);

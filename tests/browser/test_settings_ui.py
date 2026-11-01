@@ -8,7 +8,7 @@ def values(p):
     return p.locator('#settings select').evaluate_all('(es)=>Object.fromEntries(es.map(e=>[e.dataset.setting,e.value]))')
 
 
-def test_session_settings_restart_and_reload(app_page):
+def test_settings_restart_and_reload_by_protocol(app_page, mode):
     p=app_page
     assert p.locator('#settings select').count()==6
     assert values(p)==DEFAULTS
@@ -25,9 +25,9 @@ def test_session_settings_restart_and_reload(app_page):
     assert p.locator('#next').is_hidden()
     p.locator('#start').click()
     assert values(p)==CHANGED
-    assert p.url==before
+    if mode=='file': assert p.url==before
     p.reload()
-    assert values(p)==DEFAULTS
+    assert values(p)==(DEFAULTS if mode=='file' else CHANGED)
 
 
 def test_settings_ghost_lock_controls_and_panel_anchor(app_page):

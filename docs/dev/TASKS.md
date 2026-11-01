@@ -8,7 +8,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 1 — Classic baseline
     - [ ] Milestone 1.1 — Classic playable loop
-        - [ ] T-001 — Provision isolated verification tools
+        - [x] T-001 — Provision isolated verification tools
+            Verification: pytest readiness suite: 3 passed in 3.68s; isolated matching Chromium shell and Firefox file/HTTP input/Canvas/teardown verified; Firefox requires the documented process-local content-sandbox override on this host; extraction harness passed; no application acceptance claimed.
             Scope: requirements-dev.txt, tests/support, tests/unit and browser policy evidence; pin development tools and establish pytest/Node extraction harness.
             Depends on: accepted preparation, Phase 1 activation and selected implementation range.
             Evidence: Demonstrate isolated Chromium/Firefox provisioning and file/localhost launch evidence; report actual limits before dependent browser checks.

@@ -60,7 +60,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html Engine queue and deterministic unit checks; S2.
             Depends on: T-007.
             Evidence: Every complete bag has all seven kinds, bags concatenate correctly and seeded tests cover boundaries without biasing gameplay queue.
-        - [ ] T-009 — Implement canonical SRS rotations and kicks
+        - [x] T-009 — Implement canonical SRS rotations and kicks
+            Verification: RED two SRS cases failed; GREEN 28 unit checks passed, exact eight I and JLSTZ tables, wall and floor kicks, blocked rotation and grounded timer preservation.
             Scope: tetris.html shape/kick definitions and Engine rotation; DECOMPOSITION geometry and SPEC S2 tables.
             Depends on: T-008.
             Evidence: Check every transition table, I/JLSTZ distinction, O invariance, wall/floor success and fully blocked no-op.

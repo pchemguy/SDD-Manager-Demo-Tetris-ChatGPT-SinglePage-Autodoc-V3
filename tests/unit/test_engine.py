@@ -17,8 +17,9 @@ def test_pause_freezes_game_time():
     assert evaluate("const e=createEngine(()=>0);e.start('g');e.setPaused(true);e.advance(8000,DEFAULT_SETTINGS);const a=e.view().active.y;e.setPaused(false);e.advance(1000,DEFAULT_SETTINGS);console.log(JSON.stringify([a,e.view().active.y]));") == [-1, 0]
 
 
-def test_rotation_uses_occupied_cells_and_rejects_outside_board():
-    assert evaluate("const e=createEngine(()=>0);e.start('g');e.act('rotateCW');const a=e.view().active.orientation;e.act('softDrop');e.act('rotateCW');console.log(JSON.stringify([a,e.view().active.orientation,e.view().activeCells]));") == [0, 1, [[5,0],[5,1],[5,2],[5,3]]]
+def test_rotation_uses_occupied_cells():
+    assert evaluate("const e=createEngine(()=>0);e.start('g');e.act('softDrop');e.act('rotateCW');console.log(JSON.stringify(e.view().activeCells));") == [[5,0],[5,1],[5,2],[5,3]]
+
 
 def test_lift_off_discards_grounded_elapsed_time():
     assert evaluate("const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[10][6]='O';e.fixture({board,active:{kind:'I',orientation:0,x:3,y:8,penetrator:false},groundedElapsedMs:null});e.advance(500);e.act('left');console.log(JSON.stringify([e.view().groundedElapsedMs,e.view().board.flat().filter(Boolean).length]));", fixture=True) == [None, 1]

@@ -193,7 +193,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 6 — Results and JSON
 
-- [ ] Phase 6 — Results and JSON
+- [x] Phase 6 — Results and JSON
     - [x] Milestone 6.1 — Session leaderboard
         - [x] T-028 — Record stable completed-game results once
             Verification: RED three result/store cases failed; GREEN 67 unit checks passed; stable UUID-v4 IDs, zero/safe scores and canonical calendar-valid UTC completion times preserved, detached results and duplicate suppression verified, engine completion recorded once while restart abandonment creates no event; phase tracking reconciled by fresh complete hosted inventory after stale helper readback.
@@ -230,8 +230,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Round-trip exact IDs/scores/timestamps/settings in both modes; prove unchanged results/settings/cookies/URL for invalid/oversized/trailing/duplicate inputs; hide buttons with settings.
             Milestone exit: review all 6.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/6/6.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 6.3 — Phase review
-        - [ ] T-034 — Review test and report phase 6
+    - [x] Milestone 6.3 — Phase review
+        - [x] T-034 — Review test and report phase 6
+            Verification: Phase-wide event/store/validator/JSON/FileController/protocol/renderer review found no unresolved finding; six delivery closures audited without exceptions; full packaged 0.6.0 suite passed 193 tests in 266.85s; invalid-file atomicity, field preservation, busy/cancel/resource paths and four-file schema inventory verified; milestones 6.1 and 6.2 closed/read back; exact-tip CI integration and release remain coordinator gates.
             Depends on: T-033 and completion/verified closure of delivery milestones 6.1, 6.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.6.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/6/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.6.0 before any next-phase activation.

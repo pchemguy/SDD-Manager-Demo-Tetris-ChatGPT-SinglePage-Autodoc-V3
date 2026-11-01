@@ -165,24 +165,28 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 5 — HTTP configuration
 
-- [ ] Phase 5 — HTTP configuration
-    - [ ] Milestone 5.1 — Protocol-specific configuration persistence
-        - [ ] T-024 — Resolve HTTP settings from URL cookies and defaults
+- [x] Phase 5 — HTTP configuration
+    - [x] Milestone 5.1 — Protocol-specific configuration persistence
+        - [x] T-024 — Resolve HTTP settings from URL cookies and defaults
+            Verification: RED four protocol cases failed; GREEN 54 unit and 12 settings browser checks passed; per-key URL-cookie-default precedence, explicit default cookie writes, invalid/duplicate fallbacks and file adapter zero-capability access verified; existing HTTP startup assertion updated for intentionally introduced URL resolution.
             Scope: tetris.html ProtocolAdapter/SettingsPolicy and precedence checks; S5.
             Depends on: T-023.
             Evidence: Resolve each key independently, save explicit defaults, retain cookies for omitted parameters and safely fall through malformed/duplicate values.
-        - [ ] T-025 — Persist changes without navigation
+        - [x] T-025 — Persist changes without navigation
+            Verification: RED three persistence unit cases and both HTTP browser cases failed; GREEN 57 unit and 16 settings browser checks passed; per-key cookies and replaceState preserve unrelated URL fields/fragment, HTTPS Secure and HTTP attributes checked, invalid settings cause no writes and refusal/history errors preserve effective settings with warnings.
             Scope: tetris.html HTTP adapter and browser persistence checks; S5.
             Depends on: T-024.
             Evidence: Update selected cookies/query via replaceState, preserve unrelated fields/fragment, set HTTP/HTTPS attributes correctly and warn on refusal.
-        - [ ] T-026 — Verify file-mode isolation and reload behavior
+        - [x] T-026 — Verify file-mode isolation and reload behavior
+            Verification: Full packaged 0.5.0 suite passed 142 tests in 219.78s; all six per-key precedence/default-write/omitted-cookie paths, malformed duplicates, HTTP changes and reloads, blocked cookie/history warnings and file zero-access/unchanged-URL behavior verified in both browsers; HTTPS attributes unit-inspected, not a live HTTPS hosting claim; milestone source review, formatting and independent package gates passed.
             Scope: tests/unit/browser, README.md and protocol failure fixtures.
             Depends on: T-025.
             Evidence: Prove no file-mode cookie/config-URL access and default reloads; cover all six precedence/write paths, blocked cookies and history failure in both browsers.
             Milestone exit: review all 5.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/5/5.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 5.2 — Phase review
-        - [ ] T-027 — Review test and report phase 5
+    - [x] Milestone 5.2 — Phase review
+        - [x] T-027 — Review test and report phase 5
+            Verification: Phase-wide ProtocolAdapter SettingsPolicy store and controller review found no unresolved finding; three delivery closures audited without exceptions; 142 packaged tests passed in 219.78s; all six precedence matrices, refusal fixtures, file isolation and prior regressions covered; README default-lock wording clarified and package name/hash gate rerun; milestone 5.1 closed/read back; exact-tip CI integration and release remain coordinator gates.
             Depends on: T-026 and completion/verified closure of delivery milestones 5.1.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.5.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/5/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.5.0 before any next-phase activation.

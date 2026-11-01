@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="app-version" content="0.4.0" />
+    <meta name="app-version" content="0.5.0" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Tetris</title>
     <link rel="icon" href="data:," />
@@ -281,7 +281,7 @@
   <body>
     <header class="appbar">
       <div class="brand">TET<span>R</span>IS</div>
-      <div>0.4.0 / SINGLE FILE</div>
+      <div>0.5.0 / SINGLE FILE</div>
     </header>
     <main class="scene">
       <div class="left-panels">
@@ -367,7 +367,7 @@
         >
           <h2>Settings</h2>
           <div id="setting-fields"></div>
-          <p>Changes last until this page reloads.</p>
+          <p id="settings-note">Changes last until this page reloads.</p>
         </section>
         <section id="help" class="panel help" hidden>
           <h2>Controls / help</h2>
@@ -465,6 +465,144 @@
               return result;
             },
           };
+        }
+        /** Protocol-specific settings boundary; file mode has no persistence capabilities. */
+        function createProtocolAdapter(protocol, capabilities) {
+          const mode =
+            protocol === "file:"
+              ? "file"
+              : ["http:", "https:"].includes(protocol)
+                ? "http"
+                : "unsupported";
+          let warnings = [];
+          const unavailable = () => ({
+            ok: false,
+            code: "persistenceUnavailable",
+            message:
+              "Settings are active, but persistent configuration is unavailable.",
+          });
+          function drainWarnings() {
+            const out = warnings;
+            warnings = [];
+            return out;
+          }
+          if (mode !== "http") {
+            if (mode === "unsupported")
+              warnings.push({
+                ok: false,
+                code: "unsupportedMode",
+                message: "Open this game as a local file or over HTTP(S).",
+              });
+            return {
+              mode,
+              readInitialSettings: () => ({ ...DEFAULT_SETTINGS }),
+              persist: () =>
+                mode === "file"
+                  ? { ok: true, value: null }
+                  : {
+                      ok: false,
+                      code: "unsupportedMode",
+                      message: "Unsupported execution mode.",
+                    },
+              drainWarnings,
+            };
+          }
+          function cookieValues(text) {
+            const out = Object.fromEntries(SETTING_KEYS.map((k) => [k, []]));
+            for (const part of String(text).split(";")) {
+              const item = part.trimStart(),
+                eq = item.indexOf("=");
+              if (eq < 0 || !item.startsWith("tetris_")) continue;
+              const key = item.slice(7, eq);
+              if (!Object.hasOwn(SETTING_VALUES, key)) continue;
+              try {
+                out[key].push(decodeURIComponent(item.slice(eq + 1)));
+              } catch {
+                out[key].push(null);
+              }
+            }
+            return out;
+          }
+          function writeCookie(key, value, errors = warnings) {
+            try {
+              capabilities.setCookie(
+                "tetris_" +
+                  key +
+                  "=" +
+                  encodeURIComponent(value) +
+                  "; Path=/; SameSite=Lax; Max-Age=31536000" +
+                  (protocol === "https:" ? "; Secure" : ""),
+              );
+              const saved = cookieValues(capabilities.getCookie())[key];
+              if (saved.length !== 1 || saved[0] !== value)
+                throw Error("Cookie was not retained");
+              return true;
+            } catch {
+              errors.push(unavailable());
+              return false;
+            }
+          }
+          function readInitialSettings() {
+            let params = new URLSearchParams(),
+              cookies = Object.fromEntries(SETTING_KEYS.map((k) => [k, []]));
+            try {
+              params = new URL(capabilities.getURL()).searchParams;
+            } catch {
+              warnings.push(unavailable());
+            }
+            try {
+              cookies = cookieValues(capabilities.getCookie());
+            } catch {
+              warnings.push(unavailable());
+            }
+            const result = { ...DEFAULT_SETTINGS };
+            for (const key of SETTING_KEYS) {
+              const query = params.getAll(key),
+                saved = cookies[key];
+              const explicit =
+                query.length === 1 && settingAllowed(key, query[0]);
+              if (explicit) result[key] = query[0];
+              else if (saved.length === 1 && settingAllowed(key, saved[0]))
+                result[key] = saved[0];
+              if (explicit) writeCookie(key, result[key]);
+            }
+            return result;
+          }
+          function persist(settings, keys = SETTING_KEYS) {
+            const validated = validateSettings(settings);
+            if (!validated.ok) return validated;
+            if (
+              !Array.isArray(keys) ||
+              new Set(keys).size !== keys.length ||
+              !keys.every((k) => SETTING_KEYS.includes(k))
+            )
+              return {
+                ok: false,
+                code: "invalidValue",
+                message: "Invalid setting keys.",
+              };
+            if (!keys.length) return { ok: true, value: null };
+            const errors = [];
+            let url = null;
+            try {
+              url = new URL(capabilities.getURL());
+              for (const key of keys)
+                url.searchParams.set(key, validated.value[key]);
+            } catch {
+              errors.push(unavailable());
+            }
+            for (const key of keys)
+              writeCookie(key, validated.value[key], errors);
+            if (url) {
+              try {
+                capabilities.replaceURL(url.href);
+              } catch {
+                errors.push(unavailable());
+              }
+            }
+            return errors.length ? errors[0] : { ok: true, value: null };
+          }
+          return { mode, readInitialSettings, persist, drainWarnings };
         }
         const KINDS = ["I", "J", "L", "O", "S", "T", "Z"];
         const SHAPES = {
@@ -925,12 +1063,25 @@
           T: "#b38ae5",
           Z: "#eb7181",
         };
-        const mode =
-          location.protocol === "file:"
-            ? "file"
-            : ["http:", "https:"].includes(location.protocol)
-              ? "http"
-              : "unsupported";
+        const adapter = createProtocolAdapter(location.protocol, {
+          getURL: () => location.href,
+          getCookie: () => document.cookie,
+          setCookie: (value) => {
+            document.cookie = value;
+          },
+          replaceURL: (value) => history.replaceState(null, "", value),
+        });
+        const mode = adapter.mode;
+        store.changeSettings(adapter.readInitialSettings());
+        setText(
+          "settings-note",
+          mode === "http"
+            ? "Changes are saved for your next visit."
+            : "Changes last until this page reloads.",
+        );
+        const startupWarnings = adapter.drainWarnings();
+        if (startupWarnings.length)
+          setText("message", startupWarnings[0].message);
         document.getElementById("mode").textContent =
           mode === "file"
             ? "LOCAL FILE / SESSION"
@@ -1120,7 +1271,11 @@
             advanceToNow();
             const result = store.changeSettings({ [key]: select.value });
             if (!result.ok) setText("message", result.message);
-            else engine.advance(0, result.value);
+            else {
+              engine.advance(0, result.value);
+              const saved = adapter.persist(result.value, [key]);
+              setText("message", saved.ok ? "" : saved.message);
+            }
             render();
           });
           label.append(title, select);

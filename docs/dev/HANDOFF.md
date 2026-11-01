@@ -17,3 +17,9 @@ Working branch: phase/3-penetrator; integration parent: main; branch-off ancesto
 ## Pending effects
 
 Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.
+
+## Pending recovery
+
+P3-F1 final CI failed one Firefox/file timing assertion and held integration. Controlled browser fixtures now install their clock before first application navigation, with no production timing change; ten repeat cases passed. Full revised suite/commit publication, exact-tip CI and hosted review reclosure must precede release. See phase report.
+
+P3-F1 final recovery: temporary fake-clock fixtures/tracing removed; native-time affected suite 68 passed in 169.08s, final transition-waiter suite 16 passed in 70.33s, with exact engine boundaries intact. Publish the scoped T-019 repair, verify full exact-tip CI, reclose review issue/milestone, then integrate/release.

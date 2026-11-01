@@ -33,3 +33,7 @@ The generated dist/tetris.html was verified byte-identical to source and tested 
 ## Phase 1 final review
 
 Prettier 3.6.2 was installed in a dedicated external development-tool directory and used to format the sole HTML without adding a runtime dependency. Source formatting checks passed. Review fixed repeated unchanged aria-live status writes and accepted valid self-closing version metadata in packaging; all five focused reproductions failed before those fixes and passed afterward. The rebuilt artifact passed 62 pytest checks in 85.19 seconds and independent filename/hash validation. Direct PNG inspection confirmed cyan piece pixels at the expected coordinates in all four browser/mode screenshots; no rendering workaround was required.
+
+## Timing checks
+
+Engine tests supply deterministic elapsed time, including exact 999/1000ms contact boundaries. Browser scenarios use native animation time and wait for observable piece/game transitions. During Phase 3 verification, Playwright 1.56.0 virtual-clock runs intermittently moved from 2000ms back to an earlier clock value in Firefox and stopped driving game frames; pre-navigation installation and frame synchronization did not reliably repair it. That diagnostic layer was removed rather than changing game timing or dropping Firefox/file coverage. The browser suite still exercises the actual packaged HTML in both protocols/browsers.

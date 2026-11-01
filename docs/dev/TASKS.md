@@ -129,6 +129,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
     - [x] Milestone 3.3 — Phase review
         - [x] T-019 — Review test and report phase 3
+            Reassessment P3-F1: one hosted Firefox/file timing case failed and reproduced locally; integration held. Temporary clock setup repairs proved insufficient; final forward repair uses native browser animation time and observable transitions, with exact timing in engine checks. All 68 affected checks and 16 final waiter checks passed; original closure retained, final CI/reclosure pending.
             Verification: Complete phase Engine/controller/presentation code review found no unresolved S3 finding; four initial delivery closures audited with no exceptions; packaged 0.3.0 full suite passed 97 tests in 110.75s; Prettier and independent artifact inventory/hash gates passed; milestones 3.1 and 3.2 closed/read back; exact-tip CI, explicit main integration and release remain coordinator gates.
             Depends on: T-018 and completion/verified closure of delivery milestones 3.1, 3.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.3.0 artifact/name/hash/version evidence and unresolved findings.

@@ -11,3 +11,15 @@ def test_move_without_a_future_nonoverlapping_landing_is_rejected():
 
 def test_down_stops_at_lowest_legal_cavity_before_colliding_floor():
     assert evaluate("""const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[19][4]='J';e.fixture({board,active:{kind:'O',orientation:0,x:3,y:0,penetrator:true}});for(let i=0;i<25;i++)e.act('softDrop');console.log(JSON.stringify([e.view().active.y,e.view().groundedElapsedMs,e.view().board[19][4]]));""",fixture=True) == [17,0,'J']
+
+
+def test_activation_spends_once_suppresses_hold_and_releases_support():
+    assert evaluate("""const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[8][4]='J';e.fixture({board,bonuses:1,active:{kind:'O',orientation:0,x:3,y:6},groundedElapsedMs:null});e.advance(700);const activate=e.act('penetrator');const v=e.view();const repeat=e.act('penetrator'),hold=e.act('hold');e.act('hardDrop');e.advance(1000);console.log(JSON.stringify([activate,v.bonuses,v.active.penetrator,v.groundedElapsedMs,repeat,hold,e.view().active.penetrator,e.view().board[8][4]]));""",fixture=True) == [True,0,True,None,False,False,False,'J']
+
+
+def test_activation_without_lift_preserves_delay_and_pause_rejects():
+    assert evaluate("""const e=createEngine(()=>0);e.start('g');e.act('hardDrop');e.fixture({bonuses:2});e.advance(700);e.act('penetrator');const timer=e.view().groundedElapsedMs;e.advance(300);e.setPaused(true);const paused=e.act('penetrator');e.setPaused(false);e.fixture({bonuses:0});console.log(JSON.stringify([timer,e.view().board.flat().filter(Boolean).length,paused,e.act('penetrator')]));""",fixture=True) == [700,4,False,False]
+
+
+def test_penetrator_rotation_can_overlap_without_invalid_settlement():
+    assert evaluate("""const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[7][5]='L';e.fixture({board,active:{kind:'I',orientation:0,x:3,y:5,penetrator:true}});const rotated=e.act('rotateCW');const v=e.view();e.act('hardDrop');e.advance(1000);console.log(JSON.stringify([rotated,v.active.x,v.active.y,v.active.orientation,e.view().board[7][5],e.view().board.flat().filter(Boolean).length]));""",fixture=True) == [True,3,5,1,'L',5]

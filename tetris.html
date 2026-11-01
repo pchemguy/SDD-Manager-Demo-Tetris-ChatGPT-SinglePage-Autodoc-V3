@@ -674,6 +674,13 @@
           }
           function act(action, settings = DEFAULT_SETTINGS) {
             if (s.phase !== "running" || !s.active) return false;
+            if (action === "penetrator") {
+              if (s.bonuses <= 0 || s.active.penetrator) return false;
+              s.bonuses--;
+              s.active.penetrator = true;
+              syncGround();
+              return true;
+            }
             if (action === "hardDrop") {
               if (settings.hardDrop === "off") return false;
               const destination = landing();
@@ -967,6 +974,7 @@
             c: "hold",
             Shift: "hold",
             Enter: "hardDrop",
+            p: "penetrator",
           }[key];
           if (!action && key !== "Escape" && key !== "r") return;
           event.preventDefault();

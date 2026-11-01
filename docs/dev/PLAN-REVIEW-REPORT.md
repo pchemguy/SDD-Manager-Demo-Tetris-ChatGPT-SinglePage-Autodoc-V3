@@ -2,7 +2,7 @@
 
 ## Current gate
 
-State: Ready for strategy only. Physical layout review is pending and TASKS derivation remains blocked until combined PLAN/layout readiness. No unresolved strategy findings.
+State: Ready for combined PLAN/layout and TASKS derivation. No unresolved strategy or placement findings.
 
 ## Reviewed states
 
@@ -32,3 +32,11 @@ The repeated small counts were explicitly assessed: each phase changes a distinc
 Coverage: S1 and basic S10 in Phase 1; S2 in Phases 1/2/4; S3 in Phase 3; S4 in Phases 1/4; S5 in Phases 1/5 with file-mode invariants throughout; S6 in Phase 6; S7 and JSON S9 in Phase 6; S8 and full S9 in Phase 7; S10 grows with each panel and is fully checked at Phase 7. Dedicated one-task phase reviews and conditional milestone reviews are retained. Required refinements precede their consumers, especially SQLite distribution proof. No contract omission or oversized phase was found.
 
 Pending physical placement is a distinct readiness boundary, not a strategy defect. Combined review must add layout identity, component-to-path/test/schema/packaging ownership and link checks before TASKS.
+
+## Revision 1 — Combined layout review
+
+The layout owner assigned every domain/controller/presentation/session/codec/adapter boundary to named sections of tetris.html, kept the schema at its existing canonical path, and allocated pytest/Node/Playwright checks, fixtures, packaging, CI, documentation and report owners. Rechecked the single-file constraint, no companion runtime assets, schema copying rather than competing definitions, and verification before documenting commands as validated. All local governing links resolve; no placement choice blocks task derivation. The initial strategy findings/count assessments remain unchanged. No implementation or whole-package QC is claimed.
+
+Additional reviewed identity:
+
+- layout.md: 77dbdbac7ef07a7912e1a8408219a6c04064031d

@@ -57,3 +57,7 @@ Autodoc scoped preapproval following accepted PROJECT. docs/dev/SPEC.md blob 244
 ## DOCS-006 completion evidence
 
 Autodoc scoped preapproval following accepted PROJECT. docs/dev/PLAN.md blob 19b80b2118b8945ec7783178aaa87502db36cc9a; docs/dev/PLAN-REVIEW-REPORT.md blob 0fb466cbf7a241eed605920a05119f32c19953bb. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.
+
+## DOCS-007 completion evidence
+
+Autodoc scoped preapproval following accepted PROJECT. docs/dev/layout.md blob 77dbdbac7ef07a7912e1a8408219a6c04064031d; docs/dev/PLAN-REVIEW-REPORT.md blob a54bf5a6bb506164e7f222e5f1e502f2ff5c19c5; AGENTS.md blob a1360b67327bdc429ca1eb1e7f2765f65b276839. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

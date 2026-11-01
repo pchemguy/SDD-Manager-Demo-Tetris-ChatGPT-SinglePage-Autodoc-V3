@@ -5,6 +5,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests' / 'support'))
 
+import os
 import functools
 import http.server
 import threading
@@ -38,9 +39,13 @@ def app_page(browser_name, mode, server_url):
         page = context.new_page()
         page.set_default_timeout(5000)
         page.add_init_script('Math.random=()=>0')
-        page.goto((ROOT / 'tetris.html').as_uri() if mode == 'file' else server_url + '/tetris.html')
+        app_path = ROOT / os.environ.get('TETRIS_TEST_ARTIFACT', 'tetris.html')
+        errors = []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        page.goto(app_path.as_uri() if mode == 'file' else server_url + '/' + app_path.relative_to(ROOT).as_posix())
         try:
             yield page
         finally:
             context.close()
             browser.close()
+            assert not errors, errors

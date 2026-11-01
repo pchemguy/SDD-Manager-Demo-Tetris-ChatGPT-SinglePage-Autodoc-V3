@@ -25,3 +25,7 @@ The workflow uses actions/checkout, actions/setup-python and actions/setup-node 
 ## CI host recovery
 
 Initial run 41313200837 selected Ubuntu 26.04 through ubuntu-latest; Playwright browser dependency provisioning rejected that unsupported host before tests or package gates ran. CI is pinned to ubuntu-24.04, matching the pinned runner's supported browser distribution. This is a host-selection correction; the runner version and browser coverage remain unchanged. Recovery run 41313446648 on 4974b429e6a6d7b64b191823577dd977f7bacd4c completed successfully: 49 tests in 47.84 seconds, package creation and independent artifact-name/hash validation all passed. No Firefox content-sandbox override was needed on that hosted runner. Reassessment is resolved.
+
+## Packaged classic baseline checks
+
+The generated dist/tetris.html was verified byte-identical to source and tested with TETRIS_TEST_ARTIFACT=dist/tetris.html. The complete local suite passed 57 cases in 81.02 seconds, including real UI game completion/restart in Chromium/Firefox under both file and HTTP, modeled visibility/focus pause, five viewport widths, package rejection cases and Canvas rendering. Chromium and Firefox screenshots were captured; the Chromium file-mode image was visually inspected for board centering, visible info/buttons, help readability and clipping. Native OS-window event delivery remains unverified. CI packages before browser tests and uses the same artifact selector.

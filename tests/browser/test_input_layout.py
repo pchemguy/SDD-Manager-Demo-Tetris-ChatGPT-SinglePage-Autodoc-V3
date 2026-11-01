@@ -1,5 +1,7 @@
 """Keyboard/focus/help and fixed board-anchor contracts."""
-def test_help_toggle_and_board_anchor_at_five_widths(app_page):
+from domain import ROOT
+
+def test_help_toggle_and_board_anchor_at_five_widths(app_page, browser_name, mode):
     p = app_page
     assert p.locator('#toggle-help').count() == 1
     for width in [320,480,768,1280,1600]:
@@ -15,6 +17,13 @@ def test_help_toggle_and_board_anchor_at_five_widths(app_page):
             assert abs(p.locator('#board').evaluate('(e)=>{const r=e.getBoundingClientRect();return r.left+r.width/2}')-width/2) < 1
         p.locator('#toggle-help').click()
         assert p.locator('#help').is_hidden()
+    p.set_viewport_size({'width':1280,'height':800})
+    p.locator('#start').click()
+    for _ in range(5):
+        p.keyboard.press('ArrowDown')
+    p.locator('#toggle-help').click()
+    (ROOT/'test-results').mkdir(exist_ok=True)
+    p.screenshot(path=str(ROOT/'test-results'/('classic-'+browser_name+'-'+mode+'.png')),full_page=True)
 
 def test_restart_pause_and_editable_input_isolation(app_page):
     p = app_page

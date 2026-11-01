@@ -25,7 +25,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Play a game to completion, clear one through four rows, verify score/level and restart/pause; no duplicate completion.
             Milestone exit: review all 1.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/1/1.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 1.2 — Verified single-file delivery
+    - [x] Milestone 1.2 — Verified single-file delivery
         - [x] T-004 — Connect keyboard help and centered layout
             Verification: RED: missing Help control assertion failed before changes; GREEN: full pytest suite 45 passed in 40.96s; five-width anchor checks, X/Z/Space rotation, one-shot repeat suppression, IME/editable-input isolation and modeled blur pause/no-auto-resume passed in Chromium/Firefox file/HTTP; corrected the old all-buttons selector to target the required bottom gameplay row; native OS focus delivery remains unverified.
             Scope: tetris.html Input/Renderer; S4 core mappings, focus/page pause, help toggle and S10 center anchor.
@@ -37,7 +37,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: VERSION, scripts/package.py, scripts/check_artifact_names.py, CI and packaging checks.
             Depends on: T-004.
             Evidence: Generate exact tetris.html/README.md/SHA256SUMS with version agreement, no companion application file and version-free basenames; exercise direct and CI name checks.
-        - [ ] T-006 — Verify classic packaged execution and document use
+        - [x] T-006 — Verify classic packaged execution and document use
+            Verification: Full suite against exact dist/tetris.html: 57 passed in 81.02s, including all browser-mode game-over/restart paths, five-width anchor checks, Canvas pixels, modeled visibility/focus pause and packaging failures; source/artifact bytes matched SHA-256 40623ca8; screenshot visually inspected with centered board and readable controls; reviewed keyboard/controller lifecycle and stable package/CI paths; actual hash is available in generated SHA256SUMS; native OS focus/Windows execution remain unverified.
             Scope: tests/browser, README.md, AGENTS.md, dependency/provisioning evidence and packaged HTML.
             Depends on: T-005.
             Evidence: Run Chromium/Firefox file/HTTP matrix at five widths; double-click and localhost instructions match observed behavior; fixed random/basic rotation scope is explicit.

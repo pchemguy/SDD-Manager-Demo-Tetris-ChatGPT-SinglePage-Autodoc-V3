@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-003, phase 1, milestone 1.1 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-006, phase 1, milestone 1.2 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/1/1.1.md) records checks. RED: 5 clear/score/level/completion cases failed before implementation; GREEN: 27 pytest cases passed (19 unit and 8 actual browser-mode cases); reviewed settled-cell writes, simultaneous compaction, pre-clear scoring, event deduplication, focus return and embedded-only UI; corrected an overly color-specific raster assertion to detect any regular piece color; full shortcut/help work remains T-004.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/1/1.2.md) records checks. Full suite against exact dist/tetris.html: 57 passed in 81.02s, including all browser-mode game-over/restart paths, five-width anchor checks, Canvas pixels, modeled visibility/focus pause and packaging failures; source/artifact bytes matched SHA-256 40623ca8; screenshot visually inspected with centered board and readable controls; reviewed keyboard/controller lifecycle and stable package/CI paths; actual hash is available in generated SHA256SUMS; native OS focus/Windows execution remain unverified.
 
 ## Branch and return
 

@@ -264,7 +264,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html FileController/UI and browser checks; S9.
             Depends on: T-037.
             Evidence: Save offers JSON/SQLite, restore detects content independent of extension, cross-round trips preserve fields and both modes honor their persistence rules.
-        - [ ] T-039 — Verify codec failures cleanup and complete browser matrix
+        - [x] T-039 — Verify codec failures cleanup and complete browser matrix
+            Verification: Full packaged suite passed 252 checks in 339.46s with actual four-way browser and five-width coverage; 22 invalid SQLite classes and network/SRI failures preserve live and persistent state, JSON/game remain usable, file persistence spies stay zero and all resources clean up; actual Save dialog screenshot reviewed; direct CDN hosted CI run 41336253654 passed 235 checks in 320.71s and artifact gates without local fallbacks.
             Scope: tests/unit/browser/fixtures and resource/failure checks.
             Depends on: T-038.
             Evidence: Dependency failure, corrupt databases, invalid timestamps, duplicate/missing keys, fractional/unsafe scores and concurrent input leave live data unchanged; check cleanup and all five widths in four browser-mode combinations.

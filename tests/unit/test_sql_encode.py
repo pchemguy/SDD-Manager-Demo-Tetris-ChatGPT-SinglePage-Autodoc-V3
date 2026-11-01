@@ -25,3 +25,7 @@ def test_export_is_real_sqlite_with_exact_schema_metadata_types_and_fields(tmp_p
 
 def test_invalid_export_never_opens_database_and_resources_close_on_insert_failure():
     assert sql_eval("""let opens=0,closes=0,frees=0;function Database(){opens++;const db=new SQL.Database();const prepare=db.prepare.bind(db);db.prepare=sql=>{const s=prepare(sql);const free=s.free.bind(s);s.free=()=>{frees++;return free();};s.run=()=>{throw Error('injected');};return s;};const close=db.close.bind(db);db.close=()=>{closes++;close();};return db;}const c=createSQLiteCodec(async()=>({ok:true,value:{Database}}));const invalid=await c.encode({});const bad=await c.encode("""+json.dumps(saved_session())+""");console.log(JSON.stringify([invalid.ok,bad.code,opens,closes,frees]));""")==[False,'invalidSQLite',1,1,1]
+
+
+def test_success_and_close_failure_dispose_every_resource():
+    assert sql_eval('const raw='+json.dumps(saved_session())+""";let opens=0,closes=0,creates=0,frees=0,fault=false;function Database(data){opens++;const db=new SQL.Database(data),prepare=db.prepare.bind(db),close=db.close.bind(db);db.prepare=sql=>{creates++;const s=prepare(sql),free=s.free.bind(s);s.free=()=>{frees++;return free();};return s;};db.close=()=>{closes++;close();if(fault)throw Error('close');};return db;}const c=createSQLiteCodec(async()=>({ok:true,value:{Database}}));const good=await c.encode(raw);fault=true;const bad=await c.encode(raw);console.log(JSON.stringify([good.ok,bad.ok,opens,closes,creates,frees]));""")==[True,False,2,2,4,4]

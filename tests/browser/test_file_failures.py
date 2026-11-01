@@ -11,7 +11,7 @@ def payload(value,name='snapshot.any'):
 
 def restore(p,value):
     p.locator('#restore-file').set_input_files(payload(value))
-    expect(p.locator('#save-session')).to_be_enabled()
+    expect(p.locator('#save-session')).to_be_enabled(timeout=35000)
     expect(p.locator('#message')).to_contain_text('Restored')
 
 

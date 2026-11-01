@@ -43,3 +43,22 @@ def test_save_choice_cancel_preserves_session_and_requires_resume(app_page):
     expect(p.locator('#save-session')).to_be_enabled()
     assert state(p)==before
     assert p.locator('#phase').inner_text()=='Paused'
+
+
+def test_save_dialog_fits_five_widths_with_keyboard_focus(app_page,browser_name,mode):
+    p=app_page
+    for width in [320,480,768,1280,1600]:
+        p.set_viewport_size({'width':width,'height':800})
+        p.locator('#save-session').click()
+        box=p.locator('#save-format').bounding_box()
+        assert box['x']>=0 and box['x']+box['width']<=width
+        for selector in ['#save-json','#save-sqlite','#cancel-save']:
+            b=p.locator(selector).bounding_box()
+            assert b['x']>=box['x'] and b['x']+b['width']<=box['x']+box['width']
+        assert p.locator('#save-json').evaluate('e=>e===document.activeElement')
+        if width==1280:
+            from domain import ROOT
+            output=ROOT/'test-results';output.mkdir(exist_ok=True)
+            p.screenshot(path=str(output/('save-dialog-'+browser_name+'-'+mode+'.png')))
+        p.locator('#cancel-save').click()
+        expect(p.locator('#save-format')).to_be_hidden()

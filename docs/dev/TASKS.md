@@ -73,7 +73,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Milestone exit: review all 2.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/2/2.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
     - [ ] Milestone 2.2 — Shared landing and drop controls
-        - [ ] T-011 — Add shared landing and conditional ghost
+        - [x] T-011 — Add shared landing and conditional ghost
+            Verification: RED three ghost cases failed; GREEN 33 unit checks passed; shared regular landing stops at first obstruction, ghost is read-only, whole straddling ghost hides and fully lower-half projection shows.
             Scope: tetris.html Engine.landing/view and Renderer; S2.
             Depends on: T-010.
             Evidence: Regular landing stops at first obstacle; hide straddling/upper-half ghost and show fully lower-half ghost without state changes.

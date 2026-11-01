@@ -569,6 +569,12 @@
                 x >= 0 && x < 10 && y >= 0 && y < 20 && !s.board[y][x],
             );
           }
+          function landing(piece = s.active) {
+            if (!piece || !valid(piece)) return null;
+            let result = { ...piece };
+            while (valid({ ...result, y: result.y + 1 })) result.y++;
+            return result;
+          }
           function syncGround() {
             if (!s.active) {
               s.groundedElapsedMs = null;
@@ -732,8 +738,15 @@
               if (s.phase === "running" && paused) s.phase = "paused";
               else if (s.phase === "paused" && !paused) s.phase = "running";
             },
-            view() {
+            view(settings = DEFAULT_SETTINGS) {
+              const projected = landing(),
+                cells = projected ? pieceCells(projected) : [];
+              const show =
+                settings.ghost === "visible" ||
+                (settings.ghost === "dynamic" &&
+                  cells.every(([, y]) => y >= 10));
               return structuredClone({
+                ghostCells: show ? cells : [],
                 ...s,
                 activeCells: s.active ? pieceCells(s.active) : [],
               });
@@ -856,6 +869,10 @@
               if (kind) paintCell(x, y, palette[kind]);
             }),
           );
+          context.strokeStyle = v.active ? palette[v.active.kind] : "#8c9db5";
+          context.lineWidth = 2;
+          for (const [x, y] of v.ghostCells)
+            context.strokeRect(x * 30 + 4, y * 30 + 4, 22, 22);
           if (v.active)
             for (const [x, y] of v.activeCells)
               paintCell(x, y, palette[v.active.kind]);

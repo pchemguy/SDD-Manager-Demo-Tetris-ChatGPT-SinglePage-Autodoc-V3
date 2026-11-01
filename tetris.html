@@ -656,6 +656,15 @@
           }
           function act(action, settings = DEFAULT_SETTINGS) {
             if (s.phase !== "running" || !s.active) return false;
+            if (action === "hardDrop") {
+              if (settings.hardDrop === "off") return false;
+              const destination = landing();
+              if (!destination) return false;
+              addScore(2 * (destination.y - s.active.y));
+              s.active = destination;
+              syncGround();
+              return true;
+            }
             if (action === "hold") {
               if (settings.hold === "off" || s.holdUsed || s.active.penetrator)
                 return false;
@@ -939,6 +948,7 @@
             z: "rotateCCW",
             c: "hold",
             Shift: "hold",
+            Enter: "hardDrop",
           }[key];
           if (!action && key !== "Escape" && key !== "r") return;
           event.preventDefault();

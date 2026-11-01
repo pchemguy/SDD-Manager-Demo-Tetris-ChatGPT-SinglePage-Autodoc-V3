@@ -78,7 +78,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html Engine.landing/view and Renderer; S2.
             Depends on: T-010.
             Evidence: Regular landing stops at first obstacle; hide straddling/upper-half ghost and show fully lower-half ghost without state changes.
-        - [ ] T-012 — Connect hard drop to existing lock timing
+        - [x] T-012 — Connect hard drop to existing lock timing
+            Verification: RED two hard-drop cases failed; GREEN 36 unit checks passed; Enter uses shared ghost landing, two points per row, full contact interval after partial gravity tick and no repeat reset or score.
             Scope: tetris.html Engine/Input and timing checks; S2/S4.
             Depends on: T-011.
             Evidence: Enter reaches ghost destination, awards distance score, starts a full contact interval and preserves existing grounded elapsed time on repeat.

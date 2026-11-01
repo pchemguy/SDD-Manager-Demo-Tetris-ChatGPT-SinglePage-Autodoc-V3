@@ -31,7 +31,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html Input/Renderer; S4 core mappings, focus/page pause, help toggle and S10 center anchor.
             Depends on: T-003.
             Evidence: Keyboard works from the game, editable control focus is respected, page hiding pauses; toggle leaves board anchor stable.
-        - [ ] T-005 — Establish versioned release preparation tooling
+        - [x] T-005 — Establish versioned release preparation tooling
+            Verification: RED: 4 packaging/name/hash/version checks failed against inert commands; GREEN: 23 unit tests passed in 1.54s; actual 0.1.0 package and independent inventory/hash gate passed; exact HTML copied with stable version-free asset names; CI uses documented official actions and identical checks, but remote CI result is not yet claimed.
             Scope: VERSION, scripts/package.py, scripts/check_artifact_names.py, CI and packaging checks.
             Depends on: T-004.
             Evidence: Generate exact tetris.html/README.md/SHA256SUMS with version agreement, no companion application file and version-free basenames; exercise direct and CI name checks.

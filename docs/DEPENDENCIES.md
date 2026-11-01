@@ -17,3 +17,7 @@ With the process-local override, python -m pytest tests/unit/test_harness.py tes
 ## Application dependencies
 
 Core gameplay uses browser built-ins. A SQLite CDN distribution is selected, pinned and verified in its implementation task; no SQLite support is claimed yet.
+
+## CI actions
+
+The workflow uses actions/checkout, actions/setup-python and actions/setup-node at v7, matching examples read from their official repository READMEs during implementation. CI selects Python 3.12, Node 24 and the pinned requirements; its browser path is job-specific. These are development dependencies, not application runtime imports.

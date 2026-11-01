@@ -662,6 +662,7 @@
               s.board[y][x] = s.active.kind;
             const kept = s.board.filter((row) => !row.every(Boolean)),
               cleared = 20 - kept.length;
+            if (cleared === 4) s.bonuses = Math.min(3, s.bonuses + 1);
             if (cleared) {
               addScore([0, 100, 300, 500, 800][cleared] * s.level);
               s.lines += cleared;

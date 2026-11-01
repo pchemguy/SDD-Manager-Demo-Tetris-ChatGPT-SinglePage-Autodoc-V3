@@ -5,7 +5,7 @@ def test_single_clear_compacts_and_scores():
     assert evaluate("const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[19].fill('J',0,6);e.fixture({board,active:{kind:'I',orientation:0,x:6,y:18,penetrator:false},groundedElapsedMs:null});e.advance(1000);const v=e.view();console.log(JSON.stringify([v.lines,v.score,v.level,v.board.flat().filter(Boolean).length]));", fixture=True) == [1,100,1,0]
 
 def test_four_line_clear_preserves_cells_above_and_uses_preclear_level():
-    assert evaluate("const e=createEngine(()=>0);e.start('g');const board=emptyBoard();for(let y=16;y<20;y++)board[y].fill('L',0,9);board[15][0]='T';e.fixture({board,active:{kind:'I',orientation:1,x:7,y:16,penetrator:false},groundedElapsedMs:null});e.advance(1000);const v=e.view();console.log(JSON.stringify([v.lines,v.score,v.board[19][0],v.bonuses]));", fixture=True) == [4,800,'T',0]
+    assert evaluate("const e=createEngine(()=>0);e.start('g');const board=emptyBoard();for(let y=16;y<20;y++)board[y].fill('L',0,9);board[15][0]='T';e.fixture({board,active:{kind:'I',orientation:1,x:7,y:16,penetrator:false},groundedElapsedMs:null});e.advance(1000);const v=e.view();console.log(JSON.stringify([v.lines,v.score,v.board[19][0],v.bonuses]));", fixture=True) == [4,800,'T',1]
 
 def test_level_changes_after_tenth_line():
     assert evaluate("const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[19].fill('J',0,6);e.fixture({board,lines:9,active:{kind:'I',orientation:0,x:6,y:18,penetrator:false},groundedElapsedMs:null});e.advance(1000);const v=e.view();console.log(JSON.stringify([v.lines,v.score,v.level,gravityInterval(v.level)]));", fixture=True) == [10,100,2,925]

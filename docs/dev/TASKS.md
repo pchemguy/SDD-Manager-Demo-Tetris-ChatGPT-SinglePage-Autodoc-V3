@@ -115,7 +115,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Milestone exit: review all 3.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/3/3.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
     - [ ] Milestone 3.2 — Bonus and presentation integration
-        - [ ] T-017 — Award and cap penetrator bonuses
+        - [x] T-017 — Award and cap penetrator bonuses
+            Verification: RED four-clear bonus sequence failed; GREEN 43 unit checks passed; four-line clears award one through cap three, activation spends one and restart resets; existing single two and three line clear checks still pass.
             Scope: tetris.html Engine scoring/bonus events and deterministic four-clear fixtures.
             Depends on: T-016.
             Evidence: Four-line clears award one, cap at three, activation spends one and restart resets; ordinary clears do not award.

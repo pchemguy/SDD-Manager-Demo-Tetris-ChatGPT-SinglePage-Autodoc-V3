@@ -23,3 +23,7 @@ def test_activation_without_lift_preserves_delay_and_pause_rejects():
 
 def test_penetrator_rotation_can_overlap_without_invalid_settlement():
     assert evaluate("""const e=createEngine(()=>0);e.start('g');const board=emptyBoard();board[7][5]='L';e.fixture({board,active:{kind:'I',orientation:0,x:3,y:5,penetrator:true}});const rotated=e.act('rotateCW');const v=e.view();e.act('hardDrop');e.advance(1000);console.log(JSON.stringify([rotated,v.active.x,v.active.y,v.active.orientation,e.view().board[7][5],e.view().board.flat().filter(Boolean).length]));""",fixture=True) == [True,3,5,1,'L',5]
+
+
+def test_four_line_award_caps_spends_and_restart_resets():
+    assert evaluate("""const e=createEngine(()=>0);e.start('g');const balances=[];for(let i=0;i<4;i++){const board=emptyBoard();for(let y=16;y<20;y++)board[y].fill('L',0,9);e.fixture({board,active:{kind:'I',orientation:1,x:7,y:16},groundedElapsedMs:null});e.advance(1000);balances.push(e.view().bonuses);}e.act('penetrator');balances.push(e.view().bonuses);e.start('new');balances.push(e.view().bonuses);console.log(JSON.stringify(balances));""",fixture=True) == [1,2,3,3,2,0]

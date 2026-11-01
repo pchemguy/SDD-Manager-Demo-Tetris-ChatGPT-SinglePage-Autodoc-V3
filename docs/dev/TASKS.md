@@ -241,7 +241,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 7 — SQLite exchange
     - [ ] Milestone 7.1 — SQLite codec
-        - [ ] T-035 — Prove and pin a single-script CDN SQLite runtime
+        - [x] T-035 — Prove and pin a single-script CDN SQLite runtime
+            Verification: Three loader RED cases failed before implementation; all 90 unit checks now pass; four Chromium/Firefox file/HTTP initialization cases pass using TLS-fetched hash-verified CDN bytes with browser SRI and no worker or companion requests; native CDN browser TLS failed on managed proxy trust and remains a direct-loading CI gate; actual runtime reports SQLite 3.49.1; timeout failure retry coalescing and script/timer cleanup verified.
             Scope: tetris.html DependencyLoader, docs/DEPENDENCIES.md and browser loading evidence; S8.
             Depends on: T-034.
             Evidence: Verify actual pinned URL/version/license/integrity and initialization under file/HTTP in Chromium/Firefox without worker/companion local asset; clear bounded failure keeps JSON/game usable.

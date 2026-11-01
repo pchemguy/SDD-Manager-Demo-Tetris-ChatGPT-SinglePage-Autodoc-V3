@@ -825,6 +825,96 @@
             return JSON.stringify(checked.value, null, 2) + "\n";
           },
         };
+        const SQLITE_DEPENDENCY = Object.freeze({
+          version: "1.13.0",
+          url: "https://cdn.jsdelivr.net/npm/sql.js@1.13.0/dist/sql-asm-memory-growth.js",
+          integrity:
+            "sha384-00ZgJXAcDlCvHMXdlbRKwEZqgJIwmYhL5sXMl8gVTMAX4kFr42gyz11YXIsk5U45",
+          license: "MIT",
+        });
+        function createDependencyLoader(host, timeoutMs = 30000) {
+          let pending = null;
+          const unavailable = (message) => ({
+            ok: false,
+            code: "dependencyUnavailable",
+            message:
+              message ||
+              "SQLite could not be loaded. JSON and the game remain available.",
+          });
+          return {
+            ensureSQLite() {
+              if (pending) return pending;
+              pending = new Promise((resolve) => {
+                let script = null,
+                  timer = null,
+                  settled = false;
+                function finish(outcome) {
+                  if (settled) return;
+                  settled = true;
+                  if (timer !== null) {
+                    try {
+                      host.clearTimeout(timer);
+                    } catch {}
+                  }
+                  if (script) {
+                    try {
+                      script.onload = null;
+                      script.onerror = null;
+                      script.remove();
+                    } catch {}
+                  }
+                  resolve(outcome);
+                }
+                try {
+                  script = host.createScript();
+                  script.src = SQLITE_DEPENDENCY.url;
+                  script.integrity = SQLITE_DEPENDENCY.integrity;
+                  script.crossOrigin = "anonymous";
+                  script.referrerPolicy = "no-referrer";
+                  script.async = true;
+                  script.onerror = () => finish(unavailable());
+                  script.onload = () => {
+                    if (settled) return;
+                    try {
+                      const initialize = host.getInitializer();
+                      if (typeof initialize !== "function") {
+                        finish(unavailable());
+                        return;
+                      }
+                      Promise.resolve(initialize())
+                        .then((runtime) => {
+                          finish(
+                            runtime && typeof runtime.Database === "function"
+                              ? { ok: true, value: runtime }
+                              : unavailable(),
+                          );
+                        })
+                        .catch(() => finish(unavailable()));
+                    } catch {
+                      finish(unavailable());
+                    }
+                  };
+                  timer = host.setTimeout(
+                    () =>
+                      finish(
+                        unavailable(
+                          "SQLite loading timed out. JSON and the game remain available.",
+                        ),
+                      ),
+                    timeoutMs,
+                  );
+                  host.appendScript(script);
+                } catch {
+                  finish(unavailable());
+                }
+              }).then((outcome) => {
+                if (!outcome.ok) pending = null;
+                return outcome;
+              });
+              return pending;
+            },
+          };
+        }
         const MAX_FILE_BYTES = 1024 * 1024;
         /** File decoding/encoding has no live store or protocol mutation capability. */
         function createFileController(download) {
@@ -1578,6 +1668,13 @@
           boardCanvas = document.getElementById("board"),
           context = boardCanvas.getContext("2d");
         let fileOperation = null;
+        const dependencies = createDependencyLoader({
+          createScript: () => document.createElement("script"),
+          appendScript: (script) => document.head.append(script),
+          getInitializer: () => window.initSqlJs,
+          setTimeout: (callback, ms) => window.setTimeout(callback, ms),
+          clearTimeout: (timer) => window.clearTimeout(timer),
+        });
         const files = createFileController(downloadBytes);
         const palette = {
           I: "#44d4d0",

@@ -41,3 +41,7 @@ Initialization commit d6f8f19eb3027529cb8b916013f674cf0dcfaf89 was published wit
 ## DOCS-002 completion evidence
 
 Human accepted the published PROJECT and its proposed decisions with k on 2026-11-01. docs/dev/PROJECT.md blob 4ffb6cdf71bdabd7640603aeb243a156fa7db258. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.
+
+## DOCS-003 completion evidence
+
+Autodoc scoped preapproval following accepted PROJECT. docs/dev/ARCHITECTURE.md blob 3403140c4fcde421ba0d90784fd017c8df4e674f. Scope, document boundaries, dependency consistency, links and Markdown checks passed. Required adjacent review reports are included where applicable. Publication and issue closure require readback before progression.

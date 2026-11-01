@@ -239,7 +239,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 7 — SQLite exchange
 
-- [ ] Phase 7 — SQLite exchange
+- [x] Phase 7 — SQLite exchange
     - [x] Milestone 7.1 — SQLite codec
         - [x] T-035 — Prove and pin a single-script CDN SQLite runtime
             Verification: Three loader RED cases failed before implementation; all 90 unit checks now pass; four Chromium/Firefox file/HTTP initialization cases pass using TLS-fetched hash-verified CDN bytes with browser SRI and no worker or companion requests; native CDN browser TLS failed on managed proxy trust and remains a direct-loading CI gate; actual runtime reports SQLite 3.49.1; timeout failure retry coalescing and script/timer cleanup verified.
@@ -276,8 +276,9 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Full S1-S10 regression against actual generated HTML, names/checksums/version/schema agreement and installation instructions; no unverified platform/delivery claims.
             Milestone exit: review all 7.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/7/7.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 7.3 — Phase review
-        - [ ] T-041 — Review test and report phase 7
+    - [x] Milestone 7.3 — Phase review
+        - [x] T-041 — Review test and report phase 7
+            Verification: Phase-wide S1-S10 review found no unresolved contract violation; final packaged 1.0.0 passed 252 checks in 359.53s and all four-asset name/hash/version/schema gates; direct CDN CI run 41336253654 passed earlier 235 checks in 320.71s; six preceding closures audited without exception and delivery milestones 7.1/7.2 closed read back; aggregate report records all phases resolved findings limits and no eligible TODO; exact-tip CI integration and release remain subsequent gates.
             Depends on: T-040 and completion/verified closure of delivery milestones 7.1, 7.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 1.0.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/7/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 1.0.0 before any next-phase activation.

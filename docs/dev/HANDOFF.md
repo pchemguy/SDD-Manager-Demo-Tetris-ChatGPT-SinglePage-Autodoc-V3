@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/1/1.2.md) records checks. Full suite against exact dist/tetris.html: 57 passed in 81.02s, including all browser-mode game-over/restart paths, five-width anchor checks, Canvas pixels, modeled visibility/focus pause and packaging failures; source/artifact bytes matched SHA-256 40623ca8; screenshot visually inspected with centered board and readable controls; reviewed keyboard/controller lifecycle and stable package/CI paths; actual hash is available in generated SHA256SUMS; native OS focus/Windows execution remain unverified.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/1/1.2.md) records checks. Full suite against exact dist/tetris.html: 57 passed in 81.02s, including all browser-mode game-over/restart paths, five-width anchor checks, Canvas pixels, modeled visibility/focus pause and packaging failures; source/artifact bytes matched SHA-256 6564d1d578f36eb1b45cfd47ecfb9540935193e5c1caa784b3ec79851a1491a3; screenshot visually inspected with centered board and readable controls; reviewed keyboard/controller lifecycle and stable package/CI paths; actual hash is available in generated SHA256SUMS; native OS focus/Windows execution remain unverified.
 
 ## Branch and return
 

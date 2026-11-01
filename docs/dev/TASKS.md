@@ -259,7 +259,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Milestone exit: review all 7.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/7/7.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
     - [ ] Milestone 7.2 — Both-format delivery
-        - [ ] T-038 — Integrate format choice and cross-format restore
+        - [x] T-038 — Integrate format choice and cross-format restore
+            Verification: New file dispatch and missing format-choice scenarios failed RED; 125 units and cross-format/cancel browser checks now pass in 25.09s, and 20 existing JSON/failure browser regressions passed in the prior focused run; genuine SQLite to JSON and SQLite round trips preserve exact records settings and HTTP cookie/query values in all four combinations; successful restore renews cookie expiry so the valid-restore assertion now compares content and attributes; native Escape cancels accessible dialog without resuming play.
             Scope: tetris.html FileController/UI and browser checks; S9.
             Depends on: T-037.
             Evidence: Save offers JSON/SQLite, restore detects content independent of extension, cross-round trips preserve fields and both modes honor their persistence rules.

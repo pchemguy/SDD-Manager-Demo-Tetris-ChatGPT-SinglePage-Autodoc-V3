@@ -1,15 +1,9 @@
 """Initialize the actual CDN distribution in both browser execution modes."""
-import os
-from sql_assets import source,dependency,asset
+from sql_assets import source,dependency
 
 
 def test_pinned_single_script_sqlite_initializes_without_companion_or_worker(app_page):
     p=app_page
-    if os.environ.get("TETRIS_SQLITE_VERIFIED_FETCH") == "1":
-        # Managed-host browsers lack the proxy CA. Python verifies TLS, then the
-        # browser independently checks the pinned SRI before executing bytes.
-        data=asset().read_bytes()
-        p.route(dependency()["url"],lambda route:route.fulfill(body=data,content_type="application/javascript",headers={"Access-Control-Allow-Origin":"*"}))
     requests=[];failures=[]
     p.on('request',lambda request:requests.append(request.url))
     p.on('requestfailed',lambda request:failures.append({'url':request.url,'failure':request.failure}))

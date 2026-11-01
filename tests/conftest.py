@@ -43,6 +43,10 @@ def app_page(browser_name, mode, server_url):
         errors = []
         page.on('pageerror', lambda error: errors.append(str(error)))
         page.goto(app_path.as_uri() if mode == 'file' else server_url + '/' + app_path.relative_to(ROOT).as_posix())
+        if os.environ.get('TETRIS_SQLITE_VERIFIED_FETCH') == '1':
+            from sql_assets import dependency,asset
+            data=asset().read_bytes()
+            page.route(dependency()['url'],lambda route:route.fulfill(body=data,content_type='application/javascript',headers={'Access-Control-Allow-Origin':'*'}))
         try:
             yield page
         finally:

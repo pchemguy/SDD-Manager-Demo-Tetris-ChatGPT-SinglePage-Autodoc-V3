@@ -309,6 +309,17 @@
         line-height: 1.6;
         color: var(--muted);
       }
+      dialog {
+        color: var(--ink);
+        background: #182236;
+        border: 1px solid #64748b;
+        border-radius: 12px;
+        max-width: min(360px, 85vw);
+        padding: 24px;
+      }
+      dialog::backdrop {
+        background: #0009;
+      }
       .file-actions {
         display: flex;
         gap: 8px;
@@ -434,6 +445,21 @@
             <button id="save-session" type="button">Save</button
             ><button id="restore-session" type="button">Restore</button>
           </div>
+          <dialog
+            id="save-format"
+            aria-labelledby="save-title"
+            aria-describedby="save-description"
+          >
+            <h2 id="save-title">Save session</h2>
+            <p id="save-description">
+              Choose one file format. SQLite loads an optional CDN library.
+            </p>
+            <div class="file-actions">
+              <button id="save-json" type="button" autofocus>JSON</button
+              ><button id="save-sqlite" type="button">SQLite</button
+              ><button id="cancel-save" type="button">Cancel</button>
+            </div>
+          </dialog>
           <input
             id="restore-file"
             type="file"
@@ -1106,18 +1132,32 @@
         }
         const MAX_FILE_BYTES = 1024 * 1024;
         /** File decoding/encoding has no live store or protocol mutation capability. */
-        function createFileController(download) {
+        function createFileController(download, sqlite) {
           const failure = (code, message) => ({ ok: false, code, message });
           return {
             async save(format, value) {
-              if (format !== "json")
+              if (!["json", "sqlite"].includes(format))
                 return failure(
                   "unsupportedVersion",
                   "Choose a supported session format.",
                 );
+              const valid = validateSession(value);
+              if (!valid.ok) return valid;
               let bytes;
               try {
-                bytes = new TextEncoder().encode(JSONCodec.encode(value));
+                if (format === "sqlite") {
+                  if (!sqlite)
+                    return failure(
+                      "dependencyUnavailable",
+                      "SQLite is unavailable. JSON and the game remain available.",
+                    );
+                  const encoded = await sqlite.encode(valid.value);
+                  if (!encoded.ok) return encoded;
+                  bytes = encoded.value;
+                } else
+                  bytes = new TextEncoder().encode(
+                    JSONCodec.encode(valid.value),
+                  );
               } catch (error) {
                 return failure(
                   error.code || "invalidValue",
@@ -1129,8 +1169,10 @@
               try {
                 await download(
                   bytes,
-                  "tetris-session.json",
-                  "application/json",
+                  "tetris-session." + format,
+                  format === "json"
+                    ? "application/json"
+                    : "application/vnd.sqlite3",
                 );
                 return { ok: true, value: null };
               } catch {
@@ -1180,7 +1222,29 @@
                   "invalidValue",
                   "The selected file was not read completely.",
                 );
-              const decoded = JSONCodec.decodeBytes(new Uint8Array(buffer));
+              const bytes = new Uint8Array(buffer);
+              const signature = "SQLite format 3\0";
+              const isSQLite =
+                bytes.length >= 16 &&
+                Array.from(signature).every(
+                  (c, i) => bytes[i] === c.charCodeAt(0),
+                );
+              if (isSQLite && !sqlite)
+                return failure(
+                  "dependencyUnavailable",
+                  "SQLite is unavailable. JSON and the game remain available.",
+                );
+              let decoded;
+              try {
+                decoded = isSQLite
+                  ? await sqlite.decode(bytes)
+                  : JSONCodec.decodeBytes(bytes);
+              } catch {
+                return failure(
+                  "invalidSQLite",
+                  "The SQLite session could not be processed.",
+                );
+              }
               return decoded.ok ? validateSession(decoded.value) : decoded;
             },
           };
@@ -1864,7 +1928,8 @@
           setTimeout: (callback, ms) => window.setTimeout(callback, ms),
           clearTimeout: (timer) => window.clearTimeout(timer),
         });
-        const files = createFileController(downloadBytes);
+        const sqlite = createSQLiteCodec(() => dependencies.ensureSQLite());
+        const files = createFileController(downloadBytes, sqlite);
         const palette = {
           I: "#44d4d0",
           J: "#5a83ed",
@@ -2251,22 +2316,50 @@
           document.getElementById("restore-file").value = "";
           syncFileControls();
         }
+        const saveDialog = document.getElementById("save-format");
         document
           .getElementById("save-session")
-          .addEventListener("click", async () => {
-            if (!beginFileOperation("save")) return;
+          .addEventListener("click", () => {
+            if (!beginFileOperation("chooseSave")) return;
             try {
-              const result = await files.save("json", store.exportSession());
-              setText(
-                "message",
-                result.ok
-                  ? "Saved JSON session. Use Pause/Start when ready."
-                  : "Cannot save: " + result.message,
-              );
-            } finally {
+              saveDialog.showModal();
+              document.getElementById("save-json").focus();
+            } catch {
+              setText("message", "Cannot open the format choice.");
               endFileOperation();
             }
           });
+        function cancelSave() {
+          if (fileOperation !== "chooseSave") return;
+          setText("message", "Save cancelled.");
+          endFileOperation();
+        }
+        saveDialog.addEventListener("close", cancelSave);
+        saveDialog.addEventListener("cancel", cancelSave);
+        document
+          .getElementById("cancel-save")
+          .addEventListener("click", () => saveDialog.close());
+        for (const format of ["json", "sqlite"])
+          document
+            .getElementById("save-" + format)
+            .addEventListener("click", async () => {
+              if (fileOperation !== "chooseSave") return;
+              fileOperation = "save";
+              saveDialog.close();
+              try {
+                const result = await files.save(format, store.exportSession());
+                setText(
+                  "message",
+                  result.ok
+                    ? "Saved " +
+                        format.toUpperCase() +
+                        " session. Use Pause/Start when ready."
+                    : "Cannot save: " + result.message,
+                );
+              } finally {
+                endFileOperation();
+              }
+            });
         const restoreInput = document.getElementById("restore-file");
         document
           .getElementById("restore-session")

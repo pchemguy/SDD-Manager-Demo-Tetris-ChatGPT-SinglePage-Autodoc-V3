@@ -22,3 +22,7 @@ def test_one_mib_boundary_and_incomplete_buffer_are_checked():
 
 def test_bom_and_io_download_failure_are_rejected_clearly():
     assert evaluate('const raw='+json.dumps(saved_session())+""";(async()=>{const data=new TextEncoder().encode(JSON.stringify(raw)),bytes=new Uint8Array(data.length+3);bytes.set([0xef,0xbb,0xbf]);bytes.set(data,3);const c=createFileController(async()=>{throw Error('blocked');});console.log(JSON.stringify([(await c.read({size:bytes.length,arrayBuffer:async()=>bytes.buffer})).code,(await c.save('json',raw)).code]));})();""") == ['invalidJSON','invalidValue']
+
+
+def test_sqlite_file_dispatch_is_content_based_and_download_uses_sqlite_name():
+    assert evaluate('const raw='+json.dumps(saved_session())+""";(async()=>{const bytes=new TextEncoder().encode('SQLite format 3\u0000payload'),calls=[],c=createFileController(async(b,n,t)=>calls.push([n,t]),{encode:async v=>({ok:true,value:bytes}),decode:async b=>({ok:true,value:raw})});const saved=await c.save('sqlite',raw),read=await c.read({size:bytes.length,arrayBuffer:async()=>bytes.buffer});console.log(JSON.stringify([saved.ok,read.value,calls]));})();""".replace('\x00','\\0'))==[True,ranked_session(),[['tetris-session.sqlite','application/vnd.sqlite3']]]

@@ -7,7 +7,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 ## Phase 1 — Classic baseline
 
 - [ ] Phase 1 — Classic baseline
-    - [ ] Milestone 1.1 — Classic playable loop
+    - [x] Milestone 1.1 — Classic playable loop
         - [x] T-001 — Provision isolated verification tools
             Verification: pytest readiness suite: 3 passed in 3.68s; isolated matching Chromium shell and Firefox file/HTTP input/Canvas/teardown verified; Firefox requires the documented process-local content-sandbox override on this host; extraction harness passed; no application acceptance claimed.
             Scope: requirements-dev.txt, tests/support, tests/unit and browser policy evidence; pin development tools and establish pytest/Node extraction harness.
@@ -18,7 +18,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html domain section and focused domain checks; S1 movement, shape bounds, gravity and S2 fixed interval locking.
             Depends on: T-001.
             Evidence: Deterministic collision/rotation/gravity and just-before/at-expiry tests; pause/lift-off boundaries; no grounded movement reset.
-        - [ ] T-003 — Integrate classic completion and game controls
+        - [x] T-003 — Integrate classic completion and game controls
+            Verification: RED: 5 clear/score/level/completion cases failed before implementation; GREEN: 27 pytest cases passed (19 unit and 8 actual browser-mode cases); reviewed settled-cell writes, simultaneous compaction, pre-clear scoring, event deduplication, focus return and embedded-only UI; corrected an overly color-specific raster assertion to detect any regular piece color; full shortcut/help work remains T-004.
             Scope: tetris.html Engine/controller/renderer and checks; S1 clears, score, levels, spawn failure, game over, Start/Restart and Pause/Start.
             Depends on: T-002.
             Evidence: Play a game to completion, clear one through four rows, verify score/level and restart/pause; no duplicate completion.

@@ -1,15 +1,19 @@
 # Project handoff
 
-Checkpoint: Phase 3 integrated and release 0.3.0 published, all assets downloaded/hash-verified.
+Checkpoint: T-022, phase 4, milestone 4.1 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
-Run QC and full implement authorizes all T-001 through T-041 and seven phase releases. Continue next eligible phase after hosted activation; final boundary is completed target/release.
+Full T-001 through T-041 implementation and seven phase releases authorized by Run QC and full implement on 2026-11-01. Continue after this boundary within that range when tracking/publication/dependencies are verified.
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Phase report](reports/phases/3/PHASE-REPORT.md) records exact source, test/review and hosted release evidence.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/4/4.1.md) records checks. RED all 16 new browser cases failed, including pre-input time incorrectly shortening hard-drop contact; GREEN full packaged 0.4.0 suite passed 120 tests in 204.85s, all six settings, session reloads, native focus, no persistence access, five-width anchor checks and exact controller action timing; milestone source review and independent format/name/hash gates passed.
 
-## Branch and next action
+## Branch and return
 
-Working branch main; retained source branch phase/3-penetrator from ancestor cb4e2f67cd9618588439e09c4c5b0f16aea7e6f6, integrated through 3ae0a77dbbf0bd893d75b27ee5b7f7806946427d. Publish/read back this outcome, then create next eligible phase branch from main and verify its tracking before task work. No release effect remains pending. Native Windows/headed OS-window delivery remain outside verified scope.
+Working branch: phase/4-session-settings; integration parent: main; branch-off ancestor: 8d0e5d3edd105e79564d5a9abb79015d997f695e. Complete phases integrate explicitly; partial phases remain unmerged.
+
+## Pending effects
+
+Publish/read back this task, close/read back its issue and milestone. Continue the next eligible task after closure.

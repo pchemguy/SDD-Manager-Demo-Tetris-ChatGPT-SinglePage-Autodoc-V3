@@ -138,7 +138,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 ## Phase 4 — Session settings
 
 - [ ] Phase 4 — Session settings
-    - [ ] Milestone 4.1 — Six-setting session configuration
+    - [x] Milestone 4.1 — Six-setting session configuration
         - [x] T-020 — Centralize exact setting validation and defaults
             Verification: RED both canonical settings/store cases failed; GREEN 46 unit checks passed; all supported values validate exactly, missing extra coerced values reject and invalid patches leave detached session settings unchanged.
             Scope: tetris.html SettingsPolicy and SessionStore plus checks; S4 and DECOMPOSITION enums.
@@ -149,7 +149,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html Engine/controller settings integration and deterministic timing tests; S2/S4.
             Depends on: T-020.
             Evidence: Failed-downward and immediate hard-drop policies work; switching policies preserves contact elapsed time and cannot reset a grounded interval.
-        - [ ] T-022 — Add six controls and session-only settings panel
+        - [x] T-022 — Add six controls and session-only settings panel
+            Verification: RED all 16 new browser cases failed, including pre-input time incorrectly shortening hard-drop contact; GREEN full packaged 0.4.0 suite passed 120 tests in 204.85s, all six settings, session reloads, native focus, no persistence access, five-width anchor checks and exact controller action timing; milestone source review and independent format/name/hash gates passed.
             Scope: tetris.html settings controls/toggle, Input/Renderer, README.md and browser checks.
             Depends on: T-021.
             Evidence: All six changes are immediate, restart retains and reload resets; zero cookie/query/localStorage/IndexedDB persistence; hiding settings hides its contents.

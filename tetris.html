@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="app-version" content="0.3.0" />
+    <meta name="app-version" content="0.4.0" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Tetris</title>
     <link rel="icon" href="data:," />
@@ -252,12 +252,36 @@
         box-shadow: none;
         margin-top: 4px;
       }
+      .settings label {
+        display: block;
+        margin-bottom: 14px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .settings label span {
+        display: block;
+        margin-bottom: 5px;
+      }
+      .settings select {
+        width: 100%;
+        padding: 8px 5px;
+        background: #162638;
+        color: var(--ink);
+        border: 1px solid var(--edge);
+        border-radius: 5px;
+        font: 12px system-ui;
+      }
+      .settings p {
+        font-size: 11px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
     </style>
   </head>
   <body>
     <header class="appbar">
       <div class="brand">TET<span>R</span>IS</div>
-      <div>0.3.0 / SINGLE FILE</div>
+      <div>0.4.0 / SINGLE FILE</div>
     </header>
     <main class="scene">
       <div class="left-panels">
@@ -287,7 +311,7 @@
                 aria-label="Held piece"
               ></canvas>
             </div>
-            <div>
+            <div id="next-preview">
               Next <output id="next-kind">—</output
               ><canvas
                 id="next"
@@ -302,6 +326,14 @@
           </p>
           <p class="phase" id="phase" aria-live="polite">Ready</p>
           <div class="toggles">
+            <button
+              id="toggle-settings"
+              type="button"
+              aria-controls="settings"
+              aria-expanded="true"
+            >
+              Settings
+            </button>
             <button
               id="toggle-help"
               type="button"
@@ -328,6 +360,15 @@
         <div class="board-caption" id="mode"></div>
       </section>
       <div class="right-panels">
+        <section
+          id="settings"
+          class="panel settings"
+          aria-label="Game settings"
+        >
+          <h2>Settings</h2>
+          <div id="setting-fields"></div>
+          <p>Changes last until this page reloads.</p>
+        </section>
         <section id="help" class="panel help" hidden>
           <h2>Controls / help</h2>
           <p>
@@ -348,8 +389,9 @@
             is unavailable until it locks.
           </p>
           <p>
-            Locking waits one full gravity interval after contact. Move off
-            support to start a fresh delay.
+            Choose a locking policy in Settings. With full-interval locking,
+            grounded moves do not reset the delay; moving off support starts a
+            fresh delay.
           </p>
         </section>
       </div>
@@ -369,6 +411,61 @@
           lock: "interval",
           hold: "on",
         });
+        const SETTING_VALUES = Object.freeze({
+          ghost: Object.freeze(["hidden", "dynamic", "visible"]),
+          hardDrop: Object.freeze(["off", "on"]),
+          next: Object.freeze(["off", "on"]),
+          hardDropLock: Object.freeze(["general", "immediate"]),
+          lock: Object.freeze(["failed", "interval"]),
+          hold: Object.freeze(["off", "on"]),
+        });
+        const SETTING_KEYS = Object.keys(DEFAULT_SETTINGS);
+        function settingAllowed(key, value) {
+          return (
+            Object.hasOwn(SETTING_VALUES, key) &&
+            SETTING_VALUES[key].includes(value)
+          );
+        }
+        function validateSettings(value) {
+          if (
+            !value ||
+            typeof value !== "object" ||
+            Array.isArray(value) ||
+            Object.keys(value).length !== SETTING_KEYS.length ||
+            !SETTING_KEYS.every(
+              (k) => Object.hasOwn(value, k) && settingAllowed(k, value[k]),
+            )
+          )
+            return {
+              ok: false,
+              code: "invalidValue",
+              message:
+                "Settings must contain all six supported keys and selected values.",
+            };
+          return {
+            ok: true,
+            value: Object.fromEntries(SETTING_KEYS.map((k) => [k, value[k]])),
+          };
+        }
+        function createSessionStore() {
+          let settings = { ...DEFAULT_SETTINGS };
+          return {
+            getSettings() {
+              return { ...settings };
+            },
+            changeSettings(patch) {
+              if (!patch || typeof patch !== "object" || Array.isArray(patch))
+                return {
+                  ok: false,
+                  code: "invalidValue",
+                  message: "Invalid settings change.",
+                };
+              const result = validateSettings({ ...settings, ...patch });
+              if (result.ok) settings = result.value;
+              return result;
+            },
+          };
+        }
         const KINDS = ["I", "J", "L", "O", "S", "T", "Z"];
         const SHAPES = {
           I: [
@@ -697,6 +794,7 @@
               addScore(2 * (destination.y - s.active.y));
               s.active = destination;
               syncGround();
+              if (settings.hardDropLock === "immediate") lock();
               return true;
             }
             if (action === "hold") {
@@ -714,6 +812,10 @@
             if (action === "softDrop") {
               const moved = move(0, 1);
               if (moved) addScore(1);
+              else if (settings.lock === "failed") {
+                lock();
+                return true;
+              }
               return moved;
             }
             if (action === "rotateCW" || action === "rotateCCW") {
@@ -741,11 +843,17 @@
           }
           function advance(ms, settings = DEFAULT_SETTINGS) {
             if (s.phase !== "running" || !Number.isFinite(ms) || ms < 0) return;
+            if (
+              settings.lock === "interval" &&
+              s.groundedElapsedMs !== null &&
+              s.groundedElapsedMs >= s.groundIntervalMs
+            )
+              lock();
             let remaining = ms;
             while (remaining > 0 && s.phase === "running") {
               const g = gravityInterval(s.level);
               let step = Math.min(remaining, g - s.gravityElapsedMs);
-              if (s.groundedElapsedMs !== null)
+              if (settings.lock === "interval" && s.groundedElapsedMs !== null)
                 step = Math.min(
                   step,
                   Math.max(0, s.groundIntervalMs - s.groundedElapsedMs),
@@ -754,6 +862,7 @@
               if (s.groundedElapsedMs !== null) s.groundedElapsedMs += step;
               remaining -= step;
               if (
+                settings.lock === "interval" &&
                 s.groundedElapsedMs !== null &&
                 s.groundedElapsedMs >= s.groundIntervalMs
               ) {
@@ -762,7 +871,7 @@
               }
               if (s.gravityElapsedMs >= g) {
                 s.gravityElapsedMs -= g;
-                move(0, 1);
+                if (!move(0, 1) && settings.lock === "failed") lock();
               }
             }
           }
@@ -804,6 +913,7 @@
         // PURE-END
         /** Canvas presentation and the serialized classic game controller. */
         const engine = createEngine(),
+          store = createSessionStore(),
           boardCanvas = document.getElementById("board"),
           context = boardCanvas.getContext("2d");
         const palette = {
@@ -877,7 +987,14 @@
             ctx.fillRect(ox + x * 16, oy + y * 16, 14, 14);
         }
         function render() {
-          const v = engine.view();
+          const settings = store.getSettings(),
+            v = engine.view(settings);
+          for (const key of SETTING_KEYS) {
+            const control = document.getElementById("setting-" + key);
+            if (control.value !== settings[key]) control.value = settings[key];
+          }
+          document.getElementById("next-preview").hidden =
+            settings.next === "off";
           setText("score", v.score);
           setText("level", v.level);
           setText("lines", v.lines);
@@ -895,7 +1012,7 @@
             .getElementById("bonuses")
             .setAttribute("aria-label", v.bonuses + " penetrator bonuses");
           paintPreview("held", v.held);
-          paintPreview("next", v.queue[0]);
+          paintPreview("next", settings.next === "on" ? v.queue[0] : null);
           boardCanvas.dataset.phase = v.phase;
           context.fillStyle = "#0d1726";
           context.fillRect(0, 0, 300, 600);
@@ -956,6 +1073,60 @@
           }
         }
         let lastFrame = performance.now();
+        function advanceToNow() {
+          const now = performance.now();
+          engine.advance(Math.max(0, now - lastFrame), store.getSettings());
+          lastFrame = now;
+        }
+        const settingLabels = {
+          ghost: [
+            "Ghost-piece visibility",
+            {
+              hidden: "Always hide",
+              dynamic: "Hide above midline",
+              visible: "Always show",
+            },
+          ],
+          hardDrop: ["Hard drop", { off: "Off", on: "On" }],
+          next: ["Next-piece preview", { off: "Off", on: "On" }],
+          hardDropLock: [
+            "Hard-drop locking",
+            { general: "Follow general policy", immediate: "Lock immediately" },
+          ],
+          lock: [
+            "General locking policy",
+            {
+              failed: "Failed downward attempt",
+              interval: "Full gravity interval",
+            },
+          ],
+          hold: ["Hold piece", { off: "Off", on: "On" }],
+        };
+        for (const key of SETTING_KEYS) {
+          const label = document.createElement("label"),
+            title = document.createElement("span"),
+            select = document.createElement("select");
+          title.textContent = settingLabels[key][0];
+          select.id = "setting-" + key;
+          select.dataset.setting = key;
+          for (const value of SETTING_VALUES[key]) {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = settingLabels[key][1][value];
+            select.append(option);
+          }
+          select.value = store.getSettings()[key];
+          select.addEventListener("change", () => {
+            advanceToNow();
+            const result = store.changeSettings({ [key]: select.value });
+            if (!result.ok) setText("message", result.message);
+            else engine.advance(0, result.value);
+            render();
+          });
+          label.append(title, select);
+          document.getElementById("setting-fields").append(label);
+        }
+
         function startOrRestart() {
           if (mode === "unsupported") return;
           engine.start(newGameId());
@@ -966,7 +1137,8 @@
         function togglePause() {
           const phase = engine.view().phase;
           if (phase === "ready" || phase === "over") return startOrRestart();
-          engine.setPaused(phase === "running");
+          advanceToNow();
+          engine.setPaused(engine.view().phase === "running");
           lastFrame = performance.now();
           render();
           boardCanvas.focus({ preventScroll: true });
@@ -1006,12 +1178,14 @@
           if (key === "Escape") togglePause();
           else if (key === "r") startOrRestart();
           else {
-            engine.act(action, DEFAULT_SETTINGS);
+            advanceToNow();
+            engine.act(action, store.getSettings());
             render();
           }
         });
         function pauseForFocusLoss() {
           if (engine.view().phase === "running") {
+            advanceToNow();
             engine.setPaused(true);
             lastFrame = performance.now();
             render();
@@ -1021,14 +1195,18 @@
         document.addEventListener("visibilitychange", () => {
           if (document.hidden) pauseForFocusLoss();
         });
-        document.getElementById("toggle-help").addEventListener("click", () => {
-          const help = document.getElementById("help");
-          help.hidden = !help.hidden;
+        for (const name of ["settings", "help"]) {
           document
-            .getElementById("toggle-help")
-            .setAttribute("aria-expanded", String(!help.hidden));
-          boardCanvas.focus({ preventScroll: true });
-        });
+            .getElementById("toggle-" + name)
+            .addEventListener("click", () => {
+              const panel = document.getElementById(name);
+              panel.hidden = !panel.hidden;
+              document
+                .getElementById("toggle-" + name)
+                .setAttribute("aria-expanded", String(!panel.hidden));
+              boardCanvas.focus({ preventScroll: true });
+            });
+        }
         function centerInitialView() {
           const r = boardCanvas.getBoundingClientRect();
           window.scrollTo({
@@ -1045,9 +1223,8 @@
         }
         window.addEventListener("resize", centerInitialView);
         centerInitialView();
-        function frame(now) {
-          engine.advance(Math.max(0, now - lastFrame), DEFAULT_SETTINGS);
-          lastFrame = now;
+        function frame() {
+          advanceToNow();
           render();
           requestAnimationFrame(frame);
         }

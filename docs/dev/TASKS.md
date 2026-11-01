@@ -137,24 +137,28 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 4 — Session settings
 
-- [ ] Phase 4 — Session settings
-    - [ ] Milestone 4.1 — Six-setting session configuration
-        - [ ] T-020 — Centralize exact setting validation and defaults
+- [x] Phase 4 — Session settings
+    - [x] Milestone 4.1 — Six-setting session configuration
+        - [x] T-020 — Centralize exact setting validation and defaults
+            Verification: RED both canonical settings/store cases failed; GREEN 46 unit checks passed; all supported values validate exactly, missing extra coerced values reject and invalid patches leave detached session settings unchanged.
             Scope: tetris.html SettingsPolicy and SessionStore plus checks; S4 and DECOMPOSITION enums.
             Depends on: T-019.
             Evidence: All six keys validate exactly with canonical defaults and invalid values leave state unchanged; eliminate competing hard-coded defaults.
-        - [ ] T-021 — Implement selectable locking and live policy changes
+        - [x] T-021 — Implement selectable locking and live policy changes
+            Verification: RED three alternate-policy cases failed; GREEN 50 unit checks passed; failed soft/gravity attempts lock, hard drop follows general policy unless immediate selected, zero-distance immediate drop locks and policy toggles preserve contact elapsed including zero-update expiry.
             Scope: tetris.html Engine/controller settings integration and deterministic timing tests; S2/S4.
             Depends on: T-020.
             Evidence: Failed-downward and immediate hard-drop policies work; switching policies preserves contact elapsed time and cannot reset a grounded interval.
-        - [ ] T-022 — Add six controls and session-only settings panel
+        - [x] T-022 — Add six controls and session-only settings panel
+            Verification: RED all 16 new browser cases failed, including pre-input time incorrectly shortening hard-drop contact; GREEN full packaged 0.4.0 suite passed 120 tests in 204.85s, all six settings, session reloads, native focus, no persistence access, five-width anchor checks and exact controller action timing; milestone source review and independent format/name/hash gates passed.
             Scope: tetris.html settings controls/toggle, Input/Renderer, README.md and browser checks.
             Depends on: T-021.
             Evidence: All six changes are immediate, restart retains and reload resets; zero cookie/query/localStorage/IndexedDB persistence; hiding settings hides its contents.
             Milestone exit: review all 4.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/4/4.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 4.2 — Phase review
-        - [ ] T-023 — Review test and report phase 4
+    - [x] Milestone 4.2 — Phase review
+        - [x] T-023 — Review test and report phase 4
+            Verification: Phase-wide settings Engine controller and presentation review found no unresolved finding; three delivery closures audited with no exceptions; 120 packaged tests passed in 204.85s, exact action timing and session-only persistence isolation included; visual inspection, Prettier and independent artifact-name/hash gates passed; milestone 4.1 closed/read back; exact-tip CI integration and release remain coordinator gates.
             Depends on: T-022 and completion/verified closure of delivery milestones 4.1.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.4.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/4/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.4.0 before any next-phase activation.

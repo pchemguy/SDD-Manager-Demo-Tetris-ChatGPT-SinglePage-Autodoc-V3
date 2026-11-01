@@ -915,6 +915,92 @@
             },
           };
         }
+        const SQLITE_SCHEMA = Object.freeze({
+          high_scores:
+            "CREATE TABLE high_scores (id TEXT PRIMARY KEY NOT NULL, score INTEGER NOT NULL CHECK(score >= 0), timestamp TEXT NOT NULL)",
+          settings:
+            "CREATE TABLE settings (key TEXT PRIMARY KEY NOT NULL, value TEXT NOT NULL)",
+        });
+        /** Temporary databases only; all SQL is application-owned and values are bound. */
+        function createSQLiteCodec(ensureRuntime) {
+          const failure = () => ({
+            ok: false,
+            code: "invalidSQLite",
+            message: "The SQLite session is invalid or could not be processed.",
+          });
+          async function withDatabase(bytes, action) {
+            let db = null,
+              outcome;
+            try {
+              const ready = await ensureRuntime();
+              if (!ready.ok) return ready;
+              db = bytes
+                ? new ready.value.Database(bytes)
+                : new ready.value.Database();
+              outcome = { ok: true, value: action(db) };
+            } catch {
+              outcome = failure();
+            } finally {
+              if (db) {
+                try {
+                  db.close();
+                } catch {
+                  outcome = failure();
+                }
+              }
+            }
+            return outcome;
+          }
+          function prepared(db, sql, action) {
+            const statement = db.prepare(sql);
+            try {
+              return action(statement);
+            } finally {
+              statement.free();
+            }
+          }
+          return {
+            async ready() {
+              try {
+                const outcome = await ensureRuntime();
+                return outcome.ok ? { ok: true, value: null } : outcome;
+              } catch {
+                return {
+                  ok: false,
+                  code: "dependencyUnavailable",
+                  message:
+                    "SQLite could not be loaded. JSON and the game remain available.",
+                };
+              }
+            },
+            async encode(raw) {
+              const valid = validateSession(raw);
+              if (!valid.ok) return valid;
+              return withDatabase(null, (db) => {
+                db.run("PRAGMA user_version=1");
+                db.run(SQLITE_SCHEMA.high_scores);
+                db.run(SQLITE_SCHEMA.settings);
+                prepared(
+                  db,
+                  "INSERT INTO high_scores(id,score,timestamp) VALUES (?,?,?)",
+                  (s) => {
+                    for (const row of valid.value.results)
+                      s.run([row.id, row.score, row.timestamp]);
+                  },
+                );
+                prepared(
+                  db,
+                  "INSERT INTO settings(key,value) VALUES (?,?)",
+                  (s) => {
+                    for (const key of SETTING_KEYS)
+                      s.run([key, valid.value.settings[key]]);
+                  },
+                );
+                return db.export();
+              });
+            },
+          };
+        }
         const MAX_FILE_BYTES = 1024 * 1024;
         /** File decoding/encoding has no live store or protocol mutation capability. */
         function createFileController(download) {

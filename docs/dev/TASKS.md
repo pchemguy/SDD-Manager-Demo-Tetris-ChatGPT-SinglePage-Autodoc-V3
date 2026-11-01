@@ -246,7 +246,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html DependencyLoader, docs/DEPENDENCIES.md and browser loading evidence; S8.
             Depends on: T-034.
             Evidence: Verify actual pinned URL/version/license/integrity and initialization under file/HTTP in Chromium/Firefox without worker/companion local asset; clear bounded failure keeps JSON/game usable.
-        - [ ] T-036 — Encode SQLite snapshots with version metadata
+        - [x] T-036 — Encode SQLite snapshots with version metadata
+            Verification: Two export cases failed RED before implementation; all 92 unit checks passed; final focused two checks passed after adding the ready API; independent Python SQLite validates genuine header exact tables user_version integrity runtime INTEGER and complete field preservation; prepared insert failure frees its statement and closes database while invalid candidate opens none.
             Scope: tetris.html SQLiteCodec and round-trip fixtures; S8.
             Depends on: T-035.
             Evidence: Write genuine SQLite header, user_version=1 and exact two tables via bound values; preserve every field/type and close all resources.

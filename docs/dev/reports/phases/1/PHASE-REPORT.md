@@ -37,3 +37,13 @@ CI run 41313446648 passed 49 tests plus package/name checks after the supported-
 Phase 1 intentionally uses ordinary random selection and rotation without kicks. Modern rules, penetrator, configuration, persistence, leaderboard and file exchange remain in their accepted later phases. Local file and localhost HTTP execution passed in both required browsers, including complete game-over/restart, Canvas pixels, five widths and keyboard/focus-handler checks. Native OS-window delivery, headed/full Chromium and native Windows execution remain unverified. On this restricted host, local Firefox requires the documented content-sandbox override; the supported hosted CI runner did not require it.
 
 The phase is ready for verified main integration after its published task/issue/milestone and CI readbacks. GitHub release publication, uploaded/downloaded asset verification and next-phase activation are subsequent effects; this report does not claim them complete.
+
+## Integration and release outcome
+
+Phase tip fca2ef2be8e14b9f9be18e58a432fb47de7465e7 was explicitly integrated into main as 595456ca3414418f973fde8204cf3de2a6b9092b; merged-state 24-unit verification passed and app/test/tool bytes matched the verified source. Default-branch release commit 1f576a54aa01411527f3ba4cbd6fe2b2b6db9824 and annotated v0.1.0 tag were published/read back. Release https://github.com/pchemguy/SDD-Manager-Demo-Tetris-ChatGPT-SinglePage-Autodoc-V3/releases/tag/v0.1.0 is published stable and verified as latest. The exact release body matches the release commit/tag notes. All three assets were downloaded and SHA-256 matched:
+
+- README.md: a1e1938710ef4f26ea4ea0fde64ed33c7e7626b713092a918398feb60c1193bd
+- SHA256SUMS: 134f642817e847d14c27077677c0efe90ff988c23b1ad121a2f1d25d0dba34a5
+- tetris.html: 6ef0474070fda9c0a7b634250659d252adaa666886ec3bd9fe235d63531e36e5
+
+No publication effects remain pending for Phase 1. The full implementation authorization continues with Phase 2, T-008.

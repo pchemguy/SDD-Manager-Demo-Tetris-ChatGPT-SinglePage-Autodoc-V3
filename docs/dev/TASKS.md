@@ -102,7 +102,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 - [ ] Phase 3 — Penetrator
     - [ ] Milestone 3.1 — Penetrator landing and controls
-        - [ ] T-015 — Implement lowest feasible penetrating landing
+        - [x] T-015 — Implement lowest feasible penetrating landing
+            Verification: RED traversal/lowest-cavity test failed against regular collision; GREEN 39 unit checks passed; overlap traversal preserves all settled cells, landing selects lowest non-overlap cavity, invalid motions and colliding floor descent are rejected.
             Scope: tetris.html domain feasibility/landing/rotation and cavity fixtures; S3.
             Depends on: T-014.
             Evidence: Traverse occupied rows without deletion; ghost/drop agree on the lowest legal cavity; reject out-of-bounds or no-landing motions.

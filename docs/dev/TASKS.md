@@ -100,31 +100,37 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 3 — Penetrator
 
-- [ ] Phase 3 — Penetrator
-    - [ ] Milestone 3.1 — Penetrator landing and controls
-        - [ ] T-015 — Implement lowest feasible penetrating landing
+- [x] Phase 3 — Penetrator
+    - [x] Milestone 3.1 — Penetrator landing and controls
+        - [x] T-015 — Implement lowest feasible penetrating landing
+            Verification: RED traversal/lowest-cavity test failed against regular collision; GREEN 39 unit checks passed; overlap traversal preserves all settled cells, landing selects lowest non-overlap cavity, invalid motions and colliding floor descent are rejected.
             Scope: tetris.html domain feasibility/landing/rotation and cavity fixtures; S3.
             Depends on: T-014.
             Evidence: Traverse occupied rows without deletion; ghost/drop agree on the lowest legal cavity; reject out-of-bounds or no-landing motions.
-        - [ ] T-016 — Integrate activation hold exclusion and timing
+        - [x] T-016 — Integrate activation hold exclusion and timing
+            Verification: RED bonus activation/hold case failed; GREEN 42 unit checks passed; activation spends once, releases grounding only for a lower landing, preserves existing delay otherwise, blocks hold and rejects paused or unavailable activation; penetrator rotation can traverse occupied cells.
             Scope: tetris.html Engine/Input and interactions; S3.
             Depends on: T-015.
             Evidence: P spends once, repeated activation is a no-op, active hold is disabled, grounded activation preserves or releases timing correctly and final lock never overlaps.
             Milestone exit: review all 3.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/3/3.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 3.2 — Bonus and presentation integration
-        - [ ] T-017 — Award and cap penetrator bonuses
+    - [x] Milestone 3.2 — Bonus and presentation integration
+        - [x] T-017 — Award and cap penetrator bonuses
+            Verification: RED four-clear bonus sequence failed; GREEN 43 unit checks passed; four-line clears award one through cap three, activation spends one and restart resets; existing single two and three line clear checks still pass.
             Scope: tetris.html Engine scoring/bonus events and deterministic four-clear fixtures.
             Depends on: T-016.
             Evidence: Four-line clears award one, cap at three, activation spends one and restart resets; ordinary clears do not award.
-        - [ ] T-018 — Render white penetrators and bonus indicator
+        - [x] T-018 — Render white penetrators and bonus indicator
+            Verification: RED missing indicator then white-cell shading cases failed in all four browser/protocol combinations; GREEN full packaged 0.3.0 suite passed 97 tests in 110.75s; real keyboard four-line clear earned bonus, P spent it, active and ghost pixels were white, hold blocked and lock restored ordinary color; milestone code review and package/format gates passed.
             Scope: tetris.html Renderer/help, browser checks and README.md.
             Depends on: T-017.
             Evidence: Earn/spend/lock loop updates one symbol per bonus; regular pieces/ghost/hold/preview never use white; both modes/browsers preserve prior play.
             Milestone exit: review all 3.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/3/3.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 3.3 — Phase review
-        - [ ] T-019 — Review test and report phase 3
+    - [x] Milestone 3.3 — Phase review
+        - [x] T-019 — Review test and report phase 3
+            Reassessment P3-F1: one hosted Firefox/file timing case failed and reproduced locally; integration held. Temporary clock setup repairs proved insufficient; final forward repair uses native browser animation time and observable transitions, with exact timing in engine checks. All 68 affected checks and 16 final waiter checks passed; original closure retained, final CI/reclosure pending.
+            Verification: Complete phase Engine/controller/presentation code review found no unresolved S3 finding; four initial delivery closures audited with no exceptions; packaged 0.3.0 full suite passed 97 tests in 110.75s; Prettier and independent artifact inventory/hash gates passed; milestones 3.1 and 3.2 closed/read back; exact-tip CI, explicit main integration and release remain coordinator gates.
             Depends on: T-018 and completion/verified closure of delivery milestones 3.1, 3.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.3.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/3/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.3.0 before any next-phase activation.

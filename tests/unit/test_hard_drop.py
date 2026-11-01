@@ -11,3 +11,7 @@ def test_repeated_drop_preserves_elapsed_and_scores_nothing():
 
 def test_disabled_hard_drop_is_noop():
     assert evaluate("const e=createEngine(()=>0);e.start('g');console.log(JSON.stringify([e.act('hardDrop',{...DEFAULT_SETTINGS,hardDrop:'off'}),e.view().active.y,e.view().score]));") == [False,-1,0]
+
+
+def test_held_z_piece_full_interval_is_independent_of_browser_frames():
+    assert evaluate("const e=createEngine(()=>0);e.start('g');e.act('hold');e.act('hold');e.act('hardDrop');e.act('hardDrop');e.advance(999);const a=e.view();e.advance(1);const b=e.view();console.log(JSON.stringify([a.active.kind,a.queue[0],a.score,b.active.kind,b.queue[0]]));") == ['Z','T',36,'T','S']

@@ -1,14 +1,12 @@
 """Modern controls exercised through production UI, without engine globals."""
-def freeze(p):
-    p.clock.install(time='2026-01-01T00:00:00Z')
-    p.reload()
-    p.clock.pause_at('2026-01-01T00:00:02Z')
+from playwright.sync_api import expect
+def start_game(p):
     p.locator('#start').click()
 
 
 def test_hold_preview_drop_and_contact_interval(app_page):
     p=app_page
-    freeze(p)
+    start_game(p)
     assert p.locator('#next-kind').inner_text() == 'Z'
     p.keyboard.press('c')
     assert p.locator('#held-kind').inner_text() == 'I'
@@ -20,10 +18,10 @@ def test_hold_preview_drop_and_contact_interval(app_page):
     before=p.locator('#board').evaluate('c=>c.toDataURL()')
     p.keyboard.press('Enter')
     assert p.locator('#score').inner_text() == '36'
-    p.clock.run_for(900)
+    p.wait_for_timeout(300)
     assert p.locator('#next-kind').inner_text() == 'T'
-    p.clock.run_for(200)
-    assert p.locator('#next-kind').inner_text() == 'S'
+    expect(p.locator('#phase')).to_have_text('Playing')
+    p.wait_for_function("document.getElementById('next-kind').textContent==='S'")
     assert p.locator('#board').evaluate('c=>c.toDataURL()') != before
     p.keyboard.press('c')
     assert p.locator('#held-kind').inner_text() == 'T'
@@ -32,7 +30,7 @@ def test_hold_preview_drop_and_contact_interval(app_page):
 
 def test_ghost_outline_and_native_modifier_isolation(app_page):
     p=app_page
-    freeze(p)
+    start_game(p)
     # Empty-board I ghost lies at row 19; outline is cyan at its upper edge.
     assert p.locator('#board').evaluate("c=>{const a=c.getContext('2d').getImageData(94,574,1,1).data;return a[1]>150&&a[2]>150;}")
     before=p.locator('#board').evaluate('c=>c.toDataURL()')

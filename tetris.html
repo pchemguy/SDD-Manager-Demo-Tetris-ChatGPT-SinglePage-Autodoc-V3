@@ -309,6 +309,17 @@
         line-height: 1.6;
         color: var(--muted);
       }
+      .file-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--edge);
+      }
+      .file-actions button {
+        flex: 1;
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
@@ -419,6 +430,16 @@
           <h2>Settings</h2>
           <div id="setting-fields"></div>
           <p id="settings-note">Changes last until this page reloads.</p>
+          <div class="file-actions">
+            <button id="save-session" type="button">Save</button
+            ><button id="restore-session" type="button">Restore</button>
+          </div>
+          <input
+            id="restore-file"
+            type="file"
+            hidden
+            aria-label="Restore session file"
+          />
         </section>
         <section id="help" class="panel help" hidden>
           <h2>Controls / help</h2>
@@ -804,10 +825,91 @@
             return JSON.stringify(checked.value, null, 2) + "\n";
           },
         };
+        const MAX_FILE_BYTES = 1024 * 1024;
+        /** File decoding/encoding has no live store or protocol mutation capability. */
+        function createFileController(download) {
+          const failure = (code, message) => ({ ok: false, code, message });
+          return {
+            async save(format, value) {
+              if (format !== "json")
+                return failure(
+                  "unsupportedVersion",
+                  "Choose a supported session format.",
+                );
+              let bytes;
+              try {
+                bytes = new TextEncoder().encode(JSONCodec.encode(value));
+              } catch (error) {
+                return failure(
+                  error.code || "invalidValue",
+                  error.code
+                    ? error.message
+                    : "The session could not be encoded.",
+                );
+              }
+              try {
+                await download(
+                  bytes,
+                  "tetris-session.json",
+                  "application/json",
+                );
+                return { ok: true, value: null };
+              } catch {
+                return failure(
+                  "invalidValue",
+                  "The browser could not start this download.",
+                );
+              }
+            },
+            async read(file) {
+              if (
+                !file ||
+                !Number.isSafeInteger(file.size) ||
+                file.size < 0 ||
+                typeof file.arrayBuffer !== "function"
+              )
+                return failure(
+                  "invalidValue",
+                  "Choose a readable session file.",
+                );
+              if (file.size > MAX_FILE_BYTES)
+                return failure(
+                  "fileTooLarge",
+                  "Session files must be at most 1 MiB.",
+                );
+              let buffer;
+              try {
+                buffer = await file.arrayBuffer();
+              } catch {
+                return failure(
+                  "invalidValue",
+                  "The selected file could not be read.",
+                );
+              }
+              if (!(buffer instanceof ArrayBuffer))
+                return failure(
+                  "invalidValue",
+                  "The selected file could not be read.",
+                );
+              if (buffer.byteLength > MAX_FILE_BYTES)
+                return failure(
+                  "fileTooLarge",
+                  "Session files must be at most 1 MiB.",
+                );
+              if (buffer.byteLength !== file.size)
+                return failure(
+                  "invalidValue",
+                  "The selected file was not read completely.",
+                );
+              const decoded = JSONCodec.decodeBytes(new Uint8Array(buffer));
+              return decoded.ok ? validateSession(decoded.value) : decoded;
+            },
+          };
+        }
         function createSessionStore() {
           let settings = { ...DEFAULT_SETTINGS },
             results = [];
-          const completedIds = new Set();
+          let completedIds = new Set();
           return {
             record(raw) {
               const checked = validateResult(raw);
@@ -820,6 +922,24 @@
             },
             topResults() {
               return structuredClone(results);
+            },
+            exportSession() {
+              return {
+                formatVersion: 1,
+                results: structuredClone(results),
+                settings: { ...settings },
+              };
+            },
+            replaceValidated(value) {
+              const checked = validateSession(value);
+              if (!checked.ok) return checked;
+              const nextSettings = { ...checked.value.settings },
+                nextResults = structuredClone(checked.value.results),
+                nextIds = new Set(nextResults.map((r) => r.id));
+              settings = nextSettings;
+              results = nextResults;
+              completedIds = nextIds;
+              return { ok: true, value: null };
             },
             getSettings() {
               return { ...settings };
@@ -1420,11 +1540,45 @@
           };
         }
         // PURE-END
+        /** Download resources are disposed after use and on page exit. */
+        const downloadURLs = new Set();
+        function releaseDownloadURL(url) {
+          if (downloadURLs.delete(url)) URL.revokeObjectURL(url);
+        }
+        function downloadBytes(bytes, name, type) {
+          const url = URL.createObjectURL(new Blob([bytes], { type }));
+          downloadURLs.add(url);
+          let link = null,
+            started = false;
+          try {
+            link = document.createElement("a");
+            link.href = url;
+            link.download = name;
+            link.hidden = true;
+            document.body.append(link);
+            link.click();
+            started = true;
+          } finally {
+            if (link) link.remove();
+            if (started) {
+              try {
+                setTimeout(() => releaseDownloadURL(url), 1000);
+              } catch {
+                releaseDownloadURL(url);
+              }
+            } else releaseDownloadURL(url);
+          }
+        }
+        window.addEventListener("pagehide", () => {
+          for (const url of downloadURLs) releaseDownloadURL(url);
+        });
         /** Canvas presentation and the serialized classic game controller. */
         const engine = createEngine(),
           store = createSessionStore(),
           boardCanvas = document.getElementById("board"),
           context = boardCanvas.getContext("2d");
+        let fileOperation = null;
+        const files = createFileController(downloadBytes);
         const palette = {
           I: "#44d4d0",
           J: "#5a83ed",
@@ -1677,6 +1831,10 @@
           }
           select.value = store.getSettings()[key];
           select.addEventListener("change", () => {
+            if (fileOperation) {
+              render();
+              return;
+            }
             advanceToNow();
             const result = store.changeSettings({ [key]: select.value });
             if (!result.ok) setText("message", result.message);
@@ -1692,13 +1850,14 @@
         }
 
         function startOrRestart() {
-          if (mode === "unsupported") return;
+          if (fileOperation || mode === "unsupported") return;
           engine.start(newGameId());
           lastFrame = performance.now();
           render();
           boardCanvas.focus({ preventScroll: true });
         }
         function togglePause() {
+          if (fileOperation) return;
           const phase = engine.view().phase;
           if (phase === "ready" || phase === "over") return startOrRestart();
           advanceToNow();
@@ -1713,6 +1872,7 @@
         document.getElementById("pause").addEventListener("click", togglePause);
         document.addEventListener("keydown", (event) => {
           if (
+            fileOperation ||
             event.isComposing ||
             event.ctrlKey ||
             event.metaKey ||
@@ -1771,6 +1931,110 @@
               boardCanvas.focus({ preventScroll: true });
             });
         }
+        function syncFileControls() {
+          const disabled = Boolean(fileOperation);
+          for (const id of [
+            "save-session",
+            "restore-session",
+            "start",
+            "pause",
+          ])
+            document.getElementById(id).disabled = disabled;
+          for (const control of document.querySelectorAll("#settings select"))
+            control.disabled = disabled;
+        }
+        function beginFileOperation(kind) {
+          if (fileOperation) return false;
+          if (mode === "unsupported") {
+            setText(
+              "message",
+              "Open this game as a local file or over HTTP(S).",
+            );
+            return false;
+          }
+          fileOperation = kind;
+          // Freeze the current visible game before any asynchronous file operation.
+          engine.setPaused(true);
+          lastFrame = performance.now();
+          render();
+          syncFileControls();
+          return true;
+        }
+        function endFileOperation() {
+          fileOperation = null;
+          document.getElementById("restore-file").value = "";
+          syncFileControls();
+        }
+        document
+          .getElementById("save-session")
+          .addEventListener("click", async () => {
+            if (!beginFileOperation("save")) return;
+            try {
+              const result = await files.save("json", store.exportSession());
+              setText(
+                "message",
+                result.ok
+                  ? "Saved JSON session. Use Pause/Start when ready."
+                  : "Cannot save: " + result.message,
+              );
+            } finally {
+              endFileOperation();
+            }
+          });
+        const restoreInput = document.getElementById("restore-file");
+        document
+          .getElementById("restore-session")
+          .addEventListener("click", () => {
+            if (!beginFileOperation("chooseRestore")) return;
+            restoreInput.value = "";
+            restoreInput.click();
+          });
+        restoreInput.addEventListener("cancel", () => {
+          if (fileOperation === "chooseRestore") {
+            setText("message", "Restore cancelled.");
+            endFileOperation();
+          }
+        });
+        restoreInput.addEventListener("change", async () => {
+          if (!fileOperation && !beginFileOperation("chooseRestore")) return;
+          if (fileOperation !== "chooseRestore") {
+            restoreInput.value = "";
+            return;
+          }
+          fileOperation = "readRestore";
+          const file = restoreInput.files[0];
+          if (!file) {
+            setText("message", "Restore cancelled.");
+            endFileOperation();
+            return;
+          }
+          try {
+            const checked = await files.read(file);
+            if (!checked.ok) {
+              setText("message", "Cannot restore: " + checked.message);
+              return;
+            }
+            const committed = store.replaceValidated(checked.value);
+            if (!committed.ok) {
+              setText("message", "Cannot restore: " + committed.message);
+              return;
+            }
+            const saved = adapter.persist(store.getSettings());
+            render();
+            setText(
+              "message",
+              "Restored session. " +
+                (saved.ok ? "Use Pause/Start when ready." : saved.message),
+            );
+          } catch {
+            setText(
+              "message",
+              "Cannot restore: the selected file could not be processed.",
+            );
+          } finally {
+            endFileOperation();
+          }
+        });
         function centerInitialView() {
           const r = boardCanvas.getBoundingClientRect();
           window.scrollTo({

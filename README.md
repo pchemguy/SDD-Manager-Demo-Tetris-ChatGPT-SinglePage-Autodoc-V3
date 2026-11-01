@@ -68,8 +68,14 @@ In HTTP(S) mode each setting resolves independently: a valid single explicit URL
 
 For example, append ?ghost=visible&hardDrop=off to an HTTP(S) game URL. Omitted settings continue to use their saved cookies or defaults.
 
-In direct-file mode settings always start from defaults, remain in memory and reset on reload. The application does not read/write cookies or read/modify configuration query parameters in that mode. Leaderboard and manual file exchange follow in later increments.
+In direct-file mode settings always start from defaults, remain in memory and reset on reload. The application does not read/write cookies or read/modify configuration query parameters in that mode. Leaderboard history remains session-only; manual files can preserve results and settings.
 
 ## Leaderboard
 
 Completed games enter the session top ten automatically, including zero scores. Results rank by descending score, then ascending UTC completion time and stable ID. The panel shows scores and readable completion times; each record retains its original UTC timestamp and UUID v4. Restart and pause keep history without adding an abandoned game. Reload clears the history; results are never stored in cookies or URL parameters.
+
+## Manual JSON Save and Restore
+
+Save and Restore sit at the bottom of Settings and disappear with that panel. Save downloads tetris-session.json containing the current top ten completed results and all six settings. Restore reads JSON by content, validates the complete file and replaces both collections; filename extensions are not trusted. It preserves every result ID, safe integer score and UTC timestamp and keeps the active board intact. Files may be at most 1 MiB.
+
+File interaction pauses running play and blocks concurrent gameplay/file operations. Use Pause/Start to resume explicitly afterward. Invalid files show a clear error and leave results, settings, cookies and URL unchanged. A valid HTTP(S) restore mirrors all six settings into cookies and URL parameters; a file-mode restore changes memory only. See [file formats](docs/FILE-FORMATS.md) and the [JSON Schema](docs/dev/contracts/session.schema.json). SQLite exchange follows in the final increment.

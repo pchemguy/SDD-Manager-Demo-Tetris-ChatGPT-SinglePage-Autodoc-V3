@@ -218,7 +218,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html Validator/JSONCodec, normative schema checks, fixtures and docs/FILE-FORMATS.md; S7.
             Depends on: T-030.
             Evidence: Validate schema equivalence and semantic dates/UUIDs/safe integers; reject duplicate object members/IDs, unknown versions, extra/missing settings and malformed UTF-8 before mutation.
-        - [ ] T-032 — Connect manual JSON Save and Restore
+        - [x] T-032 — Connect manual JSON Save and Restore
+            Verification: RED three file/store cases and all four Save/Restore browser cases failed; GREEN 87 unit/file-browser checks passed in 14.34s; actual JSON downloads and chooser restores round-trip exact IDs safe scores UTC times and all settings, replace history atomically without resetting board, mirror HTTP settings and leave file URL/cookies untouched; busy suspension requires explicit resume.
             Scope: tetris.html FileController/controller/settings buttons and browser checks; S9.
             Depends on: T-031.
             Evidence: Download one JSON file; restore replaces results/settings and freezes file interaction, mirrors all HTTP settings or memory only in file mode; cancellation does not change data.

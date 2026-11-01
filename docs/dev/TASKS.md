@@ -193,39 +193,46 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 6 — Results and JSON
 
-- [ ] Phase 6 — Results and JSON
-    - [ ] Milestone 6.1 — Session leaderboard
-        - [ ] T-028 — Record stable completed-game results once
+- [x] Phase 6 — Results and JSON
+    - [x] Milestone 6.1 — Session leaderboard
+        - [x] T-028 — Record stable completed-game results once
+            Verification: RED three result/store cases failed; GREEN 67 unit checks passed; stable UUID-v4 IDs, zero/safe scores and canonical calendar-valid UTC completion times preserved, detached results and duplicate suppression verified, engine completion recorded once while restart abandonment creates no event; phase tracking reconciled by fresh complete hosted inventory after stale helper readback.
             Scope: tetris.html SessionStore/controller and deterministic identity/time checks; S6.
             Depends on: T-027.
             Evidence: Game-over UUID/UTC records preserve safe scores including zero, duplicate events cannot insert twice and restart abandonment is excluded.
-        - [ ] T-029 — Rank and display the session top ten
+        - [x] T-029 — Rank and display the session top ten
+            Verification: RED both ranking cases and all four panel cases failed; GREEN 93 focused unit/leaderboard/layout/live-region checks passed in 44.07s; top-ten truncation and score-time-ID ties verified, board anchor stable at five widths; source review also found a settings Outcome alias, one regression failed then all 69 unit checks passed after detaching the stored settings.
             Scope: tetris.html ranking/Renderer and leaderboard toggle.
             Depends on: T-028.
             Evidence: Eleven results truncate correctly; score/time/ID tie ordering is deterministic; panel order and board anchoring remain correct.
-        - [ ] T-030 — Verify leaderboard lifecycle and game interactions
+        - [x] T-030 — Verify leaderboard lifecycle and game interactions
+            Verification: Packaged leaderboard milestone passed 85 unit/lifecycle/layout checks in 76.22s; real completed games produced one UUID-v4 safe-score UTC-ms record, restart retained it and reload cleared it; active/paused/abandoned games did not insert, results absent from cookies/URL; reviewed validation ownership, ranking/deduplication and DOM update paths with no unresolved finding.
             Scope: tests/browser, README.md and result fixtures.
             Depends on: T-029.
             Evidence: Reload clears history, restart retains it, active play and pause do not insert scores, completed games update immediately in both modes.
             Milestone exit: review all 6.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/6/6.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 6.2 — JSON file exchange
-        - [ ] T-031 — Implement complete duplicate-aware JSON validation
+    - [x] Milestone 6.2 — JSON file exchange
+        - [x] T-031 — Implement complete duplicate-aware JSON validation
+            Verification: RED all 11 codec/validator cases failed; GREEN 80 unit checks passed; canonical schema plus independent calendar oracle agreed, duplicate members at any depth/escaped names and IDs rejected, exact integer parsing prevents rounding/underflow acceptance, UTF-8/depth/version failures clear and round trips preserve every field; documented JSON example executed successfully.
             Scope: tetris.html Validator/JSONCodec, normative schema checks, fixtures and docs/FILE-FORMATS.md; S7.
             Depends on: T-030.
             Evidence: Validate schema equivalence and semantic dates/UUIDs/safe integers; reject duplicate object members/IDs, unknown versions, extra/missing settings and malformed UTF-8 before mutation.
-        - [ ] T-032 — Connect manual JSON Save and Restore
+        - [x] T-032 — Connect manual JSON Save and Restore
+            Verification: RED three file/store cases and all four Save/Restore browser cases failed; GREEN 87 unit/file-browser checks passed in 14.34s; actual JSON downloads and chooser restores round-trip exact IDs safe scores UTC times and all settings, replace history atomically without resetting board, mirror HTTP settings and leave file URL/cookies untouched; busy suspension requires explicit resume.
             Scope: tetris.html FileController/controller/settings buttons and browser checks; S9.
             Depends on: T-031.
             Evidence: Download one JSON file; restore replaces results/settings and freezes file interaction, mirrors all HTTP settings or memory only in file mode; cancellation does not change data.
-        - [ ] T-033 — Verify invalid-file isolation and portable JSON delivery
+        - [x] T-033 — Verify invalid-file isolation and portable JSON delivery
+            Verification: Full packaged 0.6.0 suite passed 193 tests in 266.85s; 13 invalid content classes preserve results settings cookies URL and paused board in all four browser/mode combinations, file cookie/history spies stayed zero, one-MiB/read/download failures and schema inventory/hash gates passed; busy/second-file guards, modeled cancel handler and Blob URL cleanup verified; initial test-setup function auto-invocation stall corrected with a wrapped bounded fixture, then four concurrency cases and full suite passed; milestone source and visual review found no unresolved finding.
             Scope: tests/browser/fixtures, format guide, README.md and package schema inclusion.
             Depends on: T-032.
             Evidence: Round-trip exact IDs/scores/timestamps/settings in both modes; prove unchanged results/settings/cookies/URL for invalid/oversized/trailing/duplicate inputs; hide buttons with settings.
             Milestone exit: review all 6.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/6/6.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 6.3 — Phase review
-        - [ ] T-034 — Review test and report phase 6
+    - [x] Milestone 6.3 — Phase review
+        - [x] T-034 — Review test and report phase 6
+            Verification: Phase-wide event/store/validator/JSON/FileController/protocol/renderer review found no unresolved finding; six delivery closures audited without exceptions; full packaged 0.6.0 suite passed 193 tests in 266.85s; invalid-file atomicity, field preservation, busy/cancel/resource paths and four-file schema inventory verified; milestones 6.1 and 6.2 closed/read back; exact-tip CI integration and release remain coordinator gates.
             Depends on: T-033 and completion/verified closure of delivery milestones 6.1, 6.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.6.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/6/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.6.0 before any next-phase activation.

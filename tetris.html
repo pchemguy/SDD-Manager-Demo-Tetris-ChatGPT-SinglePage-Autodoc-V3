@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="app-version" content="0.5.0" />
+    <meta name="app-version" content="0.6.0" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Tetris</title>
     <link rel="icon" href="data:," />
@@ -276,15 +276,69 @@
         line-height: 1.6;
         color: var(--muted);
       }
+      .leaderboard {
+        width: 190px;
+        max-height: 600px;
+      }
+      .leaderboard p {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .leaderboard ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: 470px;
+        overflow-y: auto;
+      }
+      .leaderboard li {
+        display: grid;
+        grid-template-columns: 20px 1fr;
+        gap: 4px;
+        padding: 9px 0;
+        border-bottom: 1px solid var(--edge);
+        font-size: 12px;
+      }
+      .leaderboard .rank {
+        color: var(--muted);
+      }
+      .leaderboard time {
+        display: block;
+        font-size: 10px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+      .file-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid var(--edge);
+      }
+      .file-actions button {
+        flex: 1;
+        font-size: 12px;
+      }
     </style>
   </head>
   <body>
     <header class="appbar">
       <div class="brand">TET<span>R</span>IS</div>
-      <div>0.5.0 / SINGLE FILE</div>
+      <div>0.6.0 / SINGLE FILE</div>
     </header>
     <main class="scene">
       <div class="left-panels">
+        <section
+          id="leaderboard"
+          class="panel leaderboard"
+          aria-label="Leaderboard"
+        >
+          <h2>Leaderboard</h2>
+          <p class="eyebrow">Session top 10</p>
+          <p id="leaderboard-empty">Complete a game to set a score.</p>
+          <ol id="high-scores" aria-live="polite"></ol>
+        </section>
         <section
           class="panel info"
           id="info"
@@ -327,6 +381,14 @@
           <p class="phase" id="phase" aria-live="polite">Ready</p>
           <div class="toggles">
             <button
+              id="toggle-leaderboard"
+              type="button"
+              aria-controls="leaderboard"
+              aria-expanded="true"
+            >
+              Leaderboard
+            </button>
+            <button
               id="toggle-settings"
               type="button"
               aria-controls="settings"
@@ -368,6 +430,16 @@
           <h2>Settings</h2>
           <div id="setting-fields"></div>
           <p id="settings-note">Changes last until this page reloads.</p>
+          <div class="file-actions">
+            <button id="save-session" type="button">Save</button
+            ><button id="restore-session" type="button">Restore</button>
+          </div>
+          <input
+            id="restore-file"
+            type="file"
+            hidden
+            aria-label="Restore session file"
+          />
         </section>
         <section id="help" class="panel help" hidden>
           <h2>Controls / help</h2>
@@ -447,9 +519,428 @@
             value: Object.fromEntries(SETTING_KEYS.map((k) => [k, value[k]])),
           };
         }
-        function createSessionStore() {
-          let settings = { ...DEFAULT_SETTINGS };
+        function validTimestamp(value) {
+          if (
+            typeof value !== "string" ||
+            !/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/.test(
+              value,
+            ) ||
+            value.startsWith("0000-")
+          )
+            return false;
+          const parsed = new Date(value);
+          return (
+            Number.isFinite(parsed.getTime()) && parsed.toISOString() === value
+          );
+        }
+        function validateResult(raw) {
+          if (
+            !raw ||
+            typeof raw !== "object" ||
+            Array.isArray(raw) ||
+            Object.keys(raw).length !== 3 ||
+            !["id", "score", "timestamp"].every((k) => Object.hasOwn(raw, k))
+          )
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message: "Each result needs exactly id, score and timestamp.",
+            };
+          if (
+            typeof raw.id !== "string" ||
+            !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+              raw.id,
+            ) ||
+            !Number.isSafeInteger(raw.score) ||
+            raw.score < 0 ||
+            !validTimestamp(raw.timestamp)
+          )
+            return {
+              ok: false,
+              code: "invalidValue",
+              message:
+                "A result has an invalid ID, safe integer score or UTC timestamp.",
+            };
           return {
+            ok: true,
+            value: { id: raw.id, score: raw.score, timestamp: raw.timestamp },
+          };
+        }
+        function rankResults(results) {
+          const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+          return structuredClone(results)
+            .sort(
+              (a, b) =>
+                b.score - a.score ||
+                compare(a.timestamp, b.timestamp) ||
+                compare(a.id, b.id),
+            )
+            .slice(0, 10);
+        }
+        function hasExactKeys(value, keys) {
+          return (
+            value !== null &&
+            typeof value === "object" &&
+            !Array.isArray(value) &&
+            Object.keys(value).length === keys.length &&
+            keys.every((k) => Object.hasOwn(value, k))
+          );
+        }
+        function validateSession(raw) {
+          if (!hasExactKeys(raw, ["formatVersion", "results", "settings"]))
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message:
+                "A session needs exactly formatVersion, results and settings.",
+            };
+          if (!Number.isSafeInteger(raw.formatVersion))
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message: "The format version must be an integer.",
+            };
+          if (raw.formatVersion !== 1)
+            return {
+              ok: false,
+              code: "unsupportedVersion",
+              message: "This session format version is not supported.",
+            };
+          if (
+            !Array.isArray(raw.results) ||
+            raw.results.length > 10 ||
+            !hasExactKeys(raw.settings, SETTING_KEYS)
+          )
+            return {
+              ok: false,
+              code: "invalidSchema",
+              message:
+                "A session needs at most ten results and all six settings.",
+            };
+          const settings = validateSettings(raw.settings);
+          if (!settings.ok) return settings;
+          const results = [],
+            ids = new Set();
+          for (const rawResult of raw.results) {
+            const checked = validateResult(rawResult);
+            if (!checked.ok) return checked;
+            if (ids.has(checked.value.id))
+              return {
+                ok: false,
+                code: "invalidValue",
+                message: "Result IDs must be unique.",
+              };
+            ids.add(checked.value.id);
+            results.push(checked.value);
+          }
+          return {
+            ok: true,
+            value: {
+              formatVersion: 1,
+              results: rankResults(results),
+              settings: settings.value,
+            },
+          };
+        }
+        /** Duplicate-aware JSON grammar and exact safe-integer numeric decoding. */
+        function parseJSONStrict(text) {
+          let index = 0,
+            nodes = 0;
+          function fail(
+            message = "Invalid JSON syntax.",
+            code = "invalidJSON",
+          ) {
+            const error = new Error(message + " Near character " + index + ".");
+            error.code = code;
+            throw error;
+          }
+          function whitespace() {
+            while (index < text.length && " \t\r\n".includes(text[index]))
+              index++;
+          }
+          function string() {
+            const start = index;
+            if (text[index++] !== '"') fail();
+            while (index < text.length) {
+              const c = text[index++];
+              if (c === '"') {
+                try {
+                  return JSON.parse(text.slice(start, index));
+                } catch {
+                  fail();
+                }
+              }
+              if (c === "\\") {
+                if (index >= text.length) fail();
+                index++;
+              } else if (c.charCodeAt(0) < 32) fail();
+            }
+            fail("Unterminated JSON string.");
+          }
+          function number() {
+            const match = text
+              .slice(index)
+              .match(
+                /^(-?)(0|[1-9][0-9]*)(?:\.([0-9]+))?(?:[eE]([+-]?[0-9]+))?/,
+              );
+            if (!match) fail();
+            index += match[0].length;
+            const fraction = match[3] || "",
+              digits = (match[2] + fraction).replace(/^0+/, "");
+            if (!digits) return 0;
+            const exponent = Number(match[4] || 0),
+              scale = exponent - fraction.length;
+            const invalid = () =>
+              fail(
+                "Numeric values must be exact safe integers.",
+                "invalidValue",
+              );
+            if (
+              !Number.isFinite(exponent) ||
+              Math.abs(exponent) > match[0].length + 16
+            )
+              invalid();
+            let integer;
+            if (scale < 0) {
+              const split = digits.length + scale;
+              if (split <= 0 || !/^0*$/.test(digits.slice(split))) invalid();
+              integer = digits.slice(0, split);
+            } else {
+              if (digits.length + scale > 16) invalid();
+              integer = digits + "0".repeat(scale);
+            }
+            if (integer.length > 16) invalid();
+            const value = Number(integer) * (match[1] ? -1 : 1);
+            if (!Number.isSafeInteger(value)) invalid();
+            return value;
+          }
+          function value(depth = 0) {
+            if (depth > 64 || ++nodes > 10000)
+              fail("JSON nesting or item limit exceeded.");
+            whitespace();
+            const c = text[index];
+            if (c === '"') return string();
+            if (c === "{") {
+              index++;
+              whitespace();
+              const out = Object.create(null),
+                keys = new Set();
+              if (text[index] === "}") {
+                index++;
+                return out;
+              }
+              while (true) {
+                if (text[index] !== '"')
+                  fail("Expected an object member name.");
+                const key = string();
+                if (keys.has(key)) fail("Duplicate JSON object member.");
+                keys.add(key);
+                whitespace();
+                if (text[index++] !== ":") fail();
+                out[key] = value(depth + 1);
+                whitespace();
+                if (text[index] === "}") {
+                  index++;
+                  return out;
+                }
+                if (text[index++] !== ",") fail();
+                whitespace();
+              }
+            }
+            if (c === "[") {
+              index++;
+              whitespace();
+              const out = [];
+              if (text[index] === "]") {
+                index++;
+                return out;
+              }
+              while (true) {
+                out.push(value(depth + 1));
+                whitespace();
+                if (text[index] === "]") {
+                  index++;
+                  return out;
+                }
+                if (text[index++] !== ",") fail();
+              }
+            }
+            for (const [literal, result] of [
+              ["true", true],
+              ["false", false],
+              ["null", null],
+            ]) {
+              if (text.startsWith(literal, index)) {
+                index += literal.length;
+                return result;
+              }
+            }
+            return number();
+          }
+          const result = value();
+          whitespace();
+          if (index !== text.length) fail("Trailing JSON content.");
+          return result;
+        }
+        const JSONCodec = {
+          decode(text) {
+            if (typeof text !== "string")
+              return {
+                ok: false,
+                code: "invalidJSON",
+                message: "JSON input must be text.",
+              };
+            try {
+              return { ok: true, value: parseJSONStrict(text) };
+            } catch (error) {
+              return {
+                ok: false,
+                code: error.code || "invalidJSON",
+                message: error.code ? error.message : "Invalid JSON content.",
+              };
+            }
+          },
+          decodeBytes(bytes) {
+            let text;
+            try {
+              text = new TextDecoder("utf-8", {
+                fatal: true,
+                ignoreBOM: true,
+              }).decode(bytes);
+            } catch {
+              return {
+                ok: false,
+                code: "invalidEncoding",
+                message: "The JSON file must contain valid UTF-8.",
+              };
+            }
+            return this.decode(text);
+          },
+          encode(value) {
+            const checked = validateSession(value);
+            if (!checked.ok)
+              throw Object.assign(new Error(checked.message), {
+                code: checked.code,
+              });
+            return JSON.stringify(checked.value, null, 2) + "\n";
+          },
+        };
+        const MAX_FILE_BYTES = 1024 * 1024;
+        /** File decoding/encoding has no live store or protocol mutation capability. */
+        function createFileController(download) {
+          const failure = (code, message) => ({ ok: false, code, message });
+          return {
+            async save(format, value) {
+              if (format !== "json")
+                return failure(
+                  "unsupportedVersion",
+                  "Choose a supported session format.",
+                );
+              let bytes;
+              try {
+                bytes = new TextEncoder().encode(JSONCodec.encode(value));
+              } catch (error) {
+                return failure(
+                  error.code || "invalidValue",
+                  error.code
+                    ? error.message
+                    : "The session could not be encoded.",
+                );
+              }
+              try {
+                await download(
+                  bytes,
+                  "tetris-session.json",
+                  "application/json",
+                );
+                return { ok: true, value: null };
+              } catch {
+                return failure(
+                  "invalidValue",
+                  "The browser could not start this download.",
+                );
+              }
+            },
+            async read(file) {
+              if (
+                !file ||
+                !Number.isSafeInteger(file.size) ||
+                file.size < 0 ||
+                typeof file.arrayBuffer !== "function"
+              )
+                return failure(
+                  "invalidValue",
+                  "Choose a readable session file.",
+                );
+              if (file.size > MAX_FILE_BYTES)
+                return failure(
+                  "fileTooLarge",
+                  "Session files must be at most 1 MiB.",
+                );
+              let buffer;
+              try {
+                buffer = await file.arrayBuffer();
+              } catch {
+                return failure(
+                  "invalidValue",
+                  "The selected file could not be read.",
+                );
+              }
+              if (!(buffer instanceof ArrayBuffer))
+                return failure(
+                  "invalidValue",
+                  "The selected file could not be read.",
+                );
+              if (buffer.byteLength > MAX_FILE_BYTES)
+                return failure(
+                  "fileTooLarge",
+                  "Session files must be at most 1 MiB.",
+                );
+              if (buffer.byteLength !== file.size)
+                return failure(
+                  "invalidValue",
+                  "The selected file was not read completely.",
+                );
+              const decoded = JSONCodec.decodeBytes(new Uint8Array(buffer));
+              return decoded.ok ? validateSession(decoded.value) : decoded;
+            },
+          };
+        }
+        function createSessionStore() {
+          let settings = { ...DEFAULT_SETTINGS },
+            results = [];
+          let completedIds = new Set();
+          return {
+            record(raw) {
+              const checked = validateResult(raw);
+              if (!checked.ok) return checked;
+              if (completedIds.has(checked.value.id))
+                return { ok: true, value: false };
+              completedIds.add(checked.value.id);
+              results = rankResults([...results, checked.value]);
+              return { ok: true, value: true };
+            },
+            topResults() {
+              return structuredClone(results);
+            },
+            exportSession() {
+              return {
+                formatVersion: 1,
+                results: structuredClone(results),
+                settings: { ...settings },
+              };
+            },
+            replaceValidated(value) {
+              const checked = validateSession(value);
+              if (!checked.ok) return checked;
+              const nextSettings = { ...checked.value.settings },
+                nextResults = structuredClone(checked.value.results),
+                nextIds = new Set(nextResults.map((r) => r.id));
+              settings = nextSettings;
+              results = nextResults;
+              completedIds = nextIds;
+              return { ok: true, value: null };
+            },
             getSettings() {
               return { ...settings };
             },
@@ -461,7 +952,7 @@
                   message: "Invalid settings change.",
                 };
               const result = validateSettings({ ...settings, ...patch });
-              if (result.ok) settings = result.value;
+              if (result.ok) settings = { ...result.value };
               return result;
             },
           };
@@ -1049,11 +1540,45 @@
           };
         }
         // PURE-END
+        /** Download resources are disposed after use and on page exit. */
+        const downloadURLs = new Set();
+        function releaseDownloadURL(url) {
+          if (downloadURLs.delete(url)) URL.revokeObjectURL(url);
+        }
+        function downloadBytes(bytes, name, type) {
+          const url = URL.createObjectURL(new Blob([bytes], { type }));
+          downloadURLs.add(url);
+          let link = null,
+            started = false;
+          try {
+            link = document.createElement("a");
+            link.href = url;
+            link.download = name;
+            link.hidden = true;
+            document.body.append(link);
+            link.click();
+            started = true;
+          } finally {
+            if (link) link.remove();
+            if (started) {
+              try {
+                setTimeout(() => releaseDownloadURL(url), 1000);
+              } catch {
+                releaseDownloadURL(url);
+              }
+            } else releaseDownloadURL(url);
+          }
+        }
+        window.addEventListener("pagehide", () => {
+          for (const url of downloadURLs) releaseDownloadURL(url);
+        });
         /** Canvas presentation and the serialized classic game controller. */
         const engine = createEngine(),
           store = createSessionStore(),
           boardCanvas = document.getElementById("board"),
           context = boardCanvas.getContext("2d");
+        let fileOperation = null;
+        const files = createFileController(downloadBytes);
         const palette = {
           I: "#44d4d0",
           J: "#5a83ed",
@@ -1137,7 +1662,44 @@
           for (const [x, y] of cells)
             ctx.fillRect(ox + x * 16, oy + y * 16, 14, 14);
         }
+        let displayedResults = "";
+        function paintLeaderboard(results) {
+          const signature = JSON.stringify(results);
+          if (signature === displayedResults) return;
+          displayedResults = signature;
+          document.getElementById("leaderboard-empty").hidden =
+            results.length > 0;
+          const rows = results.map((result, index) => {
+            const row = document.createElement("li"),
+              rank = document.createElement("span"),
+              detail = document.createElement("div"),
+              score = document.createElement("strong"),
+              time = document.createElement("time");
+            row.dataset.id = result.id;
+            rank.className = "rank";
+            rank.textContent = String(index + 1);
+            score.textContent = String(result.score);
+            time.dateTime = result.timestamp;
+            time.title = result.timestamp;
+            time.textContent = new Date(result.timestamp).toLocaleString();
+            detail.append(score, time);
+            row.append(rank, detail);
+            return row;
+          });
+          document.getElementById("high-scores").replaceChildren(...rows);
+        }
         function render() {
+          for (const event of engine.drainEvents()) {
+            if (event.type === "gameCompleted") {
+              const recorded = store.record({
+                id: event.gameId,
+                score: event.score,
+                timestamp: new Date().toISOString(),
+              });
+              if (!recorded.ok) setText("message", recorded.message);
+            }
+          }
+          paintLeaderboard(store.topResults());
           const settings = store.getSettings(),
             v = engine.view(settings);
           for (const key of SETTING_KEYS) {
@@ -1159,9 +1721,10 @@
             }[v.phase],
           );
           setText("bonuses", "⚡".repeat(v.bonuses));
-          document
-            .getElementById("bonuses")
-            .setAttribute("aria-label", v.bonuses + " penetrator bonuses");
+          const bonus = document.getElementById("bonuses"),
+            bonusLabel = v.bonuses + " penetrator bonuses";
+          if (bonus.getAttribute("aria-label") !== bonusLabel)
+            bonus.setAttribute("aria-label", bonusLabel);
           paintPreview("held", v.held);
           paintPreview("next", settings.next === "on" ? v.queue[0] : null);
           boardCanvas.dataset.phase = v.phase;
@@ -1268,6 +1831,10 @@
           }
           select.value = store.getSettings()[key];
           select.addEventListener("change", () => {
+            if (fileOperation) {
+              render();
+              return;
+            }
             advanceToNow();
             const result = store.changeSettings({ [key]: select.value });
             if (!result.ok) setText("message", result.message);
@@ -1283,13 +1850,14 @@
         }
 
         function startOrRestart() {
-          if (mode === "unsupported") return;
+          if (fileOperation || mode === "unsupported") return;
           engine.start(newGameId());
           lastFrame = performance.now();
           render();
           boardCanvas.focus({ preventScroll: true });
         }
         function togglePause() {
+          if (fileOperation) return;
           const phase = engine.view().phase;
           if (phase === "ready" || phase === "over") return startOrRestart();
           advanceToNow();
@@ -1304,6 +1872,7 @@
         document.getElementById("pause").addEventListener("click", togglePause);
         document.addEventListener("keydown", (event) => {
           if (
+            fileOperation ||
             event.isComposing ||
             event.ctrlKey ||
             event.metaKey ||
@@ -1350,7 +1919,7 @@
         document.addEventListener("visibilitychange", () => {
           if (document.hidden) pauseForFocusLoss();
         });
-        for (const name of ["settings", "help"]) {
+        for (const name of ["leaderboard", "settings", "help"]) {
           document
             .getElementById("toggle-" + name)
             .addEventListener("click", () => {
@@ -1362,6 +1931,110 @@
               boardCanvas.focus({ preventScroll: true });
             });
         }
+        function syncFileControls() {
+          const disabled = Boolean(fileOperation);
+          for (const id of [
+            "save-session",
+            "restore-session",
+            "start",
+            "pause",
+          ])
+            document.getElementById(id).disabled = disabled;
+          for (const control of document.querySelectorAll("#settings select"))
+            control.disabled = disabled;
+        }
+        function beginFileOperation(kind) {
+          if (fileOperation) return false;
+          if (mode === "unsupported") {
+            setText(
+              "message",
+              "Open this game as a local file or over HTTP(S).",
+            );
+            return false;
+          }
+          fileOperation = kind;
+          // Freeze the current visible game before any asynchronous file operation.
+          engine.setPaused(true);
+          lastFrame = performance.now();
+          render();
+          syncFileControls();
+          return true;
+        }
+        function endFileOperation() {
+          fileOperation = null;
+          document.getElementById("restore-file").value = "";
+          syncFileControls();
+        }
+        document
+          .getElementById("save-session")
+          .addEventListener("click", async () => {
+            if (!beginFileOperation("save")) return;
+            try {
+              const result = await files.save("json", store.exportSession());
+              setText(
+                "message",
+                result.ok
+                  ? "Saved JSON session. Use Pause/Start when ready."
+                  : "Cannot save: " + result.message,
+              );
+            } finally {
+              endFileOperation();
+            }
+          });
+        const restoreInput = document.getElementById("restore-file");
+        document
+          .getElementById("restore-session")
+          .addEventListener("click", () => {
+            if (!beginFileOperation("chooseRestore")) return;
+            restoreInput.value = "";
+            restoreInput.click();
+          });
+        restoreInput.addEventListener("cancel", () => {
+          if (fileOperation === "chooseRestore") {
+            setText("message", "Restore cancelled.");
+            endFileOperation();
+          }
+        });
+        restoreInput.addEventListener("change", async () => {
+          if (!fileOperation && !beginFileOperation("chooseRestore")) return;
+          if (fileOperation !== "chooseRestore") {
+            restoreInput.value = "";
+            return;
+          }
+          fileOperation = "readRestore";
+          const file = restoreInput.files[0];
+          if (!file) {
+            setText("message", "Restore cancelled.");
+            endFileOperation();
+            return;
+          }
+          try {
+            const checked = await files.read(file);
+            if (!checked.ok) {
+              setText("message", "Cannot restore: " + checked.message);
+              return;
+            }
+            const committed = store.replaceValidated(checked.value);
+            if (!committed.ok) {
+              setText("message", "Cannot restore: " + committed.message);
+              return;
+            }
+            const saved = adapter.persist(store.getSettings());
+            render();
+            setText(
+              "message",
+              "Restored session. " +
+                (saved.ok ? "Use Pause/Start when ready." : saved.message),
+            );
+          } catch {
+            setText(
+              "message",
+              "Cannot restore: the selected file could not be processed.",
+            );
+          } finally {
+            endFileOperation();
+          }
+        });
         function centerInitialView() {
           const r = boardCanvas.getBoundingClientRect();
           window.scrollTo({

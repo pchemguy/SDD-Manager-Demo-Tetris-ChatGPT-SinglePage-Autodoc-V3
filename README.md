@@ -1,6 +1,6 @@
 # Single-page HTML Tetris
 
-Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.5.0 adds per-setting HTTP(S) URL and cookie persistence. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
+Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.6.0 adds the session leaderboard and validated JSON Save/Restore. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
 
 ## Play
 
@@ -23,6 +23,8 @@ The same file works over HTTP(S). For a localhost example with Python already av
 | P | Activate an available penetrator bonus |
 | Escape | Pause / resume |
 | R | Start / restart |
+| Leaderboard toggle | Show/hide session results |
+| Settings toggle | Show/hide configuration |
 | Help toggle | Show/hide keyboard help |
 
 By default, locking waits one full gravity interval after becoming grounded. Grounded movement/rotation does not restart it; actual lift-off starts a fresh delay at the next contact. Pause freezes game time. Losing focus or hiding the page pauses play and requires explicit resume. The board stays anchored as panels toggle; narrow screens can scroll the scene.
@@ -31,13 +33,13 @@ Clear rows for points and advance one level every ten lines. The queue uses shuf
 
 ## Release files
 
-Each classic release includes tetris.html, README.md and SHA256SUMS. Check the downloaded HTML against SHA256SUMS if verifying its bytes. Release artifact names remain stable across versions. GitHub's automatic source archive is separate from the deployable HTML.
+This release includes tetris.html, README.md, session.schema.json and SHA256SUMS. Check the downloaded HTML against SHA256SUMS if verifying its bytes. Release artifact names remain stable across versions. GitHub's automatic source archive is separate from the deployable HTML.
 
 ## Development and verification
 
 requirements-dev.txt pins pytest, Playwright and JSON Schema tooling. [Dependency/setup evidence](docs/DEPENDENCIES.md) explains dedicated installation/browser paths and this restricted Linux host's process-local Firefox recovery. Playing does not require developer tools.
 
-From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.5.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
+From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.6.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
 
 Headless Chromium and Playwright Firefox are checked through direct-file and localhost HTTP execution, including the five widths in SPEC. Native OS-window event delivery and native Windows execution are not established by these headless checks. See [TASKS](docs/dev/TASKS.md) and implementation reports for exact current evidence.
 
@@ -66,4 +68,14 @@ In HTTP(S) mode each setting resolves independently: a valid single explicit URL
 
 For example, append ?ghost=visible&hardDrop=off to an HTTP(S) game URL. Omitted settings continue to use their saved cookies or defaults.
 
-In direct-file mode settings always start from defaults, remain in memory and reset on reload. The application does not read/write cookies or read/modify configuration query parameters in that mode. Leaderboard and manual file exchange follow in later increments.
+In direct-file mode settings always start from defaults, remain in memory and reset on reload. The application does not read/write cookies or read/modify configuration query parameters in that mode. Leaderboard history remains session-only; manual files can preserve results and settings.
+
+## Leaderboard
+
+Completed games enter the session top ten automatically, including zero scores. Results rank by descending score, then ascending UTC completion time and stable ID. The panel shows scores and readable completion times; each record retains its original UTC timestamp and UUID v4. Restart and pause keep history without adding an abandoned game. Reload clears the history; results are never stored in cookies or URL parameters.
+
+## Manual JSON Save and Restore
+
+Save and Restore sit at the bottom of Settings and disappear with that panel. Save downloads tetris-session.json containing the current top ten completed results and all six settings. Restore reads JSON by content, validates the complete file and replaces both collections; filename extensions are not trusted. It preserves every result ID, safe integer score and UTC timestamp and keeps the active board intact. Files may be at most 1 MiB.
+
+File interaction pauses running play and blocks concurrent gameplay/file operations. Use Pause/Start to resume explicitly afterward. Invalid files show a clear error and leave results, settings, cookies and URL unchanged. A valid HTTP(S) restore mirrors all six settings into cookies and URL parameters; a file-mode restore changes memory only. See [file formats](docs/FILE-FORMATS.md) and the [JSON Schema](docs/dev/contracts/session.schema.json). SQLite exchange follows in the final increment.

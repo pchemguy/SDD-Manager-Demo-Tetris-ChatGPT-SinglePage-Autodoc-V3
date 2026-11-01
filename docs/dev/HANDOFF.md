@@ -1,15 +1,23 @@
 # Project handoff
 
-Checkpoint: Phase 5 integrated and release 0.5.0 published, all assets downloaded/hash-verified.
+Checkpoint: T-034, phase 6, milestone 6.3 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
-Run QC and full implement authorizes all T-001 through T-041 and seven phase releases. Continue next eligible phase after hosted activation; final boundary is completed target/release.
+Full T-001 through T-041 implementation and seven phase releases authorized by Run QC and full implement on 2026-11-01. Continue after this boundary within that range when tracking/publication/dependencies are verified.
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Phase report](reports/phases/5/PHASE-REPORT.md) records exact source, test/review and hosted release evidence.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/6/PHASE-REPORT.md) records checks. Phase-wide event/store/validator/JSON/FileController/protocol/renderer review found no unresolved finding; six delivery closures audited without exceptions; full packaged 0.6.0 suite passed 193 tests in 266.85s; invalid-file atomicity, field preservation, busy/cancel/resource paths and four-file schema inventory verified; milestones 6.1 and 6.2 closed/read back; exact-tip CI integration and release remain coordinator gates.
 
-## Branch and next action
+## Branch and return
 
-Working branch main; retained source branch phase/5-http-configuration from ancestor 1dcc02e956c84f29302ecf7b4eedf7ee9f485194, integrated through 4bd3304b118b266e42ac75a887f28c4b6ca4a94b. Publish/read back this outcome, then create next eligible phase branch from main and verify its tracking before task work. No release effect remains pending. Native Windows/headed OS-window delivery remain outside verified scope.
+Working branch: phase/6-results-json; integration parent: main; branch-off ancestor: 2868cb674f2bb155359f9b71bf31983689664e40. Complete phases integrate explicitly; partial phases remain unmerged.
+
+## Pending effects
+
+Publish/read back this task, close/read back its issue and milestone. Then audit the task commits, integrate/verify/publish phase to main and publish/read back its release before activating the next phase.
+
+## Integration
+
+Phase 6 verified source 6c151aa56882867697ec9bd1613b87722ccff0fb is being explicitly integrated into main. The merged application/test/tool bytes match the phase candidate; release 0.6.0 publication remains pending. Full implementation authority continues through T-041.

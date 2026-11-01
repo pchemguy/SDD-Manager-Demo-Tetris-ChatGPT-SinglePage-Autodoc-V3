@@ -1,0 +1,25 @@
+name: Verify single-file application
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ${{ github.workspace }}/.browsers
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m playwright install --with-deps --only-shell chromium firefox
+      - run: python scripts/package.py --out dist
+      - run: python -m pytest -q
+        env:
+          TETRIS_TEST_ARTIFACT: dist/tetris.html
+      - run: python scripts/check_artifact_names.py dist --version "$(cat VERSION)"

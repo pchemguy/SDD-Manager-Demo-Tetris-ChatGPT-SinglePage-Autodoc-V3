@@ -1,29 +1,21 @@
 # Project handoff
 
-Checkpoint: DOCS-009 package QC and authorized full implementation handoff. Recover later effects from DOCS_PREPARATION, Git and hosted readback; this containing commit identifies the snapshot.
+Checkpoint: Phase 1 integration, before main publication and release 0.1.0.
 
-Outcome: complete project design, specification, seven-phase delivery plan, layout and 41-task hierarchy prepared. Per-document conformance is Ready; whole-package QC passed; implementation has not started.
+## Outcome and evidence
 
-## Workflow and sources
+Classic baseline T-001 through T-007 is complete. Local packaged suite passed 62 tests in 85.19 seconds; phase CI run 41315938852 passed 62 tests in 87.97 seconds and independent package/name/hash checks. Seven atomic initial task closures and three scoped forward corrections passed the persistence audit. All three Phase 1 milestones and their task issues are verified closed.
 
-- Main preparation; coordinator sdd-manage. [DOCS_TASKS](DOCS_TASKS.md) owns checkoffs; [DOCS_PREPARATION](DOCS_PREPARATION.md) owns decisions/exact evidence.
-- Governing [PROJECT](PROJECT.md), [ARCHITECTURE](ARCHITECTURE.md), [DECOMPOSITION](DECOMPOSITION.md), [SPEC](SPEC.md), [PLAN](PLAN.md), [layout](layout.md) and [TASKS](TASKS.md), with adjacent review reports and the JSON Schema linked from SPEC.
-- Pinned repository SDD Manager 0.16.1. No application or development toolchain implementation exists yet.
+[Phase report](reports/phases/1/PHASE-REPORT.md), [TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) retain detailed owners and limits. Full headed/native OS-window behavior and native Windows execution remain unverified.
 
-## Scope and human decisions
+## Scope and authority
 
-- User requested the complete single-page HTML target in autodoc mode and accepted PROJECT plus its proposed gameplay decisions with k on 2026-11-01.
-- ARCHITECTURE through TASKS checkpoints are preapproved. The later Run QC and full implement instruction advances package QC/integration and authorizes T-001 through T-041 and all seven phase releases.
-- Tracking enabled for preparation/implementation by AGENTS.md; concise Standard reporting and publication/readback after each owned commit remain required.
+Run QC and full implement on 2026-11-01 authorizes the full T-001 through T-041 range and seven releases. Continue after each verified predecessor integration/release without another human checkpoint. Modern rules begin in Phase 2; no future phase objects are activated yet.
 
 ## Branches and return
 
-- Working branch: design-docs/main; creation parent/integration target: main.
-- Branch-off: 11ab200b481fa8d16a9d3656c968dc0bbdde05f1.
-- design-docs/ai-logs scaffold is already integrated; no parent campaign is suspended.
+Receiving branch: main. Completed child: phase/1-classic-baseline, created from main f66817cf15e2de07ea6c75a790110403fff908c3. Incoming verified tip: fca2ef2be8e14b9f9be18e58a432fb47de7465e7. Parent context is restored; no unrelated work was included.
 
-## Pending work and next action
+## Pending effects
 
-- Confirm this DOCS-008 checkpoint publication and issue 8 closure. Issues 1-7 were verified closed; issue 9 and sdd-docs-main milestone remain open.
-- Publish this passing DOCS-009 checkpoint, close/read back issue 9, then explicitly merge/verify/publish preparation and close its milestone before Phase 1 activation.
-- No product task issues/phase labels/milestones are activated. The full implementation range is selected; no release or game/browser acceptance is claimed yet.
+Verify and publish this explicit two-parent main merge, prepare/publish/read back the exact default-branch release commit/tag and complete 0.1.0 GitHub release with all assets and downloaded hashes. Only then activate Phase 2 and resume T-008. Release notes/highlights are protected generated local inputs; no hosted publication is claimed by this checkpoint.

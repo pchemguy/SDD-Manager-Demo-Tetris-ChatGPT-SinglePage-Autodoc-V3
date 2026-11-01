@@ -6,39 +6,47 @@ Each behavioral task includes meaningful test-first evidence, focused regression
 
 ## Phase 1 — Classic baseline
 
-- [ ] Phase 1 — Classic baseline
-    - [ ] Milestone 1.1 — Classic playable loop
-        - [ ] T-001 — Provision isolated verification tools
+- [x] Phase 1 — Classic baseline
+    - [x] Milestone 1.1 — Classic playable loop
+        - [x] T-001 — Provision isolated verification tools
+            Verification: pytest readiness suite: 3 passed in 3.68s; isolated matching Chromium shell and Firefox file/HTTP input/Canvas/teardown verified; Firefox requires the documented process-local content-sandbox override on this host; extraction harness passed; no application acceptance claimed.
             Scope: requirements-dev.txt, tests/support, tests/unit and browser policy evidence; pin development tools and establish pytest/Node extraction harness.
             Depends on: accepted preparation, Phase 1 activation and selected implementation range.
             Evidence: Demonstrate isolated Chromium/Firefox provisioning and file/localhost launch evidence; report actual limits before dependent browser checks.
-        - [ ] T-002 — Implement classic motion and grounded timing
+        - [x] T-002 — Implement classic motion and grounded timing
+            Verification: RED: 5 movement/gravity/lock/pause assertions failed against the inert engine; GREEN: pytest tests/unit passed 11 tests, including occupied-cell bounds, all seven spawn geometries, rotation, partial-tick contact delay, lift-off and pause; fixture injection exists only in the Node test loader.
             Scope: tetris.html domain section and focused domain checks; S1 movement, shape bounds, gravity and S2 fixed interval locking.
             Depends on: T-001.
             Evidence: Deterministic collision/rotation/gravity and just-before/at-expiry tests; pause/lift-off boundaries; no grounded movement reset.
-        - [ ] T-003 — Integrate classic completion and game controls
+        - [x] T-003 — Integrate classic completion and game controls
+            Verification: RED: 5 clear/score/level/completion cases failed before implementation; GREEN: 27 pytest cases passed (19 unit and 8 actual browser-mode cases); reviewed settled-cell writes, simultaneous compaction, pre-clear scoring, event deduplication, focus return and embedded-only UI; corrected an overly color-specific raster assertion to detect any regular piece color; full shortcut/help work remains T-004.
             Scope: tetris.html Engine/controller/renderer and checks; S1 clears, score, levels, spawn failure, game over, Start/Restart and Pause/Start.
             Depends on: T-002.
             Evidence: Play a game to completion, clear one through four rows, verify score/level and restart/pause; no duplicate completion.
             Milestone exit: review all 1.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/1/1.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 1.2 — Verified single-file delivery
-        - [ ] T-004 — Connect keyboard help and centered layout
+    - [x] Milestone 1.2 — Verified single-file delivery
+        - [x] T-004 — Connect keyboard help and centered layout
+            Verification: RED: missing Help control assertion failed before changes; GREEN: full pytest suite 45 passed in 40.96s; five-width anchor checks, X/Z/Space rotation, one-shot repeat suppression, IME/editable-input isolation and modeled blur pause/no-auto-resume passed in Chromium/Firefox file/HTTP; corrected the old all-buttons selector to target the required bottom gameplay row; native OS focus delivery remains unverified.
             Scope: tetris.html Input/Renderer; S4 core mappings, focus/page pause, help toggle and S10 center anchor.
             Depends on: T-003.
             Evidence: Keyboard works from the game, editable control focus is respected, page hiding pauses; toggle leaves board anchor stable.
-        - [ ] T-005 — Establish versioned release preparation tooling
+        - [x] T-005 — Establish versioned release preparation tooling
+            Recovery verification: CI run 41313446648 on 4974b429e6a6d7b64b191823577dd977f7bacd4c passed 49 tests in 47.84s, package creation and the independent name/hash gate on supported Ubuntu 24.04. The original host-selection failure is retained as historical evidence; reassessment is resolved.
+            Verification: RED: 4 packaging/name/hash/version checks failed against inert commands; GREEN: 23 unit tests passed in 1.54s; actual 0.1.0 package and independent inventory/hash gate passed; exact HTML copied with stable version-free asset names; CI uses documented official actions and identical checks, but remote CI result is not yet claimed.
             Scope: VERSION, scripts/package.py, scripts/check_artifact_names.py, CI and packaging checks.
             Depends on: T-004.
             Evidence: Generate exact tetris.html/README.md/SHA256SUMS with version agreement, no companion application file and version-free basenames; exercise direct and CI name checks.
-        - [ ] T-006 — Verify classic packaged execution and document use
+        - [x] T-006 — Verify classic packaged execution and document use
+            Verification: Full suite against exact dist/tetris.html: 57 passed in 81.02s, including all browser-mode game-over/restart paths, five-width anchor checks, Canvas pixels, modeled visibility/focus pause and packaging failures; source/artifact bytes matched SHA-256 6564d1d578f36eb1b45cfd47ecfb9540935193e5c1caa784b3ec79851a1491a3; screenshot visually inspected with centered board and readable controls; reviewed keyboard/controller lifecycle and stable package/CI paths; actual hash is available in generated SHA256SUMS; native OS focus/Windows execution remain unverified.
             Scope: tests/browser, README.md, AGENTS.md, dependency/provisioning evidence and packaged HTML.
             Depends on: T-005.
             Evidence: Run Chromium/Firefox file/HTTP matrix at five widths; double-click and localhost instructions match observed behavior; fixed random/basic rotation scope is explicit.
             Milestone exit: review all 1.2 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/1/1.2.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 1.3 — Phase review
-        - [ ] T-007 — Review test and report phase 1
+    - [x] Milestone 1.3 — Phase review
+        - [x] T-007 — Review test and report phase 1
+            Verification: Review RED: 5 live-region/valid-meta cases failed; GREEN: rebuilt packaged HTML passed 62 tests in 85.19s and independent artifact-name/hash gate; Prettier check and source/fixture boundaries passed; initial task-commit audit passed with scoped forward repairs; actual current HTML SHA-256 6ef0474070fda9c0a7b634250659d252adaa666886ec3bd9fe235d63531e36e5; final CI, integration and hosted release readbacks remain subsequent gates.
             Depends on: T-006 and completion/verified closure of delivery milestones 1.1, 1.2.
             Scope: cross-milestone code review, included S-contract exits, prior regressions, current release 0.1.0 artifact/name/hash/version evidence and unresolved findings.
             Evidence: repair blockers, commit docs/dev/reports/phases/1/PHASE-REPORT.md and HANDOFF with this task; close its issue and review milestone after publication. Coordinator then verifies explicit main integration and GitHub release 0.1.0 before any next-phase activation.

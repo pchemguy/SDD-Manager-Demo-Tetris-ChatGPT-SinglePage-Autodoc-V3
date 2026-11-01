@@ -18,7 +18,7 @@ One documentation pass describes the entire requested product. Implementation mu
 | Task | Current evidence / decision basis |
 | --- | --- |
 | DOCS-001 | Initialization checks below; completion commit includes task checkbox and HANDOFF. Publication and issue closure require subsequent readback. |
-| DOCS-002 | PROJECT proposal and material gameplay decisions pending; no human acceptance yet. |
+| DOCS-002 | Onepass PROJECT proposal blob 4ffb6cdf71bdabd7640603aeb243a156fa7db258; human acceptance pending. Proposed approach and material gameplay decisions are recorded in [PROJECT](PROJECT.md), especially its decision table. Reviewed against the supplied target for principal-scope coverage, mode restrictions, UI placement, release obligations and explicit proposal status; no architecture or detailed contracts authored. Root README links included. |
 | DOCS-003 through DOCS-008 | Not authored; scoped autodoc preapproval applies after PROJECT acceptance and prerequisite checks. |
 | DOCS-009 | Not selected; remains pending beyond the autodoc stop. |
 
@@ -36,4 +36,4 @@ One documentation pass describes the entire requested product. Implementation mu
 
 ## Pending transitions
 
-Publish/read back this initialization checkpoint, then close/read back issue 1 with evidence. Next prepare and publish PROJECT for human acceptance. Remaining documentation issues and preparation milestone stay open. No implementation range is selected yet.
+Initialization commit d6f8f19eb3027529cb8b916013f674cf0dcfaf89 was published with exact ref readback; issue 1 is verified closed as completed with evidence. Publish/read back the PROJECT proposal, then await human acceptance of the brief and its proposed gameplay decisions. DOCS-002 remains unchecked and issue 2 open. The remaining documentation issues and milestone stay open; no architecture, package QC or implementation is authorized before the applicable boundaries.

@@ -13,7 +13,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: requirements-dev.txt, tests/support, tests/unit and browser policy evidence; pin development tools and establish pytest/Node extraction harness.
             Depends on: accepted preparation, Phase 1 activation and selected implementation range.
             Evidence: Demonstrate isolated Chromium/Firefox provisioning and file/localhost launch evidence; report actual limits before dependent browser checks.
-        - [ ] T-002 — Implement classic motion and grounded timing
+        - [x] T-002 — Implement classic motion and grounded timing
+            Verification: RED: 5 movement/gravity/lock/pause assertions failed against the inert engine; GREEN: pytest tests/unit passed 11 tests, including occupied-cell bounds, all seven spawn geometries, rotation, partial-tick contact delay, lift-off and pause; fixture injection exists only in the Node test loader.
             Scope: tetris.html domain section and focused domain checks; S1 movement, shape bounds, gravity and S2 fixed interval locking.
             Depends on: T-001.
             Evidence: Deterministic collision/rotation/gravity and just-before/at-expiry tests; pause/lift-off boundaries; no grounded movement reset.

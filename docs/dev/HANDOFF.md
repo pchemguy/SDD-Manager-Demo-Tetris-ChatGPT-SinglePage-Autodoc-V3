@@ -1,6 +1,6 @@
 # Project handoff
 
-Checkpoint: T-030, phase 6, milestone 6.1 boundary. Recover later operations from TASKS/Git/provider readback.
+Checkpoint: T-033, phase 6, milestone 6.2 boundary. Recover later operations from TASKS/Git/provider readback.
 
 ## Scope and authority
 
@@ -8,7 +8,7 @@ Full T-001 through T-041 implementation and seven phase releases authorized by R
 
 ## Sources and outcome
 
-[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/6/6.1.md) records checks. Packaged leaderboard milestone passed 85 unit/lifecycle/layout checks in 76.22s; real completed games produced one UUID-v4 safe-score UTC-ms record, restart retained it and reload cleared it; active/paused/abandoned games did not insert, results absent from cookies/URL; reviewed validation ownership, ranking/deduplication and DOM update paths with no unresolved finding.
+[TASKS](TASKS.md), [SPEC](SPEC.md), [PLAN](PLAN.md) and [layout](layout.md) govern. [Boundary report](reports/phases/6/6.2.md) records checks. Full packaged 0.6.0 suite passed 193 tests in 266.85s; 13 invalid content classes preserve results settings cookies URL and paused board in all four browser/mode combinations, file cookie/history spies stayed zero, one-MiB/read/download failures and schema inventory/hash gates passed; busy/second-file guards, modeled cancel handler and Blob URL cleanup verified; initial test-setup function auto-invocation stall corrected with a wrapped bounded fixture, then four concurrency cases and full suite passed; milestone source and visual review found no unresolved finding.
 
 ## Branch and return
 

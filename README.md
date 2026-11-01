@@ -1,6 +1,6 @@
 # Single-page HTML Tetris
 
-Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.5.0 adds per-setting HTTP(S) URL and cookie persistence. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
+Classic Tetris in one HTML file: seven tetrominoes, movement and rotation, soft drop, gravity, line clearing, score, levels, pause, restart and game over. Version 0.6.0 adds the session leaderboard and validated JSON Save/Restore. Remaining capabilities follow the bounded [delivery plan](docs/dev/PLAN.md).
 
 ## Play
 
@@ -33,13 +33,13 @@ Clear rows for points and advance one level every ten lines. The queue uses shuf
 
 ## Release files
 
-Each classic release includes tetris.html, README.md and SHA256SUMS. Check the downloaded HTML against SHA256SUMS if verifying its bytes. Release artifact names remain stable across versions. GitHub's automatic source archive is separate from the deployable HTML.
+This release includes tetris.html, README.md, session.schema.json and SHA256SUMS. Check the downloaded HTML against SHA256SUMS if verifying its bytes. Release artifact names remain stable across versions. GitHub's automatic source archive is separate from the deployable HTML.
 
 ## Development and verification
 
 requirements-dev.txt pins pytest, Playwright and JSON Schema tooling. [Dependency/setup evidence](docs/DEPENDENCIES.md) explains dedicated installation/browser paths and this restricted Linux host's process-local Firefox recovery. Playing does not require developer tools.
 
-From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.5.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
+From the repository root, run python -m pytest with that isolated environment. Run python scripts/package.py --out dist, then python scripts/check_artifact_names.py dist --version 0.6.0. Use the current VERSION for subsequent releases. Set TETRIS_TEST_ARTIFACT=dist/tetris.html to make browser checks exercise the generated artifact; CI does this after packaging.
 
 Headless Chromium and Playwright Firefox are checked through direct-file and localhost HTTP execution, including the five widths in SPEC. Native OS-window event delivery and native Windows execution are not established by these headless checks. See [TASKS](docs/dev/TASKS.md) and implementation reports for exact current evidence.
 

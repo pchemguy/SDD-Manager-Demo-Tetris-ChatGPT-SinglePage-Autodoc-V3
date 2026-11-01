@@ -51,3 +51,25 @@ def test_selfclosing_valid_version_metadata(tmp_path):
     p.write_text(p.read_text().replace('content="0.1.0">','content="0.1.0" />'))
     result = command('package.py','--source',src,'--out',out)
     assert result.returncode == 0, result.stderr
+
+
+def test_session_release_ships_exact_canonical_schema(tmp_path):
+    src=source(tmp_path);out=tmp_path/'dist'
+    (src/'VERSION').write_text('0.6.0\n')
+    p=src/'tetris.html';p.write_text(p.read_text().replace('0.1.0','0.6.0'))
+    schema=src/'docs/dev/contracts/session.schema.json';schema.parent.mkdir(parents=True)
+    schema.write_bytes((ROOT/'docs/dev/contracts/session.schema.json').read_bytes())
+    assert command('package.py','--source',src,'--out',out).returncode==0
+    assert {p.name for p in out.iterdir()}=={'tetris.html','README.md','session.schema.json','SHA256SUMS'}
+    assert (out/'session.schema.json').read_bytes()==schema.read_bytes()
+    assert command('check_artifact_names.py',out,'--version','0.6.0').returncode==0
+    (out/'session.schema.json').write_text('{}')
+    assert command('check_artifact_names.py',out,'--version','0.6.0').returncode!=0
+
+
+def test_session_release_missing_schema_fails_before_output(tmp_path):
+    src=source(tmp_path);out=tmp_path/'dist'
+    (src/'VERSION').write_text('0.6.0\n')
+    p=src/'tetris.html';p.write_text(p.read_text().replace('0.1.0','0.6.0'))
+    assert command('package.py','--source',src,'--out',out).returncode!=0
+    assert not out.exists()

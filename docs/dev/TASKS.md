@@ -212,7 +212,7 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Evidence: Reload clears history, restart retains it, active play and pause do not insert scores, completed games update immediately in both modes.
             Milestone exit: review all 6.1 code and contracts, run focused/regression checks, repair blockers, include docs/dev/reports/phases/6/6.1.md and HANDOFF in this task completion commit; close all constituent issues, then verify milestone closure.
 
-    - [ ] Milestone 6.2 — JSON file exchange
+    - [x] Milestone 6.2 — JSON file exchange
         - [x] T-031 — Implement complete duplicate-aware JSON validation
             Verification: RED all 11 codec/validator cases failed; GREEN 80 unit checks passed; canonical schema plus independent calendar oracle agreed, duplicate members at any depth/escaped names and IDs rejected, exact integer parsing prevents rounding/underflow acceptance, UTF-8/depth/version failures clear and round trips preserve every field; documented JSON example executed successfully.
             Scope: tetris.html Validator/JSONCodec, normative schema checks, fixtures and docs/FILE-FORMATS.md; S7.
@@ -223,7 +223,8 @@ Each behavioral task includes meaningful test-first evidence, focused regression
             Scope: tetris.html FileController/controller/settings buttons and browser checks; S9.
             Depends on: T-031.
             Evidence: Download one JSON file; restore replaces results/settings and freezes file interaction, mirrors all HTTP settings or memory only in file mode; cancellation does not change data.
-        - [ ] T-033 — Verify invalid-file isolation and portable JSON delivery
+        - [x] T-033 — Verify invalid-file isolation and portable JSON delivery
+            Verification: Full packaged 0.6.0 suite passed 193 tests in 266.85s; 13 invalid content classes preserve results settings cookies URL and paused board in all four browser/mode combinations, file cookie/history spies stayed zero, one-MiB/read/download failures and schema inventory/hash gates passed; busy/second-file guards, modeled cancel handler and Blob URL cleanup verified; initial test-setup function auto-invocation stall corrected with a wrapped bounded fixture, then four concurrency cases and full suite passed; milestone source and visual review found no unresolved finding.
             Scope: tests/browser/fixtures, format guide, README.md and package schema inclusion.
             Depends on: T-032.
             Evidence: Round-trip exact IDs/scores/timestamps/settings in both modes; prove unchanged results/settings/cookies/URL for invalid/oversized/trailing/duplicate inputs; hide buttons with settings.
